@@ -3,6 +3,7 @@
 var model = {
     // if debug == true logs go to console.
     debug: true,
+
     origin: document.location.origin, 
 
     // templatesCache keeps loaded templates, not to load them repeatedly
@@ -13,6 +14,15 @@ var model = {
          return (this._loginedUser != null)
     },
  
+
+    //---------------------------
+    urlParams: new URLSearchParams(window.location.search),
+    // set urlParams(v) {
+    // },
+    // get urlParams() {
+    //     return this._urlParams
+    // },
+
     //---------------------------
     _loginedUser: null,
     set loginedUser(v) {
@@ -1068,7 +1078,6 @@ function logout() {
     showPage('login',true)
     isSelfRegAllowed()
     model.captchaRequired = false
-    // isCaptchaRequired()
     return false
 }
 
@@ -1077,7 +1086,6 @@ function logout() {
 
 function refreshData() {
     if (model.logined) {
-        // getLoginedUser()
         getAllApps()
         getAllUsers()
         formListAppSubmit()
@@ -1121,17 +1129,22 @@ window.onhashchange = function(event) {
         showPage(newpage)
 }
 
-// window.onpopstate = function(event) {
-//     console.log( "event.state: " + JSON.stringify(event.state));
-// }
+
+function setAppParams(){
+    
+    var url = model.urlParams.get('url')
+    var css = model.urlParams.get('css')
+    document.getElementById('theme').href = css
+    model.origin = url ? url : 'https://auth-proxy.rg.ru'
+
+    //?
+    model.captchaRequired = false
+}
 
 
 
 function init() {
-    // model.origin = 'http://localhost:4400', //document.location.origin, 
-    // https://davidwalsh.name/query-string-javascript
-    model.origin = 'https://auth-proxy.rg.ru', 
-    model.captchaRequired = false
+    setAppParams()
     getLoginedUser()
     refreshApp()      
 }

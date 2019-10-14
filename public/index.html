@@ -14,7 +14,8 @@
 
     <link rel="stylesheet" type="text/css" href="css/themes/graphql.css" />
     <!-- <link rel="stylesheet" type="text/css" href="css/themes/dark2.css" /> -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/themes/orange.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="css/themes/silver.css" /> -->
+    <link id="theme" rel="stylesheet" type="text/css" href="" />
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
@@ -26,7 +27,7 @@
     <div id="page-container">
         <div id="header" class="header">
             <!-- <img src="images/rgru-logo.png" class="logo"> -->
-            <h4><a href="" onclick="return showPage('login',true)"><img src="images/graphql-logo.svg" class="graphql-logo">&nbsp;&nbsp;Auth-Admin </a></h4>
+            <h4><a href="" onclick="return showPage('login',true)"><img src="images/graphql-logo.svg" class="graphql-logo">&nbsp;&nbsp;Сервис авторизации</a></h4>
             <span class="right0" style="vertical-align: top0;">
                 <span id="menu" class="menu">
                     <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
@@ -73,7 +74,7 @@
                             </div>
                         </form>
                         <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
-                        <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">создать нового пользователя</button>
+                        <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя</button>
                 </div>
             </div>
                 
@@ -104,7 +105,7 @@
                             <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()" value="">
                         </div>
                     </form>
-                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">создать нового пользователя</button>
+                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">зарегистрировать нового пользователя</button>
                     <br>
                 </div>
                 <div class="user-search-results"></div>

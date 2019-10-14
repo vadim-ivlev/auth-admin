@@ -22,6 +22,6 @@ module.exports = {
         resolve()
         ,commonjs()
         ,!production && livereload('public')
-        //,production && terser()
+        ,production && terser()
     ]
 };
