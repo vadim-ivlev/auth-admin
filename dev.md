@@ -23,7 +23,7 @@ Result: <http://localhost:5000>
 
 ## deploy
 
-    sh/deploy.sh
+    sh/publish.sh
 
 
 Result: <https://auth-admin.now.sh>
