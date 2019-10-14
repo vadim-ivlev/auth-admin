@@ -261,21 +261,21 @@ function alertOnError(e, msg){
 }
 
 
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-}
+// function getCookie(cname) {
+//     var name = cname + "=";
+//     var decodedCookie = decodeURIComponent(document.cookie);
+//     var ca = decodedCookie.split(';');
+//     for(var i = 0; i <ca.length; i++) {
+//       var c = ca[i];
+//       while (c.charAt(0) == ' ') {
+//         c = c.substring(1);
+//       }
+//       if (c.indexOf(name) == 0) {
+//         return c.substring(name.length, c.length);
+//       }
+//     }
+//     return "";
+// }
 
 
 var delayTimeout;
@@ -657,6 +657,8 @@ function getUser(username) {
     function onSuccess(res){
         model.user = res.data.get_user;
         model.user.apps = groupApps(res.data.list_app_user_role);
+        // render once more after amending user
+        model.user = model.user;
     } 
 
     doGraphQLRequest(query, onSuccess);
@@ -814,6 +816,8 @@ function getApp(appname) {
     function onSuccess(res){
         model.app = res.data.get_app;
         model.app.users = groupUsers(res.data.list_app_user_role);
+        // render once more
+        model.app = model.app;
     } 
 
     doGraphQLRequest(query, onSuccess);
