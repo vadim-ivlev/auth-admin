@@ -33,8 +33,9 @@
                     <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
                     <a href="" id="usersTab" class="button button-clear tab"  onclick="searchUsers(); return showPage('users');">Пользователи</a>
                     <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
-                    <a href="" id="userTab" class="button button-clear tab"   onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
+                    <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"  onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
                     <a href="" id="logoutButton" class="button button-clear tab"  onclick="return logout()">Выход</a>
+                    <a href="" id="settingsButton" class="button button-clear tab settings"  title="настройки" onclick=""><!--&#9776;-->&vellip;</a>
                 </span>
             </span>
         </div>
@@ -50,6 +51,7 @@
                         <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                             <div>
                                 <!-- <label class="param-name">username</label> -->
+                                <input type="submit" class="micro" value=".">
                                 <input id="loginUsername" name="username" type="text" placeholder="имя" onchange="isCaptchaRequired(event)">
                             </div>
                             <div>
@@ -89,7 +91,7 @@
                             <input name="search" type="text" placeholder="Поиск" oninput="return searchApps()"  value="">
                         </div>
                     </form>
-                    <button id="btnNewApp" class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Новое приложение</button>
+                    <button id="btnNewApp" class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Проксировать новое приложение</button>
                     <br>
                 </div>
                 <div class="app-search-results"></div>

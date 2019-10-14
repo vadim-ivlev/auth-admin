@@ -661,10 +661,10 @@ function getUser(username) {
     `
 
     function onSuccess(res){
-        model.user = res.data.get_user
-        model.user.apps = groupApps(res.data.list_app_user_role)
-        // render once more after amending user
-        model.user = model.user
+        var u = res.data.get_user
+        u.apps = groupApps(res.data.list_app_user_role)
+        // render 
+        model.user = u
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -820,10 +820,10 @@ function getApp(appname) {
     `
 
     function onSuccess(res){
-        model.app = res.data.get_app
-        model.app.users = groupUsers(res.data.list_app_user_role)
-        // render once more
-        model.app = model.app
+        var a = res.data.get_app
+        a.users = groupUsers(res.data.list_app_user_role)
+        // render
+        model.app = a
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -1134,7 +1134,7 @@ function setAppParams(){
     
     var url = model.urlParams.get('url')
     var css = model.urlParams.get('css')
-    document.getElementById('theme').href = css
+    if (css) document.getElementById('theme').href = css
     model.origin = url ? url : 'https://auth-proxy.rg.ru'
 
     //?

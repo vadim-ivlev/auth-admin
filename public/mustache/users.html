@@ -1,8 +1,8 @@
 <table>
         <thead>
             <tr>
-                <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('username')">username</a></th>
-                <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('email')">email</a></th>
+                <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('username')">username email</a></th>
+                <!-- <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('email')">email</a></th> -->
                 <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('fullname')">fullname</a></th>
                 <th><a href="" class="sortable" title="sort by appname" onclick="return sortUsersBy('description')">description</a></th>
                 <th>actions</th>
@@ -17,14 +17,15 @@
             >
                 <td>
                     <a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">
-                        {{username}}
+                        <b>{{username}}</b>
+                        <br>&nbsp;&nbsp;{{email}}
                     </a>
                 </td>
-                <td>
+                <!-- <td>
                     <a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">
                         {{email}}
                     </a>
-                </td>
+                </td> -->
                 <td>
                     <a href="" title="Редактировать"  onclick="return showPage('user/{{username}}');" >
                         {{fullname}}
