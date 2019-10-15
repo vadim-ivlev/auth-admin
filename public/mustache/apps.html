@@ -25,20 +25,23 @@
                             </a>
                         </td>
                         <td>
-                            <a href="{{origin}}/apps/{{appname}}/" target="_blank">{{description}}</a>
+                            <!-- <a href="{{origin}}/apps/{{appname}}/" target="_blank">{{description}}</a> -->
+                            {{description}}
                         </td>
                         {{#isAdmin}}
                         <!-- <td>
                             <a href="{{origin}}/apps/{{appname}}/" target="_blank">{{url}}</a>
                         </td> -->
                         <td>
-                            <a href="{{origin}}/apps/{{appname}}/" title="public" target="_blank">{{public}}</a>
+                            <!-- <a href="{{origin}}/apps/{{appname}}/" title="public" target="_blank"> -->
+                                {{public}}
+                            <!-- </a> -->
                         </td>
                         <!-- <td>
                             <a href="{{origin}}/apps/{{appname}}/" title="rebased" target="_blank">{{rebase}}</a>
                         </td> -->
                         <td>
-                            <button class="button button-clear" onclick="showPage('app/{{appname}}');">редактировать</button>
+                            <button class="button button-clear" onclick="showPage('app/{{appname}}');">edit</button>
                             <button class="button button-clear delete" onclick="deleteApp('{{appname}}');">✕</button>
                         </td>
                         {{/isAdmin}}

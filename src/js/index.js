@@ -1082,8 +1082,8 @@ function logout() {
 }
 
 
-// O N   P A G E   L O A D  ****************************************************************************************
-
+// refreshData() если пользователь залогинен наполняет модель данными,
+// в противном случае или обнуляет модель.
 function refreshData() {
     if (model.logined) {
         getAllApps()
@@ -1095,23 +1095,23 @@ function refreshData() {
         for (const k of Object.keys(model)) {
             if (k.startsWith('_')) {
                 model[k] = null
-                // console.log(`model.${k} = null`)
             }
         }
         isSelfRegAllowed()
    }    
 }
 
-function getLandingPageid(){
+function getCurrentPageID(){
     var p = location.hash.slice(1)
     return p ? p : 'apps'
 }
 
-function refreshApp(params) {
+// refreshApp обновляет данные модели и GUI
+function refreshApp() {
     refreshData()
-
+    
     if (model.logined) {
-        let page = getLandingPageid()
+        let page = getCurrentPageID()
         showPage(page) 
         showElements('#menu')     
     } else {
@@ -1148,5 +1148,8 @@ function init() {
     getLoginedUser()
     refreshApp()      
 }
+
+
+// O N   P A G E   L O A D  ****************************************************************************************
 
 init()
