@@ -27,7 +27,15 @@
     <div id="page-container">
         <div id="header" class="header">
             <!-- <img src="images/rgru-logo.png" class="logo"> -->
-            <h4><a href="" onclick="return showPage('login',true)"><img src="images/graphql-logo.svg" class="graphql-logo">&nbsp;&nbsp;Сервис авторизации</a></h4>
+            <div>
+                <a href="" onclick="return showPage('login',true)">
+                    <img src="images/graphql-logo.svg" class="graphql-logo">
+                </a>
+                <div style="display: inline-block; margin-left:10px">
+                        <div id="appTitle" class="title">Авторизация</div>
+                        <div id="appUrl" class="smallinfo"></div>
+                </div>
+            </div>
             <span class="right0" style="vertical-align: top0;">
                 <span id="menu" class="menu">
                     <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
@@ -63,7 +71,7 @@
                                 <!-- <label class="param-name">captcha</label> -->
                                 <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
                                     <img id="captchaImg" src="" class="captcha-image">
-                                    <button class="button-outline" tabindex="-1" onclick="getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
+                                    <button class="button-outline" tabindex="-1" onclick="return getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
                                     <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
                                 </div>
                             </div>

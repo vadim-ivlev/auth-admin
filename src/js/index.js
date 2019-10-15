@@ -1,15 +1,25 @@
 // M O D E L  ******************************************************************************************
 
 var model = {
+    //---------------------------
     // if debug == true logs go to console.
     debug: true,
 
-    origin: document.location.origin, 
-
+    //---------------------------
+    // url where we access GraphQL endpoint = origin + '/graphql'
+    priv_origin: null, 
+    set origin(v){
+        this.priv_origin = v
+        document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v
+    },
+    get origin(){
+        return this.priv_origin
+    },
+    //---------------------------
     // templatesCache keeps loaded templates, not to load them repeatedly
     templatesCache :[],
 
-
+    //---------------------------
     get logined(){
          return (this._loginedUser != null)
     },
@@ -367,15 +377,16 @@ function doGraphQLRequest(query, responseHandler, errorElementID) {
     //         responseHandler(res)
     //     } 
     // })
-
     fetch(model.origin+'/graphql', { 
         method: 'POST', 
         credentials: 'include', 
         body: JSON.stringify({ query: query, variables: {} }) 
     })
         .then(res => { 
-          if (res.ok) return res.json();
-          new Error(res)
+            if (res.ok) {
+                return res.json();
+            }
+            new Error(res)
         })
         .then((res) => {
             model.debug && console.log(res)
@@ -386,9 +397,9 @@ function doGraphQLRequest(query, responseHandler, errorElementID) {
                 }
                 return
             }
-            responseHandler(res)
+            responseHandler && responseHandler(res)
         })
-        .catch(console.error)    
+        .catch( e => console.error(e) )    
     
 }
 
@@ -461,10 +472,15 @@ function isSelfRegAllowed(event) {
 function isCaptchaRequired(event) {
     if (event) event.preventDefault()
     let username = document.getElementById("loginUsername").value   
-    var query =`  query { is_captcha_required(  username: "${username}" ) } `
+    var query =`  query { is_captcha_required(  username: "${username}" ) 
+        {
+            is_required 
+            path
+        } 
+    } `
 
     function onSuccess(res){
-        model.captchaRequired = res.data.is_captcha_required
+        model.captchaRequired = res.data.is_captcha_required.is_required
         if (model.captchaRequired) {
             getNewCaptcha()
             model.debug && console.log("Captcha IS required")
@@ -505,7 +521,6 @@ function generateNewPassword(event) {
 
 function getLoginedUser() {
     model.loginedUser = null
-    
     var query =`
     query {
         get_logined_user {
@@ -1057,7 +1072,7 @@ function generatePassword() {
 }
 
 
-function getNewCaptcha(event) {
+function getNewCaptcha() {
     let uri = model.origin+"/captcha?"+ new Date().getTime()
     document.getElementById("captchaImg").src = uri
     return false
@@ -1123,7 +1138,7 @@ function refreshApp() {
 
 
 window.onhashchange = function(event) {
-    console.log("onhashchange", event)
+    model.debug && console.log("onhashchange", event)
     var newpage = event.newURL.split('#')[1]
     if (newpage) 
         showPage(newpage)
@@ -1131,12 +1146,10 @@ window.onhashchange = function(event) {
 
 
 function setAppParams(){
-    
     var url = model.urlParams.get('url')
     var css = model.urlParams.get('css')
     if (css) document.getElementById('theme').href = css
     model.origin = url ? url : 'https://auth-proxy.rg.ru'
-
     //?
     model.captchaRequired = false
 }
