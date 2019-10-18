@@ -342,3 +342,7 @@ input.role-input {
     font-weight: 400;
     height: 30px;
 }
+
+.error { 
+    color:red;
+}

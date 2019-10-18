@@ -642,7 +642,7 @@ function formUserSubmit(event, userOperationName = 'create_user') {
         getUser(username)
     }
 
-    doGraphQLRequest(query, onSuccess)
+    doGraphQLRequest(query, onSuccess, "userError")
     return false       
 }
 

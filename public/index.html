@@ -60,7 +60,7 @@
                             <div>
                                 <!-- <label class="param-name">username</label> -->
                                 <input type="submit" class="micro" value=".">
-                                <input id="loginUsername" name="username" type="text" placeholder="имя" onchange="isCaptchaRequired(event)">
+                                <input id="loginUsername" name="username" type="text" placeholder="имя или email" onchange="isCaptchaRequired(event)">
                             </div>
                             <div>
                                 <!-- <label class="param-name">password</label> -->
@@ -80,7 +80,7 @@
                             <div style="text-align: right;">
                                 <!-- <label class="param-name">&nbsp</label> -->
                                 <input type="submit" class="button button-outline" value="Вход">
-                                <div id="loginError"></div>
+                                <div id="loginError" class="error"></div>
                             </div>
                         </form>
                         <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
