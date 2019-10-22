@@ -767,12 +767,11 @@ function formListAppSubmit(event) {
 
 function formAppSubmit(event, appOperationName = 'create_app') {
     if (event) event.preventDefault()
-    model.app = null
     let appname =     document.querySelector("#formApp input[name='appname']"    ).value
     let url =         document.querySelector("#formApp input[name='url']"        ).value
     let description = document.querySelector("#formApp input[name='description']").value
     let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
-    let _public =      document.querySelector("#formApp input[name='public']"     ).value
+    let _public =     document.querySelector("#formApp input[name='public']"     ).value
     
     var query =`
     mutation {
@@ -794,12 +793,13 @@ function formAppSubmit(event, appOperationName = 'create_app') {
     `
     function onSuccess(res){
         alert(appOperationName+" success")
-        model.app = res.data[appOperationName]
         refreshData()
+        model.app = res.data[appOperationName]
+
         getApp(appname)
     } 
 
-    doGraphQLRequest(query, onSuccess)
+    doGraphQLRequest(query, onSuccess, "appError")
     return false       
 }
 
