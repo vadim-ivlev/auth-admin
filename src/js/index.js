@@ -11,6 +11,7 @@ var model = {
     set origin(v){
         this.priv_origin = v
         document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v
+        document.getElementById('graphqlTestLink').href = 'https://graphql-test.now.sh/?end_point='+v+'/schema&tab_name=auth-proxy'
     },
     get origin(){
         return this.priv_origin
