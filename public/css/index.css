@@ -342,3 +342,22 @@ input.role-input {
     font-weight: 400;
     height: 30px;
 }
+
+#socialIcons {
+  text-align: center;
+  max-width: 100%;
+}
+
+#socialIcons h5 {
+    margin-top: 30px;
+}
+
+.social-icon {
+    width: 34px;
+    vertical-align: middle;
+    margin-right: 5px;
+    margin-left: 5px;
+    opacity: 0.1;
+    margin-top:30px;
+}
+

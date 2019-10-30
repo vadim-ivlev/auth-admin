@@ -11,6 +11,8 @@ var model = {
     set origin(v){
         this.priv_origin = v
         document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v
+        buildSocialIcons(v+"/oauthproviders")
+        // buildSocialIcons("social.json")
     },
     get origin(){
         return this.priv_origin
@@ -1070,6 +1072,38 @@ function generatePassword() {
 
     document.querySelector("#formUser input[name='password']").value = newPassword(9)
 }
+
+function buildSocialIcons(url) {
+    // try {
+        fetch(url).then(x => x.json())
+        .then( t => renderOauthProvidersJSON(t) )
+        .catch( err => {
+            console.log("fetch error:",err)
+            return
+            }
+        )  
+    // } catch(e){
+    //     console.log("ERR:", e)
+    // }
+}
+
+function renderOauthProvidersJSON(jsn) {
+    let el = document.getElementById('socialIcons')
+    if (!el) return
+
+    el.innerHTML = ''
+    let icons = []
+    for (let [k,v] of Object.entries(jsn) ) {
+        icons.push(`<a class="button button-clear" href="${model.origin + v}">
+            <img class="social-icon" src="images/facebook.svg"><br>
+            ${k}
+            </a>`)
+    }
+    if (icons.length > 0){
+        el.innerHTML = '<h5>Войти с помощью</h5>' + icons.join(' ')
+    }
+}
+
 
 
 function getNewCaptcha() {
