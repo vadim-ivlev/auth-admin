@@ -1096,12 +1096,12 @@ function renderOauthProvidersJSON(jsn) {
     let icons = []
     for (let [k,v] of Object.entries(jsn) ) {
         icons.push(`<a class="button button-clear" href="${model.origin + v}">
-            <img class="social-icon" src="images/facebook.svg"><br>
+            <img class="social-icon" src="images/${k}.svg"><br>
             ${k}
             </a>`)
     }
     if (icons.length > 0){
-        el.innerHTML = '<h5>Войти с помощью</h5>' + icons.join(' ')
+        el.innerHTML = '<div class="socialHeader">войти через</div>' + icons.join(' ')
     }
 }
 

@@ -348,18 +348,42 @@ input.role-input {
   max-width: 100%;
 }
 
+.socialHeader {
+    margin:20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    height: 3.8rem;
+    letter-spacing: .1rem;
+    line-height: 3.8rem;
+    padding: 0 3.0rem;
+    text-transform: uppercase;
+    color: gray;
+}
+
 #socialIcons h5 {
     margin-top: 30px;
+    
 }
 
 .social-icon {
-    width: 34px;
+    width: 30px;
+    height: 30px;
+    padding:3px;
+    /* border: 1px dashed black; */
+    border-radius: 6px;
     vertical-align: middle;
     margin-right: 5px;
     margin-left: 5px;
-    opacity: 0.1;
-    margin-top:30px;
+    /* opacity: 0.1; */
+    /* margin-top:30px; */
+    filter: invert(0.35) sepia(1) saturate(5) hue-rotate(280deg);
+    box-sizing: content-box;
 }
+
+.social-icon:hover {
+    filter: invert(0.5) sepia(1) saturate(0) hue-rotate(280deg); 
+}
+
 
 .error { 
     color:red;

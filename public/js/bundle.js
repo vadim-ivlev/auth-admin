@@ -1,2 +1,1208 @@
-"use strict";var delayTimeout,model={debug:!0,priv_origin:null,set origin(e){this.priv_origin=e,document.getElementById("appUrl").innerHTML="&#x21E2;&nbsp;"+e,buildSocialIcons(e+"/oauthproviders"),document.getElementById("graphqlTestLink").href="https://graphql-test.now.sh/?end_point="+e+"/schema&tab_name=auth-proxy"},get origin(){return this.priv_origin},templatesCache:[],get logined(){return null!=this._loginedUser},urlParams:new URLSearchParams(window.location.search),_loginedUser:null,set loginedUser(e){this._loginedUser=e,document.getElementById("userTab").innerText=e?e.username:"",refreshApp()},get loginedUser(){return this._loginedUser},_selfRegAllowed:!1,set selfRegAllowed(e){this._selfRegAllowed=e,e?showElements("#selfRegButton"):hideElements("#selfRegButton")},get selfRegAllowed(){return this._selfRegAllowed},_captchaRequired:!1,set captchaRequired(e){this._captchaRequired=e,e?showElements("#captcha"):hideElements("#captcha")},get captchaRequired(){return this._captchaRequired},_authRoles:null,set authRoles(e){this._authRoles=e,this.isAdmin?(showElements("#usersTab"),showElements("#rolesTab"),showElements("#graphqlTest"),showElements("#btnNewApp")):(hideElements("#usersTab"),hideElements("#rolesTab"),hideElements("#graphqlTest"),hideElements("#btnNewApp")),renderPage("apps",".app-search-results")},get authRoles(){return this._authRoles},get isAdmin(){return!!model.authRoles&&model.authRoles.some(e=>"authadmin"==e.rolename)},_user:null,set user(e){this._user=e,renderPage("user","#userPage")},get user(){return this._user},_app:null,set app(e){this._app=e,renderPage("app","#appPage")},get app(){return this._app},_users:null,set users(e){this._users=e,renderPage("users",".user-search-results")},get users(){return this._users},_apps:null,set apps(e){this._apps=e,renderPage("apps",".app-search-results")},get apps(){return this._apps},all_app_options:null,all_user_options:null,_allApps:null,set allApps(e){this._allApps=e,this.all_app_options=createOptions(e,"appname","description","url"),document.querySelector("#allAppsDataList").innerHTML=this.all_app_options},get allApps(){return this._allApps},_allUsers:null,set allUsers(e){this._allUsers=e,this.all_user_options=createOptions(e,"username","fullname","email"),document.querySelector("#allUsersDataList").innerHTML=this.all_user_options},get allUsers(){return this._allUsers},_app_user_roles:null,set app_user_roles(e){this._app_user_roles=e,renderPage("roles",".app-user-roles-results")},get app_user_roles(){return this._app_user_roles}};function createOptions(e,n,t,r){var s=[];return e&&e.forEach((function(e){s.push(`<option value="${e[n]}">${e[t]} &nbsp;&nbsp;&nbsp; ${e[r]?e[r]:""}</option>`)})),s.join("")}function highlightTab(e){removeClass(".tab","underlined"),addClass("#"+e.split("/")[0]+"Tab","underlined")}function showPage(e,n){var t=e.split("/"),r=t[0],s=t[1];highlightTab(e),hideElements(".page"),showElements("#"+r+"Page");var l=document.querySelector("#"+r+'Page input[type="text"]');return l&&l.focus(),n||history.state&&history.state.pageid==e||history.pushState({pageid:e},e,"#"+e),s&&("app"==r&&getApp(s),"user"==r&&getUser(s)),!1}function renderTemplateFile(e,n,t){function r(e){var r=Mustache.render(e,n);document.querySelector(t).innerHTML=r}var s=model.templatesCache[e];if(s)return r(s),void console.info("from cache:",e);fetch(e).then(e=>e.text()).then(n=>{model.templatesCache[e]=n,r(n)})}function renderPage(e,n){renderTemplateFile("mustache/"+e+".html",model,n)}function alertOnError(e,n){alert(n,e)}function delayFunc(e,n=500){return clearTimeout(delayTimeout),delayTimeout=setTimeout(e,n),!1}function searchApps(){return document.querySelector("#chkLocalSearch").checked?delayFunc(searchAppsInModel,100):delayFunc(formListAppSubmit)}function searchAppsInModel(){if(!model.allApps)return;var e=document.querySelector("#formListApp input[name='search']").value.trim().replace(" ",".*"),n=new RegExp(e,"i");let t=model.allApps.filter(e=>{var t=Object.values(e).join(" ");return n.test(t)});return model.apps=t,!1}function sortAppsBy(e){return!!model._allApps&&(model._allApps.sort((n,t)=>n[e]+n.appname>t[e]+t.appname?1:-1),model._apps.sort((n,t)=>n[e]+n.appname>t[e]+t.appname?1:-1),model.apps=model._apps,!1)}function searchUsers(){return document.querySelector("#chkLocalSearch").checked?delayFunc(searchUsersInModel,100):delayFunc(formListUserSubmit)}function searchUsersInModel(){if(!model.allUsers)return;var e=document.querySelector("#formListUser input[name='search']").value.trim().replace(" ",".*"),n=new RegExp(e,"i");let t=model.allUsers.filter(e=>n.test(Object.values(e).join(" ")));return model.users=t,!1}function sortUsersBy(e){return!!model._allUsers&&(model._allUsers.sort((n,t)=>n[e]+n.username>t[e]+t.username?1:-1),model._users.sort((n,t)=>n[e]+n.username>t[e]+t.username?1:-1),model.users=model._users,!1)}function doGraphQLRequest(e,n,t){fetch(model.origin+"/graphql",{method:"POST",credentials:"include",body:JSON.stringify({query:e,variables:{}})}).then(e=>{if(e.ok)return e.json();new Error(e)}).then(e=>{if(model.debug&&console.log(e),e.errors)return model.debug&&console.log(e.errors[0].message),void(t&&(document.getElementById(t).innerText=e.errors[0].message));n&&n(e)}).catch(e=>console.error(e))}function loginGraphQLFormSubmit(e){return e&&e.preventDefault(),doGraphQLRequest(`\n    query {\n        login(\n        username: "${document.getElementById("loginUsername").value}",\n        password: "${document.getElementById("loginPassword").value}",\n        captcha: "${document.getElementById("loginCaptcha").value}"\n        )\n        }    \n    `,(function(e){getLoginedUser()}),"loginError"),clearLoginForm(),!1}function logoutGraphQLFormSubmit(e){e&&e.preventDefault();return doGraphQLRequest("\n    query {\n        logout {\n            message\n            username\n          }\n        }\n    ",(function(e){model.loginedUser=null,refreshApp()})),!1}function isSelfRegAllowed(e){e&&e.preventDefault();return doGraphQLRequest(" query { is_selfreg_allowed }",(function(e){model.selfRegAllowed=e.data.is_selfreg_allowed})),!1}function isCaptchaRequired(e){return e&&e.preventDefault(),doGraphQLRequest(`  query { is_captcha_required(  username: "${document.getElementById("loginUsername").value}" ) \n        {\n            is_required \n            path\n        } \n    } `,(function(e){model.captchaRequired=e.data.is_captcha_required.is_required,model.captchaRequired&&(getNewCaptcha(),model.debug&&console.log("Captcha IS required"))})),!1}function generateNewPassword(e){return e&&e.preventDefault(),doGraphQLRequest(`\n    mutation {\n        generate_password(\n        username: "${document.getElementById("loginUsername").value}"\n        ) \n        }\n    `,(function(e){alert(e.data.generate_password),refreshApp()})),!1}function getLoginedUser(){model.loginedUser=null;return doGraphQLRequest("\n    query {\n        get_logined_user {\n            description\n            email\n            fullname\n            username\n            disabled\n        }\n    }\n    ",(function(e){model.loginedUser=e.data.get_logined_user,getAuthRoles(model.loginedUser.username),getUser(model.loginedUser.username)})),!1}function getAuthRoles(e){return model.authRoles=null,doGraphQLRequest(`\n    query {\n        list_app_user_role(\n            appname: "auth",\n            username: "${e}"\n            ) {\n                rolename\n            }\n        }\n        `,(function(e){model.authRoles=e.data.list_app_user_role})),!1}function formListUserSubmit(e){return e&&e.preventDefault(),model.users=null,doGraphQLRequest(`\n    query {\n        list_user(\n        search: "${document.querySelector("#formListUser input[name='search']").value}",\n        order: "fullname ASC"\n        ) {\n            length\n            list {\n              description\n              email\n              fullname\n              username\n              disabled\n            }\n          }\n        }        \n    `,(function(e){model.users=e.data.list_user.list})),!1}function formUserSubmit(e,n="create_user"){e&&e.preventDefault();let t=document.querySelector("#formUser input[name='username']").value,r=document.querySelector("#formUser input[name='password']").value,s=document.querySelector("#formUser input[name='email']").value,l=document.querySelector("#formUser input[name='fullname']").value,a=document.querySelector("#formUser *[name='description']").value,o=document.querySelector("#formUser input[name='disabled']").value;return doGraphQLRequest(`\n    mutation {\n        ${n}(\n        username: "${t}",\n        password: "${r}",\n        email: "${s}",\n        fullname: "${l}",\n        description: "${a}",\n        disabled: ${o}\n        ) {\n            description\n            email\n            fullname\n            username\n            disabled\n          }\n\n        }\n    `,(function(e){alert(n+" success"),refreshData(),model.user=e.data[n],"create_user"!=n||model.logined||(alert(`"${t}" is created.`),showPage("login",!0)),getUser(t)}),"userError"),!1}function getUser(e){return model.user=null,doGraphQLRequest(`\n    query {\n        get_user(\n        username: "${e}"\n        ) {\n            description\n            email\n            fullname\n            username\n            disabled\n          }\n        \n        list_app_user_role(\n        username: "${e}"\n        ) {\n            app_description\n            appname\n            rolename\n            username\n          }\n        \n        }\n\n    `,(function(e){var n=e.data.get_user;n.apps=groupApps(e.data.list_app_user_role),model.user=n})),!1}function groupApps(e){if(!e)return[];let n={};for(let t of e)n[t.appname]||(n[t.appname]=[]),n[t.appname].push(t);let t=[];for(let[e,r]of Object.entries(n)){let n={};n.appname=e,n.app_description=r[0].app_description,n.items=r,t.push(n)}return t}function deleteUser(e){return doGraphQLRequest(`\n    mutation {\n        delete_user(\n        username: "${e}"\n        ) {\n            username\n          }\n        }\n    `,(function(e){model.user=null,refreshData(),showPage("users")})),!1}function formListAppSubmit(e){return e&&e.preventDefault(),model.apps=null,doGraphQLRequest(`\n    query {\n        list_app(\n        search: "${document.querySelector("#formListApp input[name='search']").value}",\n        order: "description ASC"\n        ) {\n            length\n            list {\n              appname\n              description\n              url\n              rebase\n              public\n            }\n          }\n        }    `,(function(e){model.apps=e.data.list_app.list})),!1}function formAppSubmit(e,n="create_app"){e&&e.preventDefault();let t=document.querySelector("#formApp input[name='appname']").value,r=document.querySelector("#formApp input[name='url']").value,s=document.querySelector("#formApp input[name='description']").value,l=document.querySelector("#formApp input[name='rebase']").value,a=document.querySelector("#formApp input[name='public']").value;return doGraphQLRequest(`\n    mutation {\n        ${n}(\n        appname: "${t}",\n        url: "${r}",\n        description: "${s}",\n        rebase: "${l}",\n        public: "${a}"\n        ) {\n            description\n            appname\n            url\n            rebase\n            public\n          }\n\n        }\n    `,(function(e){alert(n+" success"),refreshData(),model.app=e.data[n],getApp(t)}),"appError"),!1}function getApp(e){return model.app=null,doGraphQLRequest(`\n    query {\n        get_app(\n        appname: "${e}"\n        ) {\n            description\n            appname\n            url\n            rebase\n            public\n          }\n        \n        list_app_user_role(\n        appname: "${e}"\n        ) {\n            appname\n            rolename\n            user_fullname\n            user_disabled\n            username\n          }\n        \n        }\n\n    `,(function(e){var n=e.data.get_app;n.users=groupUsers(e.data.list_app_user_role),model.app=n})),!1}function groupUsers(e){let n={};for(let t of e)n[t.username]||(n[t.username]=[]),n[t.username].push(t);let t=[];for(let[e,r]of Object.entries(n)){let n={};n.username=e,n.user_fullname=r[0].user_fullname,n.items=r,t.push(n)}return t}function deleteApp(e){return doGraphQLRequest(`\n    mutation {\n        delete_app(\n        appname: "${e}"\n        ) {\n            appname\n          }\n        }\n    `,(function(e){model.app=null,refreshData(),showPage("apps")})),!1}function getAllApps(e){e&&e.preventDefault(),model.allApps=null;return doGraphQLRequest('\n    query {\n        list_app(\n        order: "appname ASC"\n        ) {\n            length\n            list {\n              appname\n              description\n              url\n              rebase\n              public \n            }\n          }\n        }    ',(function(e){model.allApps=e.data.list_app.list})),!1}function getAllUsers(e){e&&e.preventDefault(),model.allUsers=null;return doGraphQLRequest('\n    query {\n        list_user(\n        order: "fullname ASC"\n        ) {\n            length\n            list {\n              username\n              fullname\n              email\n              description\n              disabled\n            }\n          }\n        }    ',(function(e){model.allUsers=e.data.list_user.list})),!1}function formListRoleSubmit(e){e&&e.preventDefault&&e.preventDefault(),model.app_user_roles=null;let n=document.getElementById("allApps").value,t=document.getElementById("allUsers").value;if(n&&t)return doGraphQLRequest(`\n    query {\n        list_app_user_role(\n        appname: "${n}",\n        username: "${t}"\n        ) {\n            rolename\n          }\n        }        \n        `,(function(e){model.app_user_roles=e.data.list_app_user_role})),!1}function modifyRole(e,n,t,r,s){if(n&&t&&r)return doGraphQLRequest(`\n    mutation {\n        ${e}_app_user_role(\n        appname: "${n}",\n        username: "${t}",\n        rolename: "${r}"\n        ) {\n            rolename\n            appname\n            username\n          }\n        }\n    `,(function(e){s&&s()})),!1}function refreshRoles(){let e=document.getElementById("allUsers").value;if(e){let n=document.querySelector(`#allUsersDataList>option[value='${e}']`).innerText;document.getElementById("userInfo").innerText=n}let n=document.getElementById("allApps").value;if(n){let e=document.querySelector(`#allAppsDataList>option[value='${n}']`).innerText;document.getElementById("appInfo").innerText=e}e&&n&&formListRoleSubmit()}function filterRows(e,n){var t=n.toLowerCase();document.querySelectorAll(e).forEach(e=>{-1==e.innerText.toLowerCase().indexOf(t)?e.classList.add("hidden"):e.classList.remove("hidden")})}function hideElements(e){document.querySelectorAll(e).forEach(e=>e.classList.add("hidden"))}function showElements(e){document.querySelectorAll(e).forEach(e=>e.classList.remove("hidden"))}function addClass(e,n){document.querySelectorAll(e).forEach(e=>e.classList.add(n))}function removeClass(e,n){document.querySelectorAll(e).forEach(e=>e.classList.remove(n))}function hidePassword(){document.querySelector("#formUser input[name='password']").setAttribute("type","password")}function showPassword(){document.querySelector("#formUser input[name='password']").setAttribute("type","text")}function generatePassword(){document.querySelector("#formUser input[name='password']").value=function(e){let n=e=>e[Math.floor(Math.random()*e.length)];var t=["bcdfghjklmnpqrstvwxz","aeiou"],r="";for(let s=0;s<e;s++)r+=n(t[s%t.length]);return r}(9)}function buildSocialIcons(e){fetch(e).then(e=>e.json()).then(e=>renderOauthProvidersJSON(e)).catch(e=>{console.log("fetch error:",e)})}function renderOauthProvidersJSON(e){let n=document.getElementById("socialIcons");if(!n)return;n.innerHTML="";let t=[];for(let[n,r]of Object.entries(e))t.push(`<a class="button button-clear" href="${model.origin+r}">\n            <img class="social-icon" src="images/facebook.svg"><br>\n            ${n}\n            </a>`);t.length>0&&(n.innerHTML="<h5>Войти с помощью</h5>"+t.join(" "))}function getNewCaptcha(){let e=model.origin+"/captcha?"+(new Date).getTime();return document.getElementById("captchaImg").src=e,!1}function clearLoginForm(){document.getElementById("loginUsername").value="",document.getElementById("loginPassword").value="",document.getElementById("loginCaptcha").value="",document.getElementById("loginError").innerText=""}function logout(){return logoutGraphQLFormSubmit(),clearLoginForm(),showPage("login",!0),isSelfRegAllowed(),model.captchaRequired=!1,!1}function refreshData(){if(model.logined)getAllApps(),getAllUsers(),formListAppSubmit(),formListUserSubmit();else{for(const e of Object.keys(model))e.startsWith("_")&&(model[e]=null);isSelfRegAllowed()}}function getCurrentPageID(){var e=location.hash.slice(1);return e||"apps"}function refreshApp(){if(refreshData(),model.logined){showPage(getCurrentPageID()),showElements("#menu")}else showPage("login",!0),hideElements("#menu")}function setAppParams(){var e=model.urlParams.get("url"),n=model.urlParams.get("css");n&&(document.getElementById("theme").href=n),model.origin=e||"https://auth-proxy.rg.ru",model.captchaRequired=!1}function init(){setAppParams(),getLoginedUser(),refreshApp()}window.onhashchange=function(e){model.debug&&console.log("onhashchange",e);var n=e.newURL.split("#")[1];n&&showPage(n)},init();
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.head.appendChild(r) })(window.document);
+'use strict';
+
+// M O D E L  ******************************************************************************************
+
+var model = {
+    //---------------------------
+    // if debug == true logs go to console.
+    debug: true,
+
+    //---------------------------
+    // url where we access GraphQL endpoint = origin + '/graphql'
+    priv_origin: null, 
+    set origin(v){
+        this.priv_origin = v;
+        document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v;
+        buildSocialIcons(v+"/oauthproviders");
+        // buildSocialIcons("social.json")
+        document.getElementById('graphqlTestLink').href = 'https://graphql-test.now.sh/?end_point='+v+'/schema&tab_name=auth-proxy';
+    },
+    get origin(){
+        return this.priv_origin
+    },
+    //---------------------------
+    // templatesCache keeps loaded templates, not to load them repeatedly
+    templatesCache :[],
+
+    //---------------------------
+    get logined(){
+         return (this._loginedUser != null)
+    },
+ 
+
+    //---------------------------
+    urlParams: new URLSearchParams(window.location.search),
+    // set urlParams(v) {
+    // },
+    // get urlParams() {
+    //     return this._urlParams
+    // },
+
+    //---------------------------
+    _loginedUser: null,
+    set loginedUser(v) {
+        this._loginedUser = v;
+        if (v) {
+            document.getElementById("userTab").innerText = v.username;
+            // getAuthRoles(model.loginedUser.username)
+        } else {
+            document.getElementById("userTab").innerText = "";
+        }
+        refreshApp();
+        
+    },
+    get loginedUser() {
+        return this._loginedUser
+    },
+
+    //---------------------------
+    _selfRegAllowed: false,
+    set selfRegAllowed(v) {
+        this._selfRegAllowed = v;
+        if (v) {
+            showElements("#selfRegButton");
+        } else {
+            hideElements("#selfRegButton");
+        }
+    },
+    get selfRegAllowed() {
+        return this._selfRegAllowed
+    },
+    
+    //---------------------------
+    _captchaRequired: false,
+    set captchaRequired(v) {
+        this._captchaRequired = v;
+        if (v) {
+            showElements("#captcha");
+        } else {
+            hideElements("#captcha");
+        }
+    },
+    get captchaRequired() {
+        return this._captchaRequired
+    },
+
+    //---------------------------
+    _authRoles: null,
+    set authRoles(v) {
+        this._authRoles = v;
+        if (this.isAdmin){
+            showElements('#usersTab');
+            showElements('#rolesTab');
+            showElements('#graphqlTest');
+            showElements('#btnNewApp');
+        } else {
+            hideElements('#usersTab');
+            hideElements('#rolesTab');
+            hideElements('#graphqlTest');
+            hideElements('#btnNewApp');
+
+            // showPage('apps')
+        }
+        renderPage('apps','.app-search-results');
+        
+    },
+    get authRoles() {
+        return this._authRoles
+    },
+    get isAdmin() {
+        if (!model.authRoles) return false
+        return model.authRoles.some(e => e.rolename == "authadmin")
+    },
+    
+    //---------------------------
+    _user: null,
+    set user(v) {
+        this._user = v;
+        renderPage('user','#userPage');
+    },
+    get user() {
+        return this._user
+    },
+    
+    //---------------------------
+    _app: null,
+    set app(v) {
+        this._app = v;
+        renderPage('app','#appPage');
+    },
+    get app() {
+        return this._app
+    },
+    
+    //---------------------------
+    _users: null,
+    set users(v) {
+        this._users = v;
+        renderPage('users','.user-search-results');
+    },
+    get users() {
+        return this._users
+    },
+    
+    //---------------------------
+    _apps: null,
+    set apps(v) {
+        this._apps = v;
+        renderPage('apps','.app-search-results');
+    },
+    get apps() {
+        return this._apps
+    },
+
+    //---------------------------
+    all_app_options: null,
+    all_user_options:null,
+    //---------------------------
+    _allApps: null,
+    set allApps(v) {
+        this._allApps = v;
+        this.all_app_options = createOptions(v, "appname", "description", "url");
+        document.querySelector("#allAppsDataList").innerHTML = this.all_app_options;
+    },
+    get allApps() {
+        return this._allApps
+    },
+
+    //---------------------------
+    _allUsers: null,
+    set allUsers(v) {
+        this._allUsers = v;
+        this.all_user_options = createOptions(v, "username", "fullname", "email");
+        document.querySelector("#allUsersDataList").innerHTML = this.all_user_options;
+    },
+    get allUsers() {
+        return this._allUsers
+    },
+    
+    //---------------------------
+    _app_user_roles: null,
+    set app_user_roles(v) {
+        this._app_user_roles = v;
+        renderPage('roles','.app-user-roles-results');
+    },
+    get app_user_roles() {
+        return this._app_user_roles
+    },
+
+    
+};
+
+
+
+// F U N C T I O N S  *********************************************************************************
+
+function createOptions(selectValues, keyProp, textProp1, textProp2) {
+    var output = [];
+    selectValues && selectValues.forEach(function(value)
+    {
+      output.push(`<option value="${value[keyProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
+    });
+    let optionText = output.join('');
+    return optionText
+}
+
+
+function highlightTab(tabid) {
+    removeClass('.tab', "underlined");
+    var tabid0 = tabid.split("/")[0];
+    addClass('#'+tabid0+'Tab', "underlined");   
+}
+
+
+function showPage(pageid, dontpush){
+    //распарсить pageidExtended
+    var a = pageid.split("/");
+    var pageid0 = a[0];
+    var id = a[1];
+
+    highlightTab(pageid);
+    
+    hideElements('.page');
+    showElements('#'+pageid0+'Page');
+
+
+    // setting focus
+    var text = document.querySelector('#'+pageid0+'Page input[type="text"]');
+    if(text) 
+        text.focus();
+
+
+    if (!dontpush){
+        if (!history.state || history.state.pageid != pageid ){
+            history.pushState({pageid:pageid},pageid, "#"+pageid); 
+        }
+    }
+
+    if (id) {
+        if (pageid0 == "app"){
+            getApp(id);
+        } 
+        if (pageid0 == "user"){
+            getUser(id);
+        }
+    }
+
+
+    return false
+}
+
+
+function renderTemplateFile(templateFile, data, targetSelector) {
+
+    function renderTemplate(template) {
+        var rendered = Mustache.render(template, data);
+        document.querySelector(targetSelector).innerHTML = rendered;
+    }    
+
+    var cachedTemlpate = model.templatesCache[templateFile];
+    
+    if (cachedTemlpate) {
+        renderTemplate(cachedTemlpate); 
+        console.info("from cache:",templateFile);
+        return
+    }
+    
+    // $.get(templateFile, onSuccess);
+    fetch(templateFile).then(x => x.text()).then( t => {
+        model.templatesCache[templateFile]=t; 
+        renderTemplate(t);
+    });
+}
+
+
+function renderPage(pageid, elemSelector) {
+    renderTemplateFile('mustache/'+pageid+'.html', model, elemSelector);
+}
+
+
+function alertOnError(e, msg){
+    alert(msg, e);
+}
+
+
+// function getCookie(cname) {
+//     var name = cname + "=";
+//     var decodedCookie = decodeURIComponent(document.cookie);
+//     var ca = decodedCookie.split(';');
+//     for(var i = 0; i <ca.length; i++) {
+//       var c = ca[i];
+//       while (c.charAt(0) == ' ') {
+//         c = c.substring(1);
+//       }
+//       if (c.indexOf(name) == 0) {
+//         return c.substring(name.length, c.length);
+//       }
+//     }
+//     return "";
+// }
+
+
+var delayTimeout;
+function delayFunc(f, delay=500) {
+   clearTimeout(delayTimeout); 
+   delayTimeout = setTimeout(f, delay);  
+   return false 
+}
+
+
+function searchApps() {
+    if (document.querySelector('#chkLocalSearch').checked) {
+        return delayFunc(searchAppsInModel, 100)
+    } else {
+        return delayFunc(formListAppSubmit)
+    }
+}
+
+function searchAppsInModel() {
+    if (!model.allApps) return
+    var text = document.querySelector("#formListApp input[name='search']").value.trim().replace(' ','.*');
+    var r = new RegExp(text, 'i');
+    let found = model.allApps.filter((v)=>{
+        var s = Object.values(v).join(' ');
+        return r.test(s)
+    });
+    model.apps = found;
+    return false   
+}
+
+
+function sortAppsBy(prop) {
+    if (!model._allApps) return false
+    model._allApps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1);
+    model._apps.sort( (a,b) => (a[prop]+a.appname)>(b[prop]+b.appname)? 1: -1 );
+    model.apps = model._apps;
+    return false
+}
+
+
+function searchUsers() {
+    if (document.querySelector('#chkLocalSearch').checked) {
+        return delayFunc(searchUsersInModel, 100)
+    } else {
+        return delayFunc(formListUserSubmit)
+    }
+}
+
+
+function searchUsersInModel() {
+    if (!model.allUsers) return
+    var text = document.querySelector("#formListUser input[name='search']").value.trim().replace(' ','.*');
+    var r = new RegExp(text, 'i');
+    let found = model.allUsers.filter( (v) => r.test (Object.values(v).join(' ')) );
+    model.users = found;
+    return false   
+}
+
+
+function sortUsersBy(prop) {
+    if (!model._allUsers) return false
+    model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1);
+    model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 );
+    model.users = model._users;
+    return false
+}
+
+
+
+// R E Q U E S T S  *******************************************************
+
+function doGraphQLRequest(query, responseHandler, errorElementID) {
+    // $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, 
+    //     success: (res) => {
+    //         model.debug && console.log(res)
+    //         if (res.errors){
+    //             model.debug && console.log(res.errors[0].message)
+    //             if (errorElementID) {
+    //                 document.getElementById(errorElementID).innerText = res.errors[0].message
+    //             }
+    //             return
+    //         }
+    //         responseHandler(res)
+    //     } 
+    // })
+    fetch(model.origin+'/graphql', { 
+        method: 'POST', 
+        credentials: 'include', 
+        body: JSON.stringify({ query: query, variables: {} }) 
+    })
+        .then(res => { 
+            if (res.ok) {
+                return res.json();
+            }
+            new Error(res);
+        })
+        .then((res) => {
+            model.debug && console.log(res);
+            if (res.errors){
+                model.debug && console.log(res.errors[0].message);
+                if (errorElementID) {
+                    document.getElementById(errorElementID).innerText = res.errors[0].message;
+                }
+                return
+            }
+            responseHandler && responseHandler(res);
+        })
+        .catch( e => console.error(e) );    
+    
+}
+
+
+// L O G I N  *****************************************************************************
+
+function loginGraphQLFormSubmit(event) {
+    if (event) event.preventDefault();
+    
+    let username = document.getElementById("loginUsername").value;
+    let password = document.getElementById("loginPassword").value;
+    let captcha =  document.getElementById("loginCaptcha").value;
+    
+    
+
+    let query =`
+    query {
+        login(
+        username: "${username}",
+        password: "${password}",
+        captcha: "${captcha}"
+        )
+        }    
+    `;
+    function onSuccess(res){
+        getLoginedUser();
+    }   
+
+    doGraphQLRequest(query, onSuccess, "loginError");
+    clearLoginForm();
+    return false       
+}
+
+
+
+function logoutGraphQLFormSubmit(event) {
+    if (event) event.preventDefault();
+    var query =`
+    query {
+        logout {
+            message
+            username
+          }
+        }
+    `;
+
+    function onSuccess(res){
+        model.loginedUser = null;
+        refreshApp();
+    }
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+function isSelfRegAllowed(event) {
+    if (event) event.preventDefault();
+    var query =` query { is_selfreg_allowed }`;
+
+    function onSuccess(res){
+        model.selfRegAllowed = res.data.is_selfreg_allowed;
+    }
+       
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+function isCaptchaRequired(event) {
+    if (event) event.preventDefault();
+    let username = document.getElementById("loginUsername").value;   
+    var query =`  query { is_captcha_required(  username: "${username}" ) 
+        {
+            is_required 
+            path
+        } 
+    } `;
+
+    function onSuccess(res){
+        model.captchaRequired = res.data.is_captcha_required.is_required;
+        if (model.captchaRequired) {
+            getNewCaptcha();
+            model.debug && console.log("Captcha IS required");
+        }
+    }
+       
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+function generateNewPassword(event) {
+    if (event) event.preventDefault();
+
+    let username = document.getElementById("loginUsername").value;
+
+    var query =`
+    mutation {
+        generate_password(
+        username: "${username}"
+        ) 
+        }
+    `;
+    function onSuccess(res){
+        alert(res.data.generate_password);
+        refreshApp();
+    }   
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+// L O G I N E D   U S E R   **********************************************************************************************************************
+
+
+function getLoginedUser() {
+    model.loginedUser = null;
+    var query =`
+    query {
+        get_logined_user {
+            description
+            email
+            fullname
+            username
+            disabled
+        }
+    }
+    `;
+    
+    function onSuccess(res){
+        model.loginedUser = res.data.get_logined_user;
+        getAuthRoles(model.loginedUser.username);
+        getUser(model.loginedUser.username);
+    } 
+    
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+function getAuthRoles(username) {
+    model.authRoles = null;
+
+    var query =`
+    query {
+        list_app_user_role(
+            appname: "auth",
+            username: "${username}"
+            ) {
+                rolename
+            }
+        }
+        `;
+
+    function onSuccess(res){
+        model.authRoles = res.data.list_app_user_role;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+// U S E R S  ***********************************************************************************************************************
+
+
+function formListUserSubmit(event) {
+    if (event) event.preventDefault();
+    model.users = null;
+    let search = document.querySelector("#formListUser input[name='search']").value;
+    
+    var query =`
+    query {
+        list_user(
+        search: "${search}",
+        order: "fullname ASC"
+        ) {
+            length
+            list {
+              description
+              email
+              fullname
+              username
+              disabled
+            }
+          }
+        }        
+    `;
+    
+    function onSuccess(res){
+        model.users = res.data.list_user.list;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+function formUserSubmit(event, userOperationName = 'create_user') {
+    if (event) event.preventDefault();
+    let username =      document.querySelector("#formUser input[name='username']").value;
+    let password =      document.querySelector("#formUser input[name='password']").value;
+    let email    =      document.querySelector("#formUser input[name='email']").value;
+    let fullname =      document.querySelector("#formUser input[name='fullname']").value;
+    let description =   document.querySelector("#formUser *[name='description']").value;
+    let disabled =      document.querySelector("#formUser input[name='disabled']").value;
+    
+    var query =`
+    mutation {
+        ${userOperationName}(
+        username: "${username}",
+        password: "${password}",
+        email: "${email}",
+        fullname: "${fullname}",
+        description: "${description}",
+        disabled: ${disabled}
+        ) {
+            description
+            email
+            fullname
+            username
+            disabled
+          }
+
+        }
+    `;
+
+    function onSuccess(res){
+        alert(userOperationName+" success");
+        refreshData();
+        model.user = res.data[userOperationName];
+        if (userOperationName == 'create_user' && !model.logined) {
+            alert(`"${username}" is created.` );
+            showPage('login',true);
+        }
+        getUser(username);
+    }
+
+    doGraphQLRequest(query, onSuccess, "userError");
+    return false       
+}
+
+
+
+function getUser(username) {
+    model.user = null;
+    var query =`
+    query {
+        get_user(
+        username: "${username}"
+        ) {
+            description
+            email
+            fullname
+            username
+            disabled
+          }
+        
+        list_app_user_role(
+        username: "${username}"
+        ) {
+            app_description
+            appname
+            rolename
+            username
+          }
+        
+        }
+
+    `;
+
+    function onSuccess(res){
+        var u = res.data.get_user;
+        u.apps = groupApps(res.data.list_app_user_role);
+        // render 
+        model.user = u;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+function groupApps(list_app_user_role) {
+    if (!list_app_user_role) return []
+    
+    let gr = {};
+    for (let aur of list_app_user_role ){
+        if (!gr[aur.appname]) gr[aur.appname] =[];
+        gr[aur.appname].push(aur);
+    }
+
+    let arr = [];
+
+    for (let [key, value] of Object.entries(gr)) {
+        let rec = {};
+        rec.appname =key;
+        rec.app_description = value[0].app_description;
+        rec.items = value;
+        arr.push(rec);
+    }
+    return arr
+}
+
+
+
+function deleteUser(username) {
+    var query =`
+    mutation {
+        delete_user(
+        username: "${username}"
+        ) {
+            username
+          }
+        }
+    `;
+    function onSuccess(res){
+        model.user = null;
+        refreshData();
+        showPage('users');
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+// A P P S  *******************************************************************
+
+function formListAppSubmit(event) {
+    if (event) event.preventDefault();
+    model.apps = null;
+    let search = document.querySelector("#formListApp input[name='search']").value;
+    var query =`
+    query {
+        list_app(
+        search: "${search}",
+        order: "description ASC"
+        ) {
+            length
+            list {
+              appname
+              description
+              url
+              rebase
+              public
+            }
+          }
+        }    `;
+
+    function onSuccess(res){
+        model.apps = res.data.list_app.list;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+function formAppSubmit(event, appOperationName = 'create_app') {
+    if (event) event.preventDefault();
+    let appname =     document.querySelector("#formApp input[name='appname']"    ).value;
+    let url =         document.querySelector("#formApp input[name='url']"        ).value;
+    let description = document.querySelector("#formApp input[name='description']").value;
+    let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value;
+    let _public =     document.querySelector("#formApp input[name='public']"     ).value;
+    
+    var query =`
+    mutation {
+        ${appOperationName}(
+        appname: "${appname}",
+        url: "${url}",
+        description: "${description}",
+        rebase: "${rebase}",
+        public: "${_public}"
+        ) {
+            description
+            appname
+            url
+            rebase
+            public
+          }
+
+        }
+    `;
+    function onSuccess(res){
+        alert(appOperationName+" success");
+        refreshData();
+        model.app = res.data[appOperationName];
+
+        getApp(appname);
+    } 
+
+    doGraphQLRequest(query, onSuccess, "appError");
+    return false       
+}
+
+
+
+function getApp(appname) {
+    model.app = null;
+
+    var query =`
+    query {
+        get_app(
+        appname: "${appname}"
+        ) {
+            description
+            appname
+            url
+            rebase
+            public
+          }
+        
+        list_app_user_role(
+        appname: "${appname}"
+        ) {
+            appname
+            rolename
+            user_fullname
+            user_disabled
+            username
+          }
+        
+        }
+
+    `;
+
+    function onSuccess(res){
+        var a = res.data.get_app;
+        a.users = groupUsers(res.data.list_app_user_role);
+        // render
+        model.app = a;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+function groupUsers(list_app_user_role) {
+    let gr = {};
+    for (let aur of list_app_user_role ){
+        if (!gr[aur.username]) gr[aur.username] =[];
+        gr[aur.username].push(aur);
+    }
+
+    let arr = [];
+
+    for (let [key, value] of Object.entries(gr)) {
+        let rec = {};
+        rec.username =key;
+        rec.user_fullname = value[0].user_fullname;
+        rec.items = value;
+        arr.push(rec);
+    }
+    return arr
+}
+
+
+
+function deleteApp(appname) {
+    var query =`
+    mutation {
+        delete_app(
+        appname: "${appname}"
+        ) {
+            appname
+          }
+        }
+    `;
+    function onSuccess(res){
+        model.app = null;
+        refreshData();
+        showPage('apps') ;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+
+
+// A P P   U S E R   R O L E   **************************************************************************************************
+
+function getAllApps(event) {
+    if (event) event.preventDefault();
+    model.allApps = null;
+    var query =`
+    query {
+        list_app(
+        order: "appname ASC"
+        ) {
+            length
+            list {
+              appname
+              description
+              url
+              rebase
+              public 
+            }
+          }
+        }    `;
+
+    function onSuccess(res){
+        model.allApps = res.data.list_app.list;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+function getAllUsers(event) {
+    if (event) event.preventDefault();
+    model.allUsers = null;
+    var query =`
+    query {
+        list_user(
+        order: "fullname ASC"
+        ) {
+            length
+            list {
+              username
+              fullname
+              email
+              description
+              disabled
+            }
+          }
+        }    `;
+
+    function onSuccess(res){
+        model.allUsers = res.data.list_user.list;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+function formListRoleSubmit(event) {
+    if (event && event.preventDefault ) event.preventDefault();
+    model.app_user_roles = null;
+    let appname =  document.getElementById("allApps").value;
+    let username = document.getElementById("allUsers").value;
+    if (!appname || !username) 
+        return
+
+    var query =`
+    query {
+        list_app_user_role(
+        appname: "${appname}",
+        username: "${username}"
+        ) {
+            rolename
+          }
+        }        
+        `;
+
+    function onSuccess(res){
+        model.app_user_roles = res.data.list_app_user_role;
+    } 
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+
+function modifyRole(action,appname,username,rolename, onsuccess ) {
+    if (!appname || !username || !rolename) return
+
+    var query =`
+    mutation {
+        ${action}_app_user_role(
+        appname: "${appname}",
+        username: "${username}",
+        rolename: "${rolename}"
+        ) {
+            rolename
+            appname
+            username
+          }
+        }
+    `;
+    function onSuccess(res){
+        if (onsuccess) onsuccess();
+    }
+
+    doGraphQLRequest(query, onSuccess);
+    return false       
+}
+
+// works when input values on roles page change
+function refreshRoles() {
+    let allUsersValue = document.getElementById("allUsers").value;
+    if (allUsersValue) {
+        let ui = document.querySelector(`#allUsersDataList>option[value='${allUsersValue}']`).innerText;
+        document.getElementById('userInfo').innerText = ui;   
+    }
+
+    let allAppsValue = document.getElementById("allApps").value;
+    if (allAppsValue) {
+        let ai = document.querySelector(`#allAppsDataList>option[value='${allAppsValue}']`).innerText;
+        document.getElementById('appInfo').innerText = ai;
+    }
+
+    if (allUsersValue && allAppsValue) 
+        formListRoleSubmit(); 
+}
+
+
+function filterRows(selector, value ){
+    var v = value.toLowerCase();
+    var rows = document.querySelectorAll(selector);
+    rows.forEach(e => {
+        var txt = e.innerText.toLowerCase();
+        if (txt.indexOf(v) == -1) {
+            e.classList.add("hidden");
+        } else {
+            e.classList.remove("hidden");
+        }
+    });
+}
+
+function hideElements(selector) {
+    document.querySelectorAll(selector).forEach(e => e.classList.add("hidden"));
+}
+
+
+function showElements(selector) {
+    document.querySelectorAll(selector).forEach(e => e.classList.remove("hidden"));
+}
+
+function addClass(selector, classname) {
+    document.querySelectorAll(selector).forEach(e => e.classList.add(classname));
+}
+
+function removeClass(selector, classname) {
+    document.querySelectorAll(selector).forEach(e => e.classList.remove(classname));
+}
+
+
+function hidePassword() {
+    document.querySelector("#formUser input[name='password']").setAttribute('type','password');
+}
+
+function showPassword() {
+    document.querySelector("#formUser input[name='password']").setAttribute('type','text');
+}
+
+function generatePassword() {
+    function newPassword (n) {
+        let pickSymbol =(s) => s[Math.floor(Math.random()*s.length)];
+        var symbolSets =["bcdfghjklmnpqrstvwxz","aeiou"]; 
+        var password = '';
+        for (let i=0; i<n; i++){
+            password += pickSymbol(symbolSets[i%symbolSets.length]);
+        }
+        return password
+    }
+
+    document.querySelector("#formUser input[name='password']").value = newPassword(9);
+}
+
+function buildSocialIcons(url) {
+    // try {
+        fetch(url).then(x => x.json())
+        .then( t => renderOauthProvidersJSON(t) )
+        .catch( err => {
+            console.log("fetch error:",err);
+            return
+            }
+        );  
+    // } catch(e){
+    //     console.log("ERR:", e)
+    // }
+}
+
+function renderOauthProvidersJSON(jsn) {
+    let el = document.getElementById('socialIcons');
+    if (!el) return
+
+    el.innerHTML = '';
+    let icons = [];
+    for (let [k,v] of Object.entries(jsn) ) {
+        icons.push(`<a class="button button-clear" href="${model.origin + v}">
+            <img class="social-icon" src="images/${k}.svg"><br>
+            ${k}
+            </a>`);
+    }
+    if (icons.length > 0){
+        el.innerHTML = '<div class="socialHeader">войти через</div>' + icons.join(' ');
+    }
+}
+
+
+
+function getNewCaptcha() {
+    let uri = model.origin+"/captcha?"+ new Date().getTime();
+    document.getElementById("captchaImg").src = uri;
+    return false
+}
+
+
+function clearLoginForm() {
+    document.getElementById("loginUsername").value = "";
+    document.getElementById("loginPassword").value = "";
+    document.getElementById("loginCaptcha").value = "";
+    document.getElementById("loginError").innerText = "";
+}
+
+
+function logout() {
+    logoutGraphQLFormSubmit();
+    clearLoginForm();
+    showPage('login',true);
+    isSelfRegAllowed();
+    model.captchaRequired = false;
+    return false
+}
+
+
+// refreshData() если пользователь залогинен наполняет модель данными,
+// в противном случае или обнуляет модель.
+function refreshData() {
+    if (model.logined) {
+        getAllApps();
+        getAllUsers();
+        formListAppSubmit();
+        formListUserSubmit();  
+    } else {
+        // nullify model's inner props
+        for (const k of Object.keys(model)) {
+            if (k.startsWith('_')) {
+                model[k] = null;
+            }
+        }
+        isSelfRegAllowed();
+   }    
+}
+
+function getCurrentPageID(){
+    var p = location.hash.slice(1);
+    return p ? p : 'apps'
+}
+
+// refreshApp обновляет данные модели и GUI
+function refreshApp() {
+    refreshData();
+    
+    if (model.logined) {
+        let page = getCurrentPageID();
+        showPage(page); 
+        showElements('#menu');     
+    } else {
+        showPage('login',true);
+        hideElements('#menu');
+    }  
+}
+
+
+
+window.onhashchange = function(event) {
+    model.debug && console.log("onhashchange", event);
+    var newpage = event.newURL.split('#')[1];
+    if (newpage) 
+        showPage(newpage);
+};
+
+
+function setAppParams(){
+    var url = model.urlParams.get('url');
+    var css = model.urlParams.get('css');
+    if (css) document.getElementById('theme').href = css;
+    model.origin = url ? url : 'https://auth-proxy.rg.ru';
+    //?
+    model.captchaRequired = false;
+}
+
+
+
+function init() {
+    setAppParams();
+    getLoginedUser();
+    refreshApp();      
+}
+
+
+// O N   P A G E   L O A D  ****************************************************************************************
+
+init();
 //# sourceMappingURL=bundle.js.map
