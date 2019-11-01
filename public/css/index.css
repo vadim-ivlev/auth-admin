@@ -386,5 +386,9 @@ input.role-input {
 
 
 .error { 
-    color:red;
+    color:#E10098;
+    max-width: 800px;
+    font-size: 90%;
+    margin-top:20px;
+    text-align: center;
 }

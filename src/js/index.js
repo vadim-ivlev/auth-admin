@@ -47,7 +47,6 @@ var model = {
             document.getElementById("userTab").innerText = ""
         }
         refreshApp()
-        
     },
     get loginedUser() {
         return this._loginedUser
@@ -203,9 +202,13 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 
 
 function highlightTab(tabid) {
-    removeClass('.tab', "underlined")
-    var tabid0 = tabid.split("/")[0]
-    addClass('#'+tabid0+'Tab', "underlined")   
+    // try{
+        removeClass('.tab', "underlined")
+        var tabid0 = tabid.split("/")[0]
+        addClass('#'+tabid0+'Tab', "underlined")   
+    // } catch(e){
+    //     console.log("highlightTab"+e)
+    // }
 }
 
 
@@ -1119,6 +1122,7 @@ function clearLoginForm() {
     document.getElementById("loginPassword").value = ""
     document.getElementById("loginCaptcha").value = ""
     document.getElementById("loginError").innerText = ""
+    document.getElementById("socialLoginError").innerHTML = ""
 }
 
 
@@ -1183,6 +1187,10 @@ window.onhashchange = function(event) {
 function setAppParams(){
     var url = model.urlParams.get('url')
     var css = model.urlParams.get('css')
+    var oauth2error = model.urlParams.get('oauth2error')
+    var alrt = model.urlParams.get('alert')
+    if (alrt) alert(alrt)
+    document.getElementById('socialLoginError').innerHTML = oauth2error
     if (css) document.getElementById('theme').href = css
     model.origin = url ? url : 'https://auth-proxy.rg.ru'
     //?
