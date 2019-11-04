@@ -4,6 +4,9 @@ var model = {
     //---------------------------
     // if debug == true logs go to console.
     debug: true,
+    oauth2email: "",
+    oauth2name: "",
+    oauth2id: "",
 
     //---------------------------
     // url where we access GraphQL endpoint = origin + '/graphql'
@@ -202,13 +205,9 @@ function createOptions(selectValues, keyProp, textProp1, textProp2) {
 
 
 function highlightTab(tabid) {
-    // try{
         removeClass('.tab', "underlined")
         var tabid0 = tabid.split("/")[0]
         addClass('#'+tabid0+'Tab', "underlined")   
-    // } catch(e){
-    //     console.log("highlightTab"+e)
-    // }
 }
 
 
@@ -1047,7 +1046,7 @@ function showElements(selector) {
 }
 
 function addClass(selector, classname) {
-    document.querySelectorAll(selector).forEach(e => e.classList.add(classname));
+        document.querySelectorAll(selector).forEach(e => e.classList.add(classname));
 }
 
 function removeClass(selector, classname) {
@@ -1062,6 +1061,14 @@ function hidePassword() {
 function showPassword() {
     document.querySelector("#formUser input[name='password']").setAttribute('type','text')
 }
+
+function removeQueryStringFromBrowserURL() {
+    let url = document.location.href
+    let url1 = url.replace(/\?.*/, '')
+    let url2 = url1+"?url="+model.origin
+    history.replaceState(null,null,url2)   
+}
+
 
 function generatePassword() {
     function newPassword (n) {
@@ -1157,7 +1164,7 @@ function refreshData() {
 
 function getCurrentPageID(){
     var p = location.hash.slice(1)
-    return p ? p : 'apps'
+    return (!p || p.includes('=')) ? 'apps' : p
 }
 
 // refreshApp обновляет данные модели и GUI
@@ -1185,6 +1192,11 @@ window.onhashchange = function(event) {
 
 
 function setAppParams(){
+    model.oauth2email = model.urlParams.get('oauth2email') || ''
+    model.oauth2name = model.urlParams.get('oauth2name') || ''
+    model.oauth2id = model.oauth2email.replace(/@.*/,'')
+    document.getElementById('oauth2email').innerHTML = model.oauth2email
+
     var url = model.urlParams.get('url')
     var css = model.urlParams.get('css')
     var oauth2error = model.urlParams.get('oauth2error')
@@ -1193,6 +1205,7 @@ function setAppParams(){
     document.getElementById('socialLoginError').innerHTML = oauth2error
     if (css) document.getElementById('theme').href = css
     model.origin = url ? url : 'https://auth-proxy.rg.ru'
+    removeQueryStringFromBrowserURL()
     //?
     model.captchaRequired = false
 }

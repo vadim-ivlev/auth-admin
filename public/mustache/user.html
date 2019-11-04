@@ -12,7 +12,9 @@
             <input name="username" type="text" placeholder="уникальный идентификатор пользователя"
             {{#user}} disabled class="grayed" {{/user}}
             oninput="document.getElementById('newUserName').innerText = event.target.value; "
-            value="{{user.username}}">
+            value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
+            <!-- value="{{user.username || oauth2id}}"> -->
+
         </div>
         <div>
             <label >password (больше 5 символов) {{^user}}*{{/user}} </label>
@@ -28,12 +30,14 @@
         </div>
         <div>
             <label >email</label>
-            <input name="email" placeholder="емайл" value="{{user.email}}">
+            <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
+            <input name="email" placeholder="емайл" value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
         </div>
 
         <div>
             <label >fullname</label>
-            <input name="fullname"  placeholder="фамилия имя" value="{{user.fullname}}">
+            <!-- <input name="fullname"  placeholder="фамилия имя" value="{{user.fullname}}"> -->
+            <input name="fullname"  placeholder="фамилия имя" value="{{#user}}{{user.fullname}}{{/user}}{{^user}}{{oauth2name}}{{/user}}">
         </div>
         <div>
             <label >description </label>
@@ -49,7 +53,7 @@
         <div style="text-align: right;">
             <label></label>
             {{^user}}
-            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'create_user')" >создать пользователя</button>
+            <button type="button" class="button button-outline" style="max-width: 1000px;" onclick="formUserSubmit(event, 'create_user')" >создать пользователя</button>
             {{/user}}
             {{#user}}
             {{#isAdmin}}
