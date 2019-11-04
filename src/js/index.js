@@ -61,8 +61,10 @@ var model = {
         this._selfRegAllowed = v
         if (v) {
             showElements("#selfRegButton")
+            showElements("#selfRegHelp")
         } else {
             hideElements("#selfRegButton")
+            hideElements("#selfRegHelp")
         }
     },
     get selfRegAllowed() {

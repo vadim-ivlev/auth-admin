@@ -54,42 +54,48 @@
             
             <div id="loginPage" class="page">
                 <div class="flexed max-width-400">
+                    <h2>Вход</h2>
+                    <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
+                        <div>
+                            <!-- <label class="param-name">username</label> -->
+                            <input type="submit" class="micro" value=".">
+                            <input id="loginUsername" name="username" type="text" placeholder="имя или email" onchange="isCaptchaRequired(event)">
+                        </div>
+                        <div>
+                            <!-- <label class="param-name">password</label> -->
+                            <input id="loginPassword" name="password" type="password" placeholder="пароль">
+                        </div>
 
-                        <h2>Вход</h2>
-                        <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
-                            <div>
-                                <!-- <label class="param-name">username</label> -->
-                                <input type="submit" class="micro" value=".">
-                                <input id="loginUsername" name="username" type="text" placeholder="имя или email" onchange="isCaptchaRequired(event)">
+                        <div id="captcha">
+                            <!-- <label class="param-name">captcha</label> -->
+                            <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
+                                <img id="captchaImg" src="" class="captcha-image">
+                                <button class="button-outline" tabindex="-1" onclick="return getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
+                                <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
                             </div>
-                            <div>
-                                <!-- <label class="param-name">password</label> -->
-                                <input id="loginPassword" name="password" type="password" placeholder="пароль">
-                            </div>
-
-                            <div id="captcha">
-                                <!-- <label class="param-name">captcha</label> -->
-                                <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
-                                    <img id="captchaImg" src="" class="captcha-image">
-                                    <button class="button-outline" tabindex="-1" onclick="return getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
-                                    <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
-                                </div>
-                            </div>
-                             
+                        </div>
                             
-                            <div style="text-align: right;">
-                                <!-- <label class="param-name">&nbsp</label> -->
-                                <input type="submit" class="button button-outline" value="Вход">
-                                <div id="loginError" class="error"></div>
-                            </div>
-                        </form>
-                        <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
-                        <div id="socialIcons"></div>
-                        <div id="socialLoginError" class="error"></div>
-                        <br>
-                        <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать пользователя <span id="oauth2email"></span></button>
+                        
+                        <div style="text-align: right;">
+                            <!-- <label class="param-name">&nbsp</label> -->
+                            <input type="submit" class="button button-outline" value="Вход">
+                            <div id="loginError" class="error"></div>
+                        </div>
+                    </form>
+                    <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
+                    <div id="socialIcons"></div>
+                    <div id="socialLoginError" class="error"></div>
+        
+                    <br>
+                    <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать пользователя <span id="oauth2email"></span></button>
                 </div>
-            </div>
+                <div id="selfRegHelp" style="text-align: center;">
+                        <br>
+                        Чтобы зарегистрировать пользователя
+                        ипользуя учетную запись социальной сети, 
+                        сначала войдите в эту сеть.
+                </div>
+        </div>
                 
             <div class="page" id="appsPage">
                 <div class="flexed max-width-600">           

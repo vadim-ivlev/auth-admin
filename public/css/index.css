@@ -12,8 +12,7 @@ body {
 }
   
 #content {
-    padding:30px;
-    padding-bottom: 100px;    /* Footer height */
+    padding:0 30px 100px 30px ;
 }
   
 #footer {
@@ -350,6 +349,7 @@ input.role-input {
 
 .socialHeader {
     margin:20px;
+    margin-bottom: 40px;
     font-size: 1.1rem;
     font-weight: 700;
     height: 3.8rem;
@@ -365,9 +365,12 @@ input.role-input {
     max-width: 1000px;
 }
 
-#socialIcons h5 {
-    margin-top: 30px;    
-}
+/* #socialIcons h5 {
+    margin-top: 30px;  
+    margin-bottom: 50px;  
+} */
+
+
 #socialIcons a {
     padding-left: 20px;  
     padding-right: 20px;

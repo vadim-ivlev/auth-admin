@@ -1,6 +1,12 @@
 <div class="flexed max-width-600">
     {{^user}}
-    <h2>Новый пользователь <b id="newUserName"></b></h2>
+        {{#oauth2id}}
+        <div>
+            Используется учетная запись социальной сети. 
+            Не меняйте email если вы хотите входить в систему через эту социальную сеть.
+        </div>
+        {{/oauth2id}}
+    <h2>Новый пользователь <b id="newUserName">{{oauth2id}}</b></h2>
     {{/user}}
     {{#user}}
     <h2>Пользователь <b>{{user.username}}</b></h2>
