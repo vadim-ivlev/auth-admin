@@ -87,13 +87,15 @@
                     <div id="socialLoginError" class="error"></div>
         
                     <br>
-                    <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать пользователя <span id="oauth2email"></span></button>
+                    <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span id="oauth2email"></span></button>
                 </div>
                 <div id="selfRegHelp" style="text-align: center;">
-                        <br>
+                    <br>
+                    <span id="selfRegHelpText">
                         Чтобы зарегистрировать пользователя
-                        ипользуя учетную запись социальной сети, 
+                        иcпользуя учетную запись социальной сети, 
                         сначала войдите в эту сеть.
+                    </span>
                 </div>
         </div>
                 

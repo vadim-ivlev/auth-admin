@@ -1087,7 +1087,6 @@ function generatePassword() {
 }
 
 function buildSocialIcons(url) {
-    // try {
         fetch(url).then(x => x.json())
         .then( t => renderOauthProvidersJSON(t) )
         .catch( err => {
@@ -1095,9 +1094,6 @@ function buildSocialIcons(url) {
             return
             }
         )  
-    // } catch(e){
-    //     console.log("ERR:", e)
-    // }
 }
 
 function renderOauthProvidersJSON(jsn) {
@@ -1107,13 +1103,29 @@ function renderOauthProvidersJSON(jsn) {
     el.innerHTML = ''
     let icons = []
     for (let [k,v] of Object.entries(jsn) ) {
-        icons.push(`<a class="button button-clear" href="${model.origin + v}">
-            <img class="social-icon" src="images/${k}.svg"><br>
-            ${k}
-            </a>`)
+        icons.push(`
+            <div class="social-element">
+                <a class="button button-clear" title="login via ${k}" href="${model.origin + v[0]}">
+                    ${k}
+                    <br>
+                    <img class="social-icon" src="images/${k}.svg">
+                </a>
+                <!--
+                <br>
+                <a class="social-logout" title="logout from ${k}" href="${model.origin + v[1]}">logout</a>
+                -->
+            </div>
+            
+            
+            `)
     }
+
+    
     if (icons.length > 0){
         el.innerHTML = '<div class="socialHeader">войти через</div>' + icons.join(' ')
+        showElements("#selfRegHelpText")
+    } else {
+        hideElements("#selfRegHelpText")
     }
 }
 

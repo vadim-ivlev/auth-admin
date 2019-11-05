@@ -376,11 +376,20 @@ input.role-input {
     padding-right: 20px;
 }
 
+.social-element {
+    display: inline-block;
+}
+
+.social-logout {
+    font-size: 0.7em;
+    margin-top: 20px;
+    display: block;
+}
+
 .social-icon {
     width: 28px;
     height: 28px;
     padding:6px;
-    border: 1px solid #E10098;
     border-radius: 6px;
     vertical-align: middle;
     margin-right: 5px;
@@ -389,6 +398,9 @@ input.role-input {
     /* margin-top:30px; */
     filter: invert(0.35) sepia(1) saturate(5) hue-rotate(280deg);
     box-sizing: content-box;
+    /* box-shadow: 0 0 2px black; */
+    border: 1px solid rgba(225, 0, 154, 0.445);
+    
 }
 
 .social-icon:hover {
