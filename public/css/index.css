@@ -415,11 +415,15 @@ input.role-input {
 
 
 .error { 
-    color:#E10098;
+    /* color:#E10098; */
     max-width: 800px;
     font-size: 90%;
     margin-top:20px;
     text-align: center;
+}
+
+#socialLoginError {
+    margin-top: 40px;
 }
 
 

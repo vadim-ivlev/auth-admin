@@ -454,6 +454,10 @@ function logoutGraphQLFormSubmit(event) {
 
     function onSuccess(res){
         model.loginedUser = null
+        model.oauth2email =""
+        model.oauth2id =""
+        model.oauth2name =""
+
         refreshApp()
     }
 
@@ -1145,6 +1149,7 @@ function clearLoginForm() {
     document.getElementById("loginCaptcha").value = ""
     document.getElementById("loginError").innerText = ""
     document.getElementById("socialLoginError").innerHTML = ""
+    document.getElementById("oauth2email").innerHTML = ""
 }
 
 
