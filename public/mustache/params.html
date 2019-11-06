@@ -4,13 +4,13 @@
     <form id="formParams" onsubmit="event.preventDefault();">
         <div>
             <label  style="display:inline">selfreg</label>&nbsp;&nbsp;<span>Могут ли пользователи регистрироваться самостоятельно</span>
-            <br><input name="max_attempts" type="checkbox"  value="{{params.selfreg}}">
+            <br><input name="selfreg" type="checkbox"  {{#params.selfreg}}checked{{/params.selfreg}}>
             
         </div>
 
         <div>
             <label  style="display:inline">use_captcha</label>&nbsp;&nbsp;<span>Нужно ли вводить капчу при входе в систему</span>
-            <br><input name="max_attempts" type="checkbox"  value="{{params.use_captcha}}">
+            <br><input name="use_captcha" type="checkbox"  {{#params.use_captcha}}checked{{/params.use_captcha}}>
             
         </div>
 
@@ -22,15 +22,15 @@
 
         <div>
             <label style="display:inline">reset_time</label>&nbsp;&nbsp;<span>Время сброса счетчика ошибок пароля в минутах</span>
-            <input name="max_attempts" type="number" title="Время сброса счетчика ошибок пароля в минутах"  value="{{params.reset_time}}">
+            <input name="reset_time" type="number" title="Время сброса счетчика ошибок пароля в минутах"  value="{{params.reset_time}}">
             
         </div>
 
         
         <div style="text-align: right;">
             <label></label>
-            <button type="button" class="button button-outline" onclick="formParamsSubmit(event, 'set_params')">сохранить изменения</button>
-            <div id="settingsError" class="error"></div>
+            <button type="button" class="button button-outline" onclick="setParams(event)">сохранить изменения</button>
+            <div id="paramsError" class="error"></div>
         </div>
         
     </form>

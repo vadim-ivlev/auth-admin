@@ -43,7 +43,7 @@
                     <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
                     <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"  onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
                     <a href="" id="logoutButton" class="button button-clear tab"  onclick="return logout()">Выход</a>
-                    <a href="" id="settingsButton" class="button button-clear tab settings hidden"  title="настройки" onclick="model.params={};return showPage('params',true)"><!--&#9776;-->&vellip;</a>
+                    <a href="" id="settingsButton" class="button button-clear tab settings hidden"  title="настройки" onclick="getParams();return showPage('params',true)"><!--&#9776;-->&vellip;</a>
                 </span>
                 <span id="menuUnlogined" class="menu">
                     <a href="" id="loginButton" class="button button-clear tab"  onclick="return showPage('login',true)">Вход</a>

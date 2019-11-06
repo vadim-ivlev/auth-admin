@@ -588,6 +588,65 @@ function getAuthRoles(username) {
     return false       
 }
 
+// P A R A M S  ***********************************************************************************************************************
+
+
+function getParams() {
+    model.params = null
+    var query =`
+    query {
+        get_params {
+            max_attempts
+            reset_time
+            selfreg
+            use_captcha
+          }
+        }
+    `
+
+    function onSuccess(res){
+        var p = res.data.get_params
+        model.params = p
+    } 
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+function setParams(event) {
+    if (event) event.preventDefault()
+    let selfreg =       document.querySelector("#formParams input[name='selfreg']").checked
+    let use_captcha =   document.querySelector("#formParams input[name='use_captcha']").checked
+    let max_attempts =  document.querySelector("#formParams input[name='max_attempts']").value
+    let reset_time =    document.querySelector("#formParams input[name='reset_time']").value
+    
+    var query =`
+    query {
+        set_params(
+        selfreg:      ${selfreg},
+        use_captcha:  ${use_captcha},
+        max_attempts: ${max_attempts},
+        reset_time:   ${reset_time}
+        ) {
+            max_attempts
+            reset_time
+            selfreg
+            use_captcha
+          }
+        }
+    `
+
+    function onSuccess(res){
+        model.params = res.data.set_params
+        alert("params saving success")
+    }
+
+    doGraphQLRequest(query, onSuccess, "paramsError")
+    return false       
+}
+
+
+
 
 // U S E R S  ***********************************************************************************************************************
 
