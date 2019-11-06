@@ -199,6 +199,17 @@ var model = {
         return this._params
     },
 
+    //---------------------------
+    _memstat: null,
+    set memstat(v) {
+        this._memstat = v
+        if (document.getElementById('preMemstat'))
+        document.getElementById('preMemstat').innerText = JSON.stringify(v)
+    },
+    get memstat() {
+        return this._memstat
+    },
+
 
     
 }
@@ -645,6 +656,28 @@ function setParams(event) {
     return false       
 }
 
+
+function getMemstat(event) {
+    if (event) event.preventDefault()
+    model.memstat = null
+    var query =`
+    query {
+        memstat {
+            alloc
+            sys
+            total_alloc
+          }
+        }
+    `
+
+    function onSuccess(res){
+        var m = res.data.memstat
+        model.memstat = m
+    } 
+
+    doGraphQLRequest(query, onSuccess, "memstatError")
+    return false       
+}
 
 
 
