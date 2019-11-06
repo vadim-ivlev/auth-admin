@@ -45,6 +45,9 @@
                     <a href="" id="logoutButton" class="button button-clear tab"  onclick="return logout()">Выход</a>
                     <!-- <a href="" id="settingsButton" class="button button-clear tab settings"  title="настройки" onclick="">&#9776;&vellip;</a> -->
                 </span>
+                <span id="menuUnlogined" class="menu">
+                    <a href="" id="loginButton" class="button button-clear tab"  onclick="return showPage('login',true)">Вход</a>
+                </span>
             </span>
         </div>
         <div id="content">
@@ -83,13 +86,13 @@
                         </div>
                     </form>
                     <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
-                    <div id="socialIcons"></div>
+                    <div id="socialIcons" class="transparent"></div>
                     <div id="socialLoginError" class="error"></div>
         
                     <br>
-                    <button id="selfRegButton" class="button button-clear tab"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span id="oauth2email"></span></button>
+                    <button id="selfRegButton" class="button button-clear tab hidden"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span id="oauth2email"></span></button>
                 </div>
-                <div id="selfRegHelp" style="text-align: center;">
+                <div id="selfRegHelp" class="hidden" style="text-align: center;">
                     <br>
                     <span id="selfRegHelpText">
                         Чтобы зарегистрировать пользователя

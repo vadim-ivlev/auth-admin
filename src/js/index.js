@@ -15,7 +15,6 @@ var model = {
         this.priv_origin = v
         document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v
         buildSocialIcons(v+"/oauthproviders")
-        // buildSocialIcons("social.json")
         document.getElementById('graphqlTestLink').href = 'https://graphql-test.now.sh/?end_point='+v+'/schema&tab_name=auth-proxy'
     },
     get origin(){
@@ -1098,32 +1097,34 @@ function buildSocialIcons(url) {
 
 function renderOauthProvidersJSON(jsn) {
     let el = document.getElementById('socialIcons')
+    
     if (!el) return
-
+    
     el.innerHTML = ''
     let icons = []
     for (let [k,v] of Object.entries(jsn) ) {
         icons.push(`
-            <div class="social-element">
-                <a class="button button-clear" title="login via ${k}" href="${model.origin + v[0]}">
-                    ${k}
-                    <br>
-                    <img class="social-icon" src="images/${k}.svg">
-                </a>
-                <!--
-                <br>
-                <a class="social-logout" title="logout from ${k}" href="${model.origin + v[1]}">logout</a>
-                -->
-            </div>
-            
-            
-            `)
+        <div class="social-element">
+        <a class="button button-clear" title="login via ${k}" href="${model.origin + v[0]}">
+        ${k}
+        <br>
+        <img class="social-icon" src="images/${k}.svg">
+        </a>
+        <!--
+        <br>
+        <a class="social-logout" title="logout from ${k}" href="${model.origin + v[1]}">logout</a>
+        -->
+        </div>
+        
+        
+        `)
     }
-
+    
     
     if (icons.length > 0){
         el.innerHTML = '<div class="socialHeader">войти через</div>' + icons.join(' ')
         showElements("#selfRegHelpText")
+        removeClass('#socialIcons', 'transparent')
     } else {
         hideElements("#selfRegHelpText")
     }
@@ -1189,9 +1190,11 @@ function refreshApp() {
         let page = getCurrentPageID()
         showPage(page) 
         showElements('#menu')     
+        hideElements('#menuUnlogined')     
     } else {
         showPage('login',true)
         hideElements('#menu')
+        showElements('#menuUnlogined')
     }  
 }
 
