@@ -93,11 +93,13 @@ var model = {
             showElements('#rolesTab')
             showElements('#graphqlTest')
             showElements('#btnNewApp')
+            showElements('#settingsButton')
         } else {
             hideElements('#usersTab')
             hideElements('#rolesTab')
             hideElements('#graphqlTest')
             hideElements('#btnNewApp')
+            hideElements('#settingsButton')
 
             // showPage('apps')
         }
@@ -186,6 +188,17 @@ var model = {
     get app_user_roles() {
         return this._app_user_roles
     },
+
+    //---------------------------
+    _params: null,
+    set params(v) {
+        this._params = v
+        renderPage('params','#paramsPage')
+    },
+    get params() {
+        return this._params
+    },
+
 
     
 }
