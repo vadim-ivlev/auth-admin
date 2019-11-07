@@ -6,7 +6,7 @@
 
     <form id="formParams" onsubmit="event.preventDefault();">
         <div>
-            <label  style="display:inline">selfreg</label>&nbsp;&nbsp;<span>Саморегистация разрешена</span>
+            <label  style="display:inline">selfreg</label>&nbsp;&nbsp;<span>Саморегистрация разрешена</span>
             <br><input name="selfreg" type="checkbox"  {{#params.selfreg}}checked{{/params.selfreg}}>
             
         </div>
@@ -40,25 +40,29 @@
 
 
 
-   
-
-    <div>
-    <pre id="preAppstat"></pre>
-            
-            
-    </div>
-
-    <div style="text-align: right;">
-            <label></label>
-            <button type="button" class="button button-outline" onclick="getAppstat(event)">get_stat</button>
-            <div id="appstatError" class="error"></div>
-    </div>
-
-
+ 
 
 
     
 </div>
 
+
+  
+
+    <div>
+        <div id="divSys"  class="gauge"></div>
+        <div id="divAlloc" class="gauge"></div>
+        <div id="divDay" class="gauge"></div>
+        <div id="divHour" class="gauge"></div>
+        <div id="divMinute" class="gauge"></div>
+        <div id="divSecond" class="gauge"></div>
+        <pre id="preAppstat"></pre>
+    </div>
+
+    <div style="text-align: right;">
+        <label></label>
+        <button type="button" class="button button-outline" onclick="getAppstat(event)">get_stat</button>
+        <div id="appstatError" class="error"></div>
+    </div>
 
 

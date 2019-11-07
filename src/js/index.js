@@ -205,12 +205,18 @@ var model = {
         this._appstat = v
         if (document.getElementById('preAppstat'))
         document.getElementById('preAppstat').innerText = JSON.stringify(v,null, 2)
+        drawGauge("Allocated Mb", v.alloc, "divAlloc")
+        drawGauge("Total Mb", v.sys, "divSys")
+        drawGauge("req / day", v.requests_per_day, "divDay")
+        drawGauge("req / hour", v.requests_per_hour, "divHour")
+        drawGauge("req / min", v.requests_per_minute, "divMinute")
+        drawGauge("req / sec", v.requests_per_second, "divSecond")
     },
     get appstat() {
         return this._appstat
     },
 
-
+ 
     
 }
 
@@ -1250,6 +1256,41 @@ function getNewCaptcha() {
     document.getElementById("captchaImg").src = uri
     return false
 }
+
+
+// G O O G L E   C H A R T S  ***************************************************************
+google.charts.load('current', {'packages':['gauge']})
+/* google.charts.setOnLoadCallback(drawChart); */
+
+var gauges = {}
+
+function drawGauge(title, val, containerID) {
+    if (!google) return
+
+    if (! gauges[title]) {
+        let container = document.getElementById(containerID)
+        if (! container) return
+        gauges[title]={}
+        gauges[title].data = google.visualization.arrayToDataTable([['Label', 'Value'], [title, 0]])
+        gauges[title].options = {
+            // width: 120,
+            height:  150, 
+            redFrom: 90, redTo: 100,
+            yellowFrom:80, yellowTo: 90,
+            greenFrom:0, greenTo:20,
+            minorTicks: 5
+        }
+        gauges[title].chart = new google.visualization.Gauge(container);
+    }
+
+    gauges[title].data.setValue(0, 1, val);
+    gauges[title].chart.draw(gauges[title].data, gauges[title].options);
+}
+
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
 
 
 function clearLoginForm() {

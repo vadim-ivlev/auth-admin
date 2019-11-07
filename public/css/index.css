@@ -430,3 +430,8 @@ input.role-input {
 #oauth2email {
     padding-left: 10px;
 }
+
+.gauge {
+    display: inline-block;
+    /* width: 150px; */
+}
