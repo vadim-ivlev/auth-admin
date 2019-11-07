@@ -1,6 +1,21 @@
 <div class="flexed max-width-600">
 
-
+        <div id="gauges" class="gauges">
+                <div id="divDay" class="gauge"></div>
+                <div id="divHour" class="gauge"></div>
+                <div id="divMinute" class="gauge"></div>
+                <div id="divSecond" class="gauge"></div>
+                <div>
+                    <span>Total system memory: </span>
+                    <span id="divSys"  class=""></span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span id="divAlloc" class=""></span>
+                    &nbsp;&nbsp;
+                    <span id="divTotalAlloc" class="hidden"></span>
+                    <br>
+                </div>
+        </div>
+        
 
     <h2>Параметры</h2>
 
@@ -49,20 +64,4 @@
 
   
 
-    <div>
-        <div id="divSys"  class="gauge"></div>
-        <div id="divAlloc" class="gauge"></div>
-        <div id="divDay" class="gauge"></div>
-        <div id="divHour" class="gauge"></div>
-        <div id="divMinute" class="gauge"></div>
-        <div id="divSecond" class="gauge"></div>
-        <pre id="preAppstat"></pre>
-    </div>
-
-    <div style="text-align: right;">
-        <label></label>
-        <button type="button" class="button button-outline" onclick="getAppstat(event)">get_stat</button>
-        <div id="appstatError" class="error"></div>
-    </div>
-
-
+  

@@ -315,7 +315,8 @@ input.role-input {
 }
 
 .settings { 
-    font-size: 18px;
+    /* font-size: 18px; */
+    font-size: 22px;
     padding-left:5px;
     padding-right: 15px;
     top: 2px;
@@ -431,7 +432,15 @@ input.role-input {
     padding-left: 10px;
 }
 
+.gauges {
+    text-align: center;
+    /* border-bottom: 1px solid silver; */
+    margin-bottom: 30px;
+}
+
+
 .gauge {
     display: inline-block;
     /* width: 150px; */
+    /* opacity: 0.8; */
 }

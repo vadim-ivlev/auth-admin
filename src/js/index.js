@@ -194,6 +194,7 @@ var model = {
     set params(v) {
         this._params = v
         renderPage('params','#paramsPage')
+        getAppstat()
     },
     get params() {
         return this._params
@@ -203,14 +204,17 @@ var model = {
     _appstat: null,
     set appstat(v) {
         this._appstat = v
-        if (document.getElementById('preAppstat'))
-        document.getElementById('preAppstat').innerText = JSON.stringify(v,null, 2)
-        drawGauge("Allocated Mb", v.alloc, "divAlloc")
-        drawGauge("Total Mb", v.sys, "divSys")
-        drawGauge("req / day", v.requests_per_day, "divDay")
-        drawGauge("req / hour", v.requests_per_hour, "divHour")
-        drawGauge("req / min", v.requests_per_minute, "divMinute")
-        drawGauge("req / sec", v.requests_per_second, "divSecond")
+        if (! document.getElementById('gauges')) return
+
+        document.getElementById('divSys').innerText = v.sys +' Mb'
+        document.getElementById('divAlloc').innerText = 'allocated: '+v.alloc +' Mb'
+        document.getElementById('divTotalAlloc').innerText = 'total allocated: '+v.total_alloc +' Mb'
+
+
+        drawGauge("req / day", v.requests_per_day, 10000,  "divDay")
+        drawGauge("req / hour", v.requests_per_hour, 1000, "divHour")
+        drawGauge("req / min", v.requests_per_minute, 100, "divMinute")
+        drawGauge("req / sec", v.requests_per_second, 10, "divSecond")
     },
     get appstat() {
         return this._appstat
@@ -243,6 +247,8 @@ function highlightTab(tabid) {
 
 
 function showPage(pageid, dontpush){
+    stopGettingAppstat()
+
     //распарсить pageidExtended
     var a = pageid.split("/")
     var pageid0 = a[0]
@@ -275,6 +281,8 @@ function showPage(pageid, dontpush){
         }
     }
 
+    if (pageid0 == 'params')
+        startGettingAppstat()
 
     return false
 }
@@ -689,7 +697,18 @@ function getAppstat(event) {
     return false       
 }
 
+model.statInterval = null
+function startGettingAppstat(){
+    clearInterval(model.statInterval)
+    getAppstat()
+    model.statInterval = setInterval(getAppstat, 3000)
+    console.log('startGettingAppstat')
+}
 
+function stopGettingAppstat(){
+    clearInterval(model.statInterval)
+    console.log('stopGettingAppstat')
+}
 
 // U S E R S  ***********************************************************************************************************************
 
@@ -1264,23 +1283,34 @@ google.charts.load('current', {'packages':['gauge']})
 
 var gauges = {}
 
-function drawGauge(title, val, containerID) {
+function drawGauge(title, val, maxVal, containerID) {
     if (!google) return
+    var container = document.getElementById(containerID)
+    if (! container) return
 
     if (! gauges[title]) {
-        let container = document.getElementById(containerID)
-        if (! container) return
+
         gauges[title]={}
         gauges[title].data = google.visualization.arrayToDataTable([['Label', 'Value'], [title, 0]])
         gauges[title].options = {
             // width: 120,
-            height:  150, 
-            redFrom: 90, redTo: 100,
-            yellowFrom:80, yellowTo: 90,
-            greenFrom:0, greenTo:20,
-            minorTicks: 5
+            height:  120, 
+            animation:{
+                duration: 700
+            },
+            greenFrom:0, greenTo: maxVal*0.2,
+            yellowFrom: maxVal*0.8, yellowTo: maxVal*0.9,
+            redFrom: maxVal*0.9, redTo: maxVal,
+            minorTicks: 5,
+            // redColor: '#E10098',
+            // greenColor: 'cyan',
+            max: maxVal
         }
+    }
+    if (container.innerHTML == ""){
+        gauges[container]=container
         gauges[title].chart = new google.visualization.Gauge(container);
+        console.log("2--------------")
     }
 
     gauges[title].data.setValue(0, 1, val);
