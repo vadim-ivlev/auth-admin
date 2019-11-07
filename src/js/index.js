@@ -200,14 +200,14 @@ var model = {
     },
 
     //---------------------------
-    _memstat: null,
-    set memstat(v) {
-        this._memstat = v
-        if (document.getElementById('preMemstat'))
-        document.getElementById('preMemstat').innerText = JSON.stringify(v)
+    _appstat: null,
+    set appstat(v) {
+        this._appstat = v
+        if (document.getElementById('preAppstat'))
+        document.getElementById('preAppstat').innerText = JSON.stringify(v,null, 2)
     },
-    get memstat() {
-        return this._memstat
+    get appstat() {
+        return this._appstat
     },
 
 
@@ -657,13 +657,17 @@ function setParams(event) {
 }
 
 
-function getMemstat(event) {
+function getAppstat(event) {
     if (event) event.preventDefault()
-    model.memstat = null
+    // model.appstat = null
     var query =`
     query {
-        memstat {
+        get_stat {
             alloc
+            requests_per_day
+            requests_per_hour
+            requests_per_minute
+            requests_per_second
             sys
             total_alloc
           }
@@ -671,11 +675,11 @@ function getMemstat(event) {
     `
 
     function onSuccess(res){
-        var m = res.data.memstat
-        model.memstat = m
+        var m = res.data.get_stat
+        model.appstat = m
     } 
 
-    doGraphQLRequest(query, onSuccess, "memstatError")
+    doGraphQLRequest(query, onSuccess, "appstatError")
     return false       
 }
 
