@@ -436,6 +436,8 @@ input.role-input {
     text-align: center;
     /* border-bottom: 1px solid silver; */
     margin-bottom: 30px;
+    min-height: 185px;
+    padding-bottom:30px;
 }
 
 
@@ -443,4 +445,5 @@ input.role-input {
     display: inline-block;
     /* width: 150px; */
     /* opacity: 0.8; */
-}
+}   
+

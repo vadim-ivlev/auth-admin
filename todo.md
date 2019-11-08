@@ -1,1 +1,1 @@
-- settings GUI
+- settings: colors, language, css

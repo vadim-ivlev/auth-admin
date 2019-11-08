@@ -194,7 +194,6 @@ var model = {
     set params(v) {
         this._params = v
         renderPage('params','#paramsPage')
-        getAppstat()
     },
     get params() {
         return this._params
@@ -632,6 +631,7 @@ function getParams() {
     function onSuccess(res){
         var p = res.data.get_params
         model.params = p
+        getAppstat()
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -673,7 +673,6 @@ function setParams(event) {
 
 function getAppstat(event) {
     if (event) event.preventDefault()
-    // model.appstat = null
     var query =`
     query {
         get_stat {
