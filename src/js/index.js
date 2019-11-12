@@ -631,7 +631,7 @@ function getParams() {
     function onSuccess(res){
         var p = res.data.get_params
         model.params = p
-        getAppstat()
+        getAppstatRest()
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -671,36 +671,54 @@ function setParams(event) {
 }
 
 
-function getAppstat(event) {
+// function getAppstat(event) {
+//     if (event) event.preventDefault()
+//     var query =`
+//     query {
+//         get_stat {
+//             alloc
+//             requests_per_day
+//             requests_per_hour
+//             requests_per_minute
+//             requests_per_second
+//             sys
+//             total_alloc
+//           }
+//         }
+//     `
+
+//     function onSuccess(res){
+//         var m = res.data.get_stat
+//         model.appstat = m
+//     } 
+
+//     doGraphQLRequest(query, onSuccess, "appstatError")
+//     return false       
+// }
+
+function getAppstatRest(event) {
     if (event) event.preventDefault()
-    var query =`
-    query {
-        get_stat {
-            alloc
-            requests_per_day
-            requests_per_hour
-            requests_per_minute
-            requests_per_second
-            sys
-            total_alloc
-          }
+
+    fetch(model.origin + "/stat").then(x => x.json())
+    .then( onSuccess )
+    .catch( err => {
+        console.log("fetch error:",err)
+        return
         }
-    `
+    )  
 
     function onSuccess(res){
-        var m = res.data.get_stat
+        var m = res
         model.appstat = m
     } 
-
-    doGraphQLRequest(query, onSuccess, "appstatError")
     return false       
 }
 
 model.statInterval = null
 function startGettingAppstat(){
     clearInterval(model.statInterval)
-    getAppstat()
-    model.statInterval = setInterval(getAppstat, 3000)
+    getAppstatRest()
+    model.statInterval = setInterval(getAppstatRest, 3000)
     console.log('startGettingAppstat')
 }
 
