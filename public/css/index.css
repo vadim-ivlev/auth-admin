@@ -444,10 +444,11 @@ input.role-input {
 .gauge {
     display: inline-block;
     background-color:#555;
-    box-shadow: 0px 5px 20px silver;
+    box-shadow: 5px 5px 20px silver;
     border-radius: 100px;
     /* width: 150px; */
     margin-left: 7px;
     margin-right:7px;
+    background: radial-gradient( circle farthest-corner at 20px 20px, white, black);
 }   
 
