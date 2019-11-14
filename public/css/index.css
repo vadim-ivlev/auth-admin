@@ -316,7 +316,7 @@ input.role-input {
 
 .settings { 
     /* font-size: 18px; */
-    font-size: 22px;
+    font-size: 1.5rem;
     padding-left:5px;
     padding-right: 15px;
     top: 2px;
@@ -443,7 +443,11 @@ input.role-input {
 
 .gauge {
     display: inline-block;
+    background-color:#555;
+    box-shadow: 0px 5px 20px silver;
+    border-radius: 100px;
     /* width: 150px; */
-    /* opacity: 0.8; */
+    margin-left: 7px;
+    margin-right:7px;
 }   
 

@@ -3,7 +3,7 @@
 var model = {
     //---------------------------
     // if debug == true logs go to console.
-    debug: true,
+    debug: false,
     oauth2email: "",
     oauth2name: "",
     oauth2id: "",
@@ -32,12 +32,6 @@ var model = {
 
     //---------------------------
     urlParams: new URLSearchParams(window.location.search),
-    // set urlParams(v) {
-    // },
-    // get urlParams() {
-    //     return this._urlParams
-    // },
-
     //---------------------------
     _loginedUser: null,
     set loginedUser(v) {
@@ -103,7 +97,7 @@ var model = {
 
             // showPage('apps')
         }
-        renderPage('apps','.app-search-results')
+        renderTemplateFile('mustache/apps.html', model, '.app-search-results')
         
     },
     get authRoles() {
@@ -118,7 +112,7 @@ var model = {
     _user: null,
     set user(v) {
         this._user = v
-        renderPage('user','#userPage')
+        renderTemplateFile('mustache/user.html', model, '#userPage')
     },
     get user() {
         return this._user
@@ -128,7 +122,7 @@ var model = {
     _app: null,
     set app(v) {
         this._app = v
-        renderPage('app','#appPage')
+        renderTemplateFile('mustache/app.html', model, '#appPage')
     },
     get app() {
         return this._app
@@ -138,7 +132,7 @@ var model = {
     _users: null,
     set users(v) {
         this._users = v
-        renderPage('users','.user-search-results')
+        renderTemplateFile('mustache/users.html', model, '.user-search-results')
     },
     get users() {
         return this._users
@@ -148,7 +142,7 @@ var model = {
     _apps: null,
     set apps(v) {
         this._apps = v
-        renderPage('apps','.app-search-results')
+        renderTemplateFile('mustache/apps.html', model, '.app-search-results')
     },
     get apps() {
         return this._apps
@@ -183,7 +177,7 @@ var model = {
     _app_user_roles: null,
     set app_user_roles(v) {
         this._app_user_roles = v
-        renderPage('roles','.app-user-roles-results')
+        renderTemplateFile('mustache/roles.html', model, '.app-user-roles-results')
     },
     get app_user_roles() {
         return this._app_user_roles
@@ -193,7 +187,7 @@ var model = {
     _params: null,
     set params(v) {
         this._params = v
-        renderPage('params','#paramsPage')
+        renderTemplateFile('mustache/params.html', model, '#paramsPage')
     },
     get params() {
         return this._params
@@ -210,10 +204,10 @@ var model = {
         document.getElementById('divTotalAlloc').innerText = 'total allocated: '+v.total_alloc +' Mb'
 
 
-        drawGauge("req / day", v.requests_per_day, 10000,  "divDay")
-        drawGauge("req / hour", v.requests_per_hour, 1000, "divHour")
-        drawGauge("req / min", v.requests_per_minute, 100, "divMinute")
-        drawGauge("req / sec", v.requests_per_second, 10, "divSecond")
+        drawGauge("req / day", v.requests_per_day, 0,  "divDay")        // 10000
+        drawGauge("req / hour", v.requests_per_hour, 0, "divHour")       // 1000
+        drawGauge("req / min", v.requests_per_minute, 0, "divMinute")     // 100
+        drawGauge("req / sec", v.requests_per_second, 0, "divSecond")      // 10
     },
     get appstat() {
         return this._appstat
@@ -288,53 +282,26 @@ function showPage(pageid, dontpush){
 
 
 function renderTemplateFile(templateFile, data, targetSelector) {
+    var cachedTemlpate = model.templatesCache[templateFile]
+    
+    if (cachedTemlpate) {
+        renderTemplate(cachedTemlpate) 
+        // console.info("from cache:",templateFile)
+        return
+    }
+    
+    fetch(templateFile).then(x => x.text()).then( t => {
+        model.templatesCache[templateFile]=t 
+        renderTemplate(t)
+    })
 
     function renderTemplate(template) {
         var rendered = Mustache.render(template, data)
         document.querySelector(targetSelector).innerHTML = rendered
     }    
 
-    var cachedTemlpate = model.templatesCache[templateFile]
-    
-    if (cachedTemlpate) {
-        renderTemplate(cachedTemlpate) 
-        console.info("from cache:",templateFile)
-        return
-    }
-    
-    // $.get(templateFile, onSuccess);
-    fetch(templateFile).then(x => x.text()).then( t => {
-        model.templatesCache[templateFile]=t 
-        renderTemplate(t)
-    })
 }
 
-
-function renderPage(pageid, elemSelector) {
-    renderTemplateFile('mustache/'+pageid+'.html', model, elemSelector)
-}
-
-
-function alertOnError(e, msg){
-    alert(msg, e)
-}
-
-
-// function getCookie(cname) {
-//     var name = cname + "=";
-//     var decodedCookie = decodeURIComponent(document.cookie);
-//     var ca = decodedCookie.split(';');
-//     for(var i = 0; i <ca.length; i++) {
-//       var c = ca[i];
-//       while (c.charAt(0) == ' ') {
-//         c = c.substring(1);
-//       }
-//       if (c.indexOf(name) == 0) {
-//         return c.substring(name.length, c.length);
-//       }
-//     }
-//     return "";
-// }
 
 
 var delayTimeout
@@ -407,19 +374,6 @@ function sortUsersBy(prop) {
 // R E Q U E S T S  *******************************************************
 
 function doGraphQLRequest(query, responseHandler, errorElementID) {
-    // $.ajax({ url: "/graphql", type: "POST", data: { query: query }, error: alertOnError, 
-    //     success: (res) => {
-    //         model.debug && console.log(res)
-    //         if (res.errors){
-    //             model.debug && console.log(res.errors[0].message)
-    //             if (errorElementID) {
-    //                 document.getElementById(errorElementID).innerText = res.errors[0].message
-    //             }
-    //             return
-    //         }
-    //         responseHandler(res)
-    //     } 
-    // })
     fetch(model.origin+'/graphql', { 
         method: 'POST', 
         credentials: 'include', 
@@ -698,6 +652,9 @@ function setParams(event) {
 
 function getAppstatRest(event) {
     if (event) event.preventDefault()
+    getAppstatRest.counter = getAppstatRest.counter === undefined ? 0: getAppstatRest.counter+1
+    console.log("getAppstatRest.counter = ",getAppstatRest.counter)
+
 
     fetch(model.origin + "/stat").then(x => x.json())
     .then( onSuccess )
@@ -1295,45 +1252,54 @@ function getNewCaptcha() {
 
 
 // G O O G L E   C H A R T S  ***************************************************************
-google.charts.load('current', {'packages':['gauge']})
-/* google.charts.setOnLoadCallback(drawChart); */
 
 var gauges = {}
 
-function drawGauge(title, val, maxVal, containerID) {
+function drawGauge(title, val, maxV, containerID) {
+
     if (!google) return
     var container = document.getElementById(containerID)
     if (! container) return
 
     if (! gauges[title]) {
-
         gauges[title]={}
         gauges[title].data = google.visualization.arrayToDataTable([['Label', 'Value'], [title, 0]])
-        gauges[title].options = {
-            // width: 120,
-            height:  120, 
-            animation:{
-                duration: 700
-            },
-            greenFrom:0, greenTo: maxVal*0.2,
-            yellowFrom: maxVal*0.8, yellowTo: maxVal*0.9,
-            redFrom: maxVal*0.9, redTo: maxVal,
-            minorTicks: 5,
-            // redColor: '#E10098',
-            // greenColor: 'cyan',
-            max: maxVal
-        }
     }
     if (container.innerHTML == ""){
         gauges[container]=container
-        gauges[title].chart = new google.visualization.Gauge(container);
-        console.log("2--------------")
+        gauges[title].chart = new google.visualization.Gauge(container)
+        console.log("Redraw gauge container:", containerID)
     }
 
-    gauges[title].data.setValue(0, 1, val);
-    gauges[title].chart.draw(gauges[title].data, gauges[title].options);
+    // set values
+    gauges[title].data.setValue(0, 1, val)
+
+    let maxVal = maxV ? maxV: getUpperLimit(val)
+    var options = {
+        // width: 120,
+        height:  120, 
+        animation:{
+            duration: 700
+        },
+        greenFrom:0, greenTo: maxVal*0.2,
+        yellowFrom: maxVal*0.8, yellowTo: maxVal*0.9,
+        redFrom: maxVal*0.9, redTo: maxVal,
+        minorTicks: 5,
+        // redColor: '#E10098',
+        // greenColor: 'cyan',
+        max: maxVal
+    }
+
+    // draw the chart
+    gauges[title].chart.draw(gauges[title].data, options)
 }
 
+
+function getUpperLimit(n) {
+    var lim = 10
+    while (n > lim) lim *= 10
+    return lim
+}
 
 // **********************************************************************************************
 // **********************************************************************************************
@@ -1432,6 +1398,10 @@ function setAppParams(){
 
 
 function init() {
+    renderTemplateFile('mustache/params.html', model, '#paramsPage')
+    google.charts.load('current', {'packages':['gauge']})
+    google.charts.setOnLoadCallback(getAppstatRest)
+    
     setAppParams()
     getLoginedUser()
     refreshApp()      
