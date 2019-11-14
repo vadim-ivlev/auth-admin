@@ -9,15 +9,15 @@ var model = {
     oauth2id: "",
 
     //---------------------------
-    // url where we access GraphQL endpoint = origin + '/graphql'
+    // url of GraphQL endpoint = appurl + '/graphql'
     priv_origin: null, 
-    set origin(v){
+    set appurl(v){
         this.priv_origin = v
         document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v
         buildSocialIcons(v+"/oauthproviders")
         document.getElementById('graphqlTestLink').href = 'https://graphql-test.now.sh/?end_point='+v+'/schema&tab_name=auth-proxy'
     },
-    get origin(){
+    get appurl(){
         return this.priv_origin
     },
     //---------------------------
@@ -374,7 +374,7 @@ function sortUsersBy(prop) {
 // R E Q U E S T S  *******************************************************
 
 function doGraphQLRequest(query, responseHandler, errorElementID) {
-    fetch(model.origin+'/graphql', { 
+    fetch(model.appurl+'/graphql', { 
         method: 'POST', 
         credentials: 'include', 
         body: JSON.stringify({ query: query, variables: {} }) 
@@ -656,7 +656,7 @@ function getAppstatRest(event) {
     console.log("getAppstatRest.counter = ",getAppstatRest.counter)
 
 
-    fetch(model.origin + "/stat").then(x => x.json())
+    fetch(model.appurl + "/stat").then(x => x.json())
     .then( onSuccess )
     .catch( err => {
         console.log("fetch error:",err)
@@ -1178,7 +1178,7 @@ function showPassword() {
 function removeQueryStringFromBrowserURL() {
     let url = document.location.href
     let url1 = url.replace(/\?.*/, '')
-    let url2 = url1+"?url="+model.origin
+    let url2 = url1+"?url="+model.appurl
     history.replaceState(null,null,url2)   
 }
 
@@ -1217,14 +1217,14 @@ function renderOauthProvidersJSON(jsn) {
     for (let [k,v] of Object.entries(jsn) ) {
         icons.push(`
         <div class="social-element">
-        <a class="button button-clear" title="login via ${k}" href="${model.origin + v[0]}">
+        <a class="button button-clear" title="login via ${k}" href="${model.appurl + v[0]}">
         ${k}
         <br>
         <img class="social-icon" src="images/${k}.svg">
         </a>
         <!--
         <br>
-        <a class="social-logout" title="logout from ${k}" href="${model.origin + v[1]}">logout</a>
+        <a class="social-logout" title="logout from ${k}" href="${model.appurl + v[1]}">logout</a>
         -->
         </div>
         
@@ -1245,7 +1245,7 @@ function renderOauthProvidersJSON(jsn) {
 
 
 function getNewCaptcha() {
-    let uri = model.origin+"/captcha?"+ new Date().getTime()
+    let uri = model.appurl+"/captcha?"+ new Date().getTime()
     document.getElementById("captchaImg").src = uri
     return false
 }
@@ -1389,7 +1389,7 @@ function setAppParams(){
     if (alrt) alert(alrt)
     document.getElementById('socialLoginError').innerHTML = oauth2error
     if (css) document.getElementById('theme').href = css
-    model.origin = url ? url : 'https://auth-proxy.rg.ru'
+    model.appurl = url ? url : 'https://auth-proxy.rg.ru'
     removeQueryStringFromBrowserURL()
     //?
     model.captchaRequired = false
