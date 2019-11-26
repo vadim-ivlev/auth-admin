@@ -20,3 +20,13 @@ You can add optional parameters the URL to change auth-proxy service and other t
 - `lang` - language of user interface. Default en.
 - `theme`- relative or absolute URL of color theme. 
 - `css` - relative or absolute URL of CSS style sheet. 
+
+# For developers
+
+Launch
+
+    npm run dev
+
+deploy
+
+    sh/deploy.sh

@@ -9,7 +9,7 @@
     <h2>Новый пользователь <b id="newUserName">{{oauth2id}}</b></h2>
     {{/user}}
     {{#user}}
-    <h2>Пользователь <b>{{user.username}}</b></h2>
+    <h2>Пользователь [{{user.id}}] <b>{{user.username}}</b></h2>
     {{/user}}
 
     <form id="formUser" onsubmit="event.preventDefault();">
@@ -79,7 +79,7 @@
 <div class="flexed">
 
     <div class="max-max-auto">
-        <h2>Приложения пользователя</h2> 
+        <h2>Приложения пользователя [{{user.id}}]</h2> 
         <h2><b>{{user.username}}</b></h2>
         <span></span>
         <input placeholder="Фильтр" oninput="filterRows('#UserApps .filtered-row', this.value )">

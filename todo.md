@@ -1,1 +1,2 @@
 - settings: colors, language, css
+- readme: How to launch
