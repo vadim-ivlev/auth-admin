@@ -705,6 +705,7 @@ function formListUserSubmit(event) {
               fullname
               username
               disabled
+              id
             }
           }
         }        
@@ -778,6 +779,7 @@ function getUser(username) {
             fullname
             username
             disabled
+            id
           }
         
         list_app_user_role(
@@ -1053,6 +1055,7 @@ function getAllUsers(event) {
               email
               description
               disabled
+              id
             }
           }
         }    `
