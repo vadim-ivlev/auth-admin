@@ -361,10 +361,15 @@ function searchUsersInModel() {
 }
 
 
-function sortUsersBy(prop) {
+function sortUsersBy(prop, asStings = true) {
     if (!model._allUsers) return false
-    model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
-    model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
+    if (asStings){
+        model._allUsers.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1)
+        model._users.sort( (a,b) => (a[prop]+a.username)>(b[prop]+b.username)? 1: -1 )
+    } else {
+        model._allUsers.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+        model._users.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+    }
     model.users = model._users
     return false
 }
