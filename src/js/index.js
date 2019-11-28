@@ -105,7 +105,7 @@ var model = {
     },
     get isAdmin() {
         if (!model.authRoles) return false
-        return model.authRoles.some(e => e.rolename == "authadmin")
+        return model.authRoles.some(e => (e.rolename == "authadmin" || e.rolename == "auditor"))
     },
     
     //---------------------------
@@ -535,6 +535,7 @@ function getLoginedUser() {
             fullname
             username
             disabled
+            id
         }
     }
     `
