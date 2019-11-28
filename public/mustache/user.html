@@ -9,16 +9,17 @@
     <h2>Новый пользователь <b id="newUserName">{{oauth2id}}</b></h2>
     {{/user}}
     {{#user}}
-    <h2>Пользователь # {{user.id}} : <b>{{user.username}}</b></h2>
+    <h2>Пользователь # {{user.id}} : <b id="newUserName">{{user.username}}</b></h2>
     {{/user}}
 
     <form id="formUser" onsubmit="event.preventDefault();">
         <div>
+            <input name="old_username" type="hidden" value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
             <label >username *</label>
             <input name="username" type="text" placeholder="уникальный идентификатор пользователя"
-            {{#user}} disabled class="grayed" {{/user}}
             oninput="document.getElementById('newUserName').innerText = event.target.value; "
             value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
+            <!-- {{#user}} disabled class="grayed" {{/user}} -->
             <!-- value="{{user.username || oauth2id}}"> -->
 
         </div>
@@ -59,13 +60,13 @@
         <div style="text-align: right;">
             <label></label>
             {{^user}}
-            <button type="button" class="button button-outline" style="max-width: 1000px;" onclick="formUserSubmit(event, 'create_user')" >создать пользователя</button>
+            <button type="button" class="button button-outline" style="max-width: 1000px;" onclick="createUser(event)" >создать пользователя</button>
             {{/user}}
             {{#user}}
             {{#isAdmin}}
             <button type="button" class="button button-outline" onclick="deleteUser('{{user.username}}'); showPage('users');">удалить</button>
             {{/isAdmin}}
-            <button type="button" class="button button-outline" onclick="formUserSubmit(event, 'update_user')">сохранить изменения</button>
+            <button type="button" class="button button-outline" onclick="updateUser(event)">сохранить изменения</button>
             {{/user}}
             <div id="userError" class="error"></div>
         </div>

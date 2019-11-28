@@ -727,8 +727,56 @@ function formListUserSubmit(event) {
 
 
 
-function formUserSubmit(event, userOperationName = 'create_user') {
+// function formUserSubmit(event, userOperationName = 'create_user') {
+//     if (event) event.preventDefault()
+//     let old_username =  document.querySelector("#formUser input[name='old_username']").value
+//     let username =      document.querySelector("#formUser input[name='username']").value
+//     let password =      document.querySelector("#formUser input[name='password']").value
+//     let email    =      document.querySelector("#formUser input[name='email']").value
+//     let fullname =      document.querySelector("#formUser input[name='fullname']").value
+//     let description =   document.querySelector("#formUser *[name='description']").value
+//     let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    
+//     var query =`
+//     mutation {
+//         ${userOperationName}(
+//         old_username: "${old_username}",
+//         username: "${username}",
+//         password: "${password}",
+//         email: "${email}",
+//         fullname: "${fullname}",
+//         description: "${description}",
+//         disabled: ${disabled}
+//         ) {
+//             description
+//             email
+//             fullname
+//             username
+//             disabled
+//           }
+
+//         }
+//     `
+
+//     function onSuccess(res){
+//         alert(userOperationName+" success")
+//         refreshData()
+//         model.user = res.data[userOperationName]
+//         if (userOperationName == 'create_user' && !model.logined) {
+//             alert(`"${username}" is created.` )
+//             showPage('login',true)
+//         }
+//         getUser(username)
+//     }
+
+//     doGraphQLRequest(query, onSuccess, "userError")
+//     return false       
+// }
+
+
+function updateUser(event) {
     if (event) event.preventDefault()
+    let old_username =  document.querySelector("#formUser input[name='old_username']").value
     let username =      document.querySelector("#formUser input[name='username']").value
     let password =      document.querySelector("#formUser input[name='password']").value
     let email    =      document.querySelector("#formUser input[name='email']").value
@@ -738,7 +786,8 @@ function formUserSubmit(event, userOperationName = 'create_user') {
     
     var query =`
     mutation {
-        ${userOperationName}(
+        update_user(
+        old_username: "${old_username}",
         username: "${username}",
         password: "${password}",
         email: "${email}",
@@ -751,16 +800,60 @@ function formUserSubmit(event, userOperationName = 'create_user') {
             fullname
             username
             disabled
+            id
           }
 
         }
     `
 
     function onSuccess(res){
-        alert(userOperationName+" success")
+        alert("update_user success")
         refreshData()
-        model.user = res.data[userOperationName]
-        if (userOperationName == 'create_user' && !model.logined) {
+        model.user = res.data["update_user"]
+        getUser(username)
+    }
+
+    doGraphQLRequest(query, onSuccess, "userError")
+    return false       
+}
+
+
+function createUser(event) {
+    if (event) event.preventDefault()
+    let username =      document.querySelector("#formUser input[name='username']").value
+    let password =      document.querySelector("#formUser input[name='password']").value
+    let email    =      document.querySelector("#formUser input[name='email']").value
+    let fullname =      document.querySelector("#formUser input[name='fullname']").value
+    let description =   document.querySelector("#formUser *[name='description']").value
+    let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    
+    var query =`
+    mutation {
+        create_user(
+        old_username: "${old_username}",
+        username: "${username}",
+        password: "${password}",
+        email: "${email}",
+        fullname: "${fullname}",
+        description: "${description}",
+        disabled: ${disabled}
+        ) {
+            description
+            email
+            fullname
+            username
+            disabled
+            id
+          }
+
+        }
+    `
+
+    function onSuccess(res){
+        alert("create_user success")
+        refreshData()
+        model.user = res.data["create_user"]
+        if (!model.logined) {
             alert(`"${username}" is created.` )
             showPage('login',true)
         }
@@ -770,7 +863,6 @@ function formUserSubmit(event, userOperationName = 'create_user') {
     doGraphQLRequest(query, onSuccess, "userError")
     return false       
 }
-
 
 
 function getUser(username) {

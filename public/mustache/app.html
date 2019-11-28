@@ -3,20 +3,20 @@
     <h2>Новое приложение <b id="newAppName"></b></h2>
     {{/app}}
     {{#app}}
-    <h2>Приложение <b>{{app.appname}}</b></h2>
+    <h2>Приложение <b id="newAppName">{{app.appname}}</b></h2>
     {{/app}}
 
     <form id="formApp" onsubmit="event.preventDefault();">
         <div>
             <label >appname *</label>
             <input name="appname" type="text" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
-            {{#app}} disabled class="grayed" {{/app}}
             oninput="
             document.getElementById('newAppName').innerText = event.target.value;
             document.getElementById('newAppUrl').innerText = (model.appurl+'/apps/'+event.target.value);
             document.getElementById('newAppUrl').href = ('href',model.appurl+'/apps/'+event.target.value);
             "
             value="{{app.appname}}">
+            <!-- {{#app}} disabled class="grayed" {{/app}} -->
         </div>
         <div>
             <label >description</label>
