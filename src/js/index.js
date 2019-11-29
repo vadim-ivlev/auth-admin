@@ -784,7 +784,6 @@ function createUser(event) {
     var query =`
     mutation {
         create_user(
-        old_username: "${old_username}",
         username: "${username}",
         password: "${password}",
         email: "${email}",
