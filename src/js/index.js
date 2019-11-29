@@ -727,52 +727,6 @@ function formListUserSubmit(event) {
 
 
 
-// function formUserSubmit(event, userOperationName = 'create_user') {
-//     if (event) event.preventDefault()
-//     let old_username =  document.querySelector("#formUser input[name='old_username']").value
-//     let username =      document.querySelector("#formUser input[name='username']").value
-//     let password =      document.querySelector("#formUser input[name='password']").value
-//     let email    =      document.querySelector("#formUser input[name='email']").value
-//     let fullname =      document.querySelector("#formUser input[name='fullname']").value
-//     let description =   document.querySelector("#formUser *[name='description']").value
-//     let disabled =      document.querySelector("#formUser input[name='disabled']").value
-    
-//     var query =`
-//     mutation {
-//         ${userOperationName}(
-//         old_username: "${old_username}",
-//         username: "${username}",
-//         password: "${password}",
-//         email: "${email}",
-//         fullname: "${fullname}",
-//         description: "${description}",
-//         disabled: ${disabled}
-//         ) {
-//             description
-//             email
-//             fullname
-//             username
-//             disabled
-//           }
-
-//         }
-//     `
-
-//     function onSuccess(res){
-//         alert(userOperationName+" success")
-//         refreshData()
-//         model.user = res.data[userOperationName]
-//         if (userOperationName == 'create_user' && !model.logined) {
-//             alert(`"${username}" is created.` )
-//             showPage('login',true)
-//         }
-//         getUser(username)
-//     }
-
-//     doGraphQLRequest(query, onSuccess, "userError")
-//     return false       
-// }
-
 
 function updateUser(event) {
     if (event) event.preventDefault()
@@ -983,7 +937,8 @@ function formListAppSubmit(event) {
 
 
 
-function formAppSubmit(event, appOperationName = 'create_app') {
+
+function createApp(event) {
     if (event) event.preventDefault()
     let appname =     document.querySelector("#formApp input[name='appname']"    ).value
     let url =         document.querySelector("#formApp input[name='url']"        ).value
@@ -993,7 +948,7 @@ function formAppSubmit(event, appOperationName = 'create_app') {
     
     var query =`
     mutation {
-        ${appOperationName}(
+        create_app(
         appname: "${appname}",
         url: "${url}",
         description: "${description}",
@@ -1010,16 +965,57 @@ function formAppSubmit(event, appOperationName = 'create_app') {
         }
     `
     function onSuccess(res){
-        alert(appOperationName+" success")
+        alert("create_app success")
         refreshData()
-        model.app = res.data[appOperationName]
-
+        model.app = res.data["create_app"]
         getApp(appname)
     } 
 
     doGraphQLRequest(query, onSuccess, "appError")
     return false       
 }
+
+
+function updateApp(event, appOperationName = 'create_app') {
+    if (event) event.preventDefault()
+    let old_appname = document.querySelector("#formApp input[name='old_appname']"    ).value
+    let appname =     document.querySelector("#formApp input[name='appname']"    ).value
+    let url =         document.querySelector("#formApp input[name='url']"        ).value
+    let description = document.querySelector("#formApp input[name='description']").value
+    let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
+    let _public =     document.querySelector("#formApp input[name='public']"     ).value
+    
+    var query =`
+    mutation {
+        update_app(
+        old_appname: "${old_appname}",
+        appname: "${appname}",
+        url: "${url}",
+        description: "${description}",
+        rebase: "${rebase}",
+        public: "${_public}"
+        ) {
+            description
+            appname
+            url
+            rebase
+            public
+          }
+
+        }
+    `
+    function onSuccess(res){
+        alert("update_app success")
+        refreshData()
+        model.app = res.data["update_app"]
+        getApp(appname)
+    } 
+
+    doGraphQLRequest(query, onSuccess, "appError")
+    return false       
+}
+
+
 
 
 
