@@ -922,6 +922,7 @@ function formListAppSubmit(event) {
               url
               rebase
               public
+              sign
             }
           }
         }    `
@@ -944,6 +945,7 @@ function createApp(event) {
     let description = document.querySelector("#formApp input[name='description']").value
     let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
     let _public =     document.querySelector("#formApp input[name='public']"     ).value
+    let sign =        document.querySelector("#formApp input[name='sign']"       ).value
     
     var query =`
     mutation {
@@ -952,13 +954,15 @@ function createApp(event) {
         url: "${url}",
         description: "${description}",
         rebase: "${rebase}",
-        public: "${_public}"
+        public: "${_public}",
+        sign: "${sign}"
         ) {
             description
             appname
             url
             rebase
             public
+            sign
           }
 
         }
@@ -983,6 +987,7 @@ function updateApp(event, appOperationName = 'create_app') {
     let description = document.querySelector("#formApp input[name='description']").value
     let rebase =      document.querySelector("#formApp input[name='rebase']"     ).value
     let _public =     document.querySelector("#formApp input[name='public']"     ).value
+    let sign =        document.querySelector("#formApp input[name='sign']"       ).value
     
     var query =`
     mutation {
@@ -992,13 +997,15 @@ function updateApp(event, appOperationName = 'create_app') {
         url: "${url}",
         description: "${description}",
         rebase: "${rebase}",
-        public: "${_public}"
+        public: "${_public}",
+        sign: "${sign}"
         ) {
             description
             appname
             url
             rebase
             public
+            sign
           }
 
         }
@@ -1031,6 +1038,7 @@ function getApp(appname) {
             url
             rebase
             public
+            sign
           }
         
         list_app_user_role(
@@ -1120,6 +1128,7 @@ function getAllApps(event) {
               url
               rebase
               public 
+              sign
             }
           }
         }    `

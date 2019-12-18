@@ -8,6 +8,7 @@
                         <!-- <th><a href="" class="sortable" title="sort by url" onclick="return sortAppsBy('url')">url</a></th> -->
                         <th><a href="" class="sortable" title="sort by public" onclick="return sortAppsBy('public')">public</a></th>
                         <!-- <th><a href="" class="sortable" title="sort by rebase" onclick="return sortAppsBy('rebase')">rebase</a></th> -->
+                        <th><a href="" class="sortable" title="sort by sign" onclick="return sortAppsBy('sign')">sign</a></th>
                         <th></th>
                         {{/isAdmin}}
                     <tr>
@@ -33,9 +34,10 @@
                             <a href="{{appurl}}/apps/{{appname}}/" target="_blank">{{url}}</a>
                         </td> -->
                         <td>
-                            <!-- <a href="{{appurl}}/apps/{{appname}}/" title="public" target="_blank"> -->
                                 {{public}}
-                            <!-- </a> -->
+                        </td>
+                        <td>
+                                {{sign}}
                         </td>
                         <!-- <td>
                             <a href="{{appurl}}/apps/{{appname}}/" title="rebased" target="_blank">{{rebase}}</a>

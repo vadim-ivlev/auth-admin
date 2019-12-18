@@ -27,6 +27,12 @@ Launch
 
     npm run dev
 
+then open <http://localhost:5000/> 
+or <http://localhost:5000/?url=http://localhost:4400#apps> if you run  auth-proxy locally:
+https://gitlab.com/vadim-ivlev/auth-proxy
+
+
+
 deploy
 
     sh/deploy.sh
