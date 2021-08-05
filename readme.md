@@ -1,5 +1,5 @@
 # auth-admin
-Internet URL: <https://auth-admin.now.sh>
+Internet URL: <https://auth-admin.vercel.app>
 
 ## User interface for `auth-proxy` service
 
@@ -8,13 +8,13 @@ Internet URL: <https://auth-admin.now.sh>
 
 ## URL parameters
 
-If no parameters are present in the browser URL <https://auth-admin.now.sh>
+If no parameters are present in the browser URL <https://auth-admin.vercel.app>
 the app uses a default auth-proxy service <https://auth-proxy.rg.ru>.
 
 You can add optional parameters the URL to change auth-proxy service and other things:
 
 
-    https://auth-admin.now.sh?url=auth_roxy_url&lang=en&theme=theme_url&css=css_url
+    https://auth-admin.vercel.app?url=auth_roxy_url&lang=en&theme=theme_url&css=css_url
 
 - `auth_roxy_url` - relative or absolute URL of auth-proxy service. Default https://auth-proxy.rg.ru.
 - `lang` - language of user interface. Default en.

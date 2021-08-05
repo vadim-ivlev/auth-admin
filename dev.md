@@ -26,4 +26,4 @@ Result: <http://localhost:5000>
     sh/publish.sh
 
 
-Result: <https://auth-admin.now.sh>
+Result: <https://auth-admin.vercel.app>

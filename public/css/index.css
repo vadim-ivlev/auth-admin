@@ -143,6 +143,7 @@ ol ol, ol ul, ul ol, ul ul {
     position:relative;
     height:26px;
     line-height:24px;
+    text-transform: none;
 }
 
 .role::after {
@@ -179,6 +180,7 @@ input.role-input {
     border-color:transparent;
     position: relative;
     top: -1px;
+    text-transform: none;
 }
 
 .role-nocross {
