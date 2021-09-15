@@ -15,7 +15,7 @@
     <form id="formUser" onsubmit="event.preventDefault();">
         <div>
             <input name="old_username" type="hidden" value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
-            <label >username *</label>
+            <label>username *</label>
             <input name="username" type="text" placeholder="уникальный идентификатор пользователя"
             oninput="document.getElementById('newUserName').innerText = event.target.value; "
             value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
@@ -24,7 +24,7 @@
 
         </div>
         <div>
-            <label >password (больше 5 символов) {{^user}}*{{/user}} </label>
+            <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
                 <input name="password" type="password" placeholder="новый пароль" value="{{user.password}}">
                 <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button>
@@ -36,27 +36,51 @@
             {{/user}}
         </div>
         <div>
-            <label >email</label>
+            <label>email</label>
             <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
             <input name="email" placeholder="емайл" value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
         </div>
 
         <div>
-            <label >fullname</label>
+            <label>fullname</label>
             <!-- <input name="fullname"  placeholder="фамилия имя" value="{{user.fullname}}"> -->
             <input name="fullname"  placeholder="фамилия имя" value="{{#user}}{{user.fullname}}{{/user}}{{^user}}{{oauth2name}}{{/user}}">
         </div>
         <div>
-            <label >description </label>
+            <label>description </label>
             <textarea name="description" placeholder="дополнительная информация" >{{user.description}}</textarea>
         </div>
         
         <div class="{{^isAdmin}}hidden{{/isAdmin}}">
-            <label >disabled</label>
+            <label>disabled</label>
             <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{#user}}{{user.disabled}}{{/user}}{{^user}}0{{/user}}">
             <span>Если не равно 0, пользователь отключен</span>
         </div>
-        
+        <br>
+        <div>
+            <label>pinrequired</label>
+            <input name="pinrequired" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
+            <span> требовать PIN от google authenticator</span>
+        </div>
+        <div>
+            <label>pinhash</label>
+            <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input name="pinhash" type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
+                <button type="button"  class="button button-outline"  onclick="generatePinHash()">сгенерировать PIN хэш</button>
+            </span>
+            {{#user}}
+            <div>
+                Если поле пусто - пользователь установил google authenticator.<br><br>
+            </div>
+            {{/user}}
+
+            <div id="pinUrlContainer" {{^user.pinhash}}style="display:none;"{{/user.pinhash}}>
+            URL установки аутентификатора: 
+            <a id="newPinUrl" href="{{appurl}}/set_authenticator/{{user.pinhash}}" target="_blank">{{appurl}}/set_authenticator/{{user.pinhash}}</a>
+            </div>
+
+        </div>
+        <br>
         <div style="text-align: right;">
             <label></label>
             {{^user}}

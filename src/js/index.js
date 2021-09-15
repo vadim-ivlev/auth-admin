@@ -499,7 +499,7 @@ function isCaptchaRequired(event) {
 
 
 
-function generateNewPassword(event) {
+function resetPassword(event) {
     if (event) event.preventDefault()
 
     let username = document.getElementById("loginUsername").value
@@ -536,6 +536,8 @@ function getLoginedUser() {
             username
             disabled
             id
+            pinhash
+            pinrequired        
         }
     }
     `
@@ -712,7 +714,9 @@ function formListUserSubmit(event) {
               username
               disabled
               id
-            }
+              pinhash
+              pinrequired        
+              }
           }
         }        
     `
@@ -737,6 +741,8 @@ function updateUser(event) {
     let fullname =      document.querySelector("#formUser input[name='fullname']").value
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
+    let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
     
     var query =`
     mutation {
@@ -747,7 +753,9 @@ function updateUser(event) {
         email: "${email}",
         fullname: "${fullname}",
         description: "${description}",
-        disabled: ${disabled}
+        disabled: ${disabled},
+        pinhash: "${pinhash}",
+        pinrequired: ${pinrequired}
         ) {
             description
             email
@@ -755,6 +763,8 @@ function updateUser(event) {
             username
             disabled
             id
+            pinhash
+            pinrequired        
           }
 
         }
@@ -780,6 +790,8 @@ function createUser(event) {
     let fullname =      document.querySelector("#formUser input[name='fullname']").value
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
+    let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
     
     var query =`
     mutation {
@@ -789,7 +801,9 @@ function createUser(event) {
         email: "${email}",
         fullname: "${fullname}",
         description: "${description}",
-        disabled: ${disabled}
+        disabled: ${disabled},
+        pinhash: "${pinhash}",
+        pinrequired: ${pinrequired}
         ) {
             description
             email
@@ -797,6 +811,8 @@ function createUser(event) {
             username
             disabled
             id
+            pinhash
+            pinrequired        
           }
 
         }
@@ -831,6 +847,8 @@ function getUser(username) {
             username
             disabled
             id
+            pinhash
+            pinrequired        
           }
         
         list_app_user_role(
@@ -1158,7 +1176,9 @@ function getAllUsers(event) {
               description
               disabled
               id
-            }
+              pinhash
+              pinrequired        
+              }
           }
         }    `
 
@@ -1287,19 +1307,38 @@ function removeQueryStringFromBrowserURL() {
     history.replaceState(null,null,url2)   
 }
 
+function newPassword (n, numbers=false) {
+    let pickSymbol =(s) => s[Math.floor(Math.random()*s.length)]
+    var symbolSets =numbers? ["0123456789"]:["bcdfghjklmnpqrstvwxz","aeiou"] 
+    var password = ''
+    for (let i=0; i<n; i++){
+        password += pickSymbol(symbolSets[i%symbolSets.length])
+    }
+    return password
+}
+
 
 function generatePassword() {
-    function newPassword (n) {
-        let pickSymbol =(s) => s[Math.floor(Math.random()*s.length)]
-        var symbolSets =["bcdfghjklmnpqrstvwxz","aeiou"] 
-        var password = ''
-        for (let i=0; i<n; i++){
-            password += pickSymbol(symbolSets[i%symbolSets.length])
-        }
-        return password
-    }
-
     document.querySelector("#formUser input[name='password']").value = newPassword(9)
+}
+
+function generatePinHash() {
+    let hash = newPassword(20,true);
+    document.querySelector("#formUser input[name='pinhash']").value = hash;
+    setPinUrl();
+}
+
+function setPinUrl(){
+    console.debug("setPinUrl()")
+    let input = document.querySelector("#formUser input[name='pinhash']")
+    let hash = input.value
+    hash = hash.replaceAll(" ","")
+    input.value = hash
+    let url = model.appurl+'/set_authenticator/'+hash
+    let link = document.getElementById('newPinUrl')
+    link.innerText = url
+    link.href = url
+    document.getElementById('pinUrlContainer').style.display= hash? "block": "none"
 }
 
 function buildSocialIcons(url) {
@@ -1493,7 +1532,8 @@ function setAppParams(){
     var alrt = model.urlParams.get('alert')
     if (alrt) alert(alrt)
     document.getElementById('socialLoginError').innerHTML = oauth2error
-    if (css) document.getElementById('theme').href = css
+    if (css) 
+        document.getElementById('theme').href = css
     model.appurl = url ? url : 'https://auth-proxy.rg.ru'
     removeQueryStringFromBrowserURL()
     //?

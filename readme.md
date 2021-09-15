@@ -16,7 +16,7 @@ You can add optional parameters the URL to change auth-proxy service and other t
 
     https://auth-admin.vercel.app?url=auth_roxy_url&lang=en&theme=theme_url&css=css_url
 
-- `auth_roxy_url` - relative or absolute URL of auth-proxy service. Default https://auth-proxy.rg.ru.
+- `url` - relative or absolute URL of auth-proxy service. Default https://auth-proxy.rg.ru.
 - `lang` - language of user interface. Default en.
 - `theme`- relative or absolute URL of color theme. 
 - `css` - relative or absolute URL of CSS style sheet. 
