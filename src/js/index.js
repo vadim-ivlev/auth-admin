@@ -537,7 +537,8 @@ function getLoginedUser() {
             disabled
             id
             pinhash
-            pinrequired        
+            pinrequired
+            pinset      
         }
     }
     `
@@ -715,7 +716,8 @@ function formListUserSubmit(event) {
               disabled
               id
               pinhash
-              pinrequired        
+              pinrequired
+              pinset        
               }
           }
         }        
@@ -743,6 +745,7 @@ function updateUser(event) {
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
+    let pinset =        document.querySelector("#formUser input[name='pinset']").checked
     
     var query =`
     mutation {
@@ -755,7 +758,8 @@ function updateUser(event) {
         description: "${description}",
         disabled: ${disabled},
         pinhash: "${pinhash}",
-        pinrequired: ${pinrequired}
+        pinrequired: ${pinrequired},
+        pinset: ${pinset}
         ) {
             description
             email
@@ -764,7 +768,8 @@ function updateUser(event) {
             disabled
             id
             pinhash
-            pinrequired        
+            pinrequired
+            pinset        
           }
 
         }
@@ -792,6 +797,7 @@ function createUser(event) {
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
+    let pinset =        document.querySelector("#formUser input[name='pinset']").checked
     
     var query =`
     mutation {
@@ -803,7 +809,8 @@ function createUser(event) {
         description: "${description}",
         disabled: ${disabled},
         pinhash: "${pinhash}",
-        pinrequired: ${pinrequired}
+        pinrequired: ${pinrequired},
+        pinset: ${pinset}
         ) {
             description
             email
@@ -812,7 +819,8 @@ function createUser(event) {
             disabled
             id
             pinhash
-            pinrequired        
+            pinrequired 
+            pinset       
           }
 
         }
@@ -848,7 +856,8 @@ function getUser(username) {
             disabled
             id
             pinhash
-            pinrequired        
+            pinrequired
+            pinset     
           }
         
         list_app_user_role(
@@ -1177,7 +1186,8 @@ function getAllUsers(event) {
               disabled
               id
               pinhash
-              pinrequired        
+              pinrequired
+              pinset       
               }
           }
         }    `

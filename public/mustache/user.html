@@ -60,9 +60,14 @@
         <div>
             <label>pinrequired</label>
             <input name="pinrequired" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
-            <span> требовать PIN от google authenticator</span>
+            <span> требовать PIN google authenticator</span>
         </div>
         <div>
+            <label>pinset</label>
+            <input name="pinset" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinset}}checked{{/user.pinset}} >
+            <span> потребовать от пользователя установить google authenticator на телефоне</span>
+        </div>
+        <div style="display:none">
             <label>pinhash</label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
                 <input name="pinhash" type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
