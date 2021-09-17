@@ -85,7 +85,9 @@
                             </div>
                         </div>
                             
-                        
+
+
+
                         <div style="text-align: right;">
                             <!-- <label class="param-name">&nbsp</label> -->
                             <input type="submit" class="button button-outline" value="Вход">
@@ -93,6 +95,26 @@
                         </div>
                     </form>
                     <button class="button button-clear tab"  onclick="resetPassword()">выслать новый пароль</button>
+
+                    <br>
+
+                    <div id="setAuthenticatorForm" class="hidden">
+                        <h4 style="text-align: center">Установить Google Authenticator</h4>
+                        <p>Убедитесь что за вами никто не следит. На телефоне откройте приложение Google Authenticator, нажмите значок (+) и отсканируйте баркод»</p>
+                        <div style="text-align: center;">
+                            <img id="setAuthenticatorImg" src="https://localhost:4400/authenticator_barcode/test">
+                        </div>
+                        <p>Введите пин и нажмите [ установить ]</p>
+                        <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                            <input name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
+                            <button type="button"  class="button button-outline"  onclick="generatePinHash()">Установить</button>
+                        </span>
+                        <p> Если установка прошла удачно, эти инструкции исчезнут.</p>
+                    </div>
+                    
+
+
+
                     <div id="socialIcons" class="transparent"></div>
                     <div id="socialLoginError" class="error"></div>
         

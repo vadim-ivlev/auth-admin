@@ -16,7 +16,7 @@
         <div>
             <input name="old_username" type="hidden" value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
             <label>username *</label>
-            <input name="username" type="text" placeholder="уникальный идентификатор пользователя"
+            <input name="username" type="text" autocomplete="off" placeholder="уникальный идентификатор пользователя"
             oninput="document.getElementById('newUserName').innerText = event.target.value; "
             value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
             <!-- {{#user}} disabled class="grayed" {{/user}} -->
@@ -26,7 +26,7 @@
         <div>
             <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                <input name="password" type="password" placeholder="новый пароль" autocomplete="off" value="{{user.password}}">
+                <input name="password" type="password" autocomplete="off" placeholder="новый пароль" value="{{user.password}}">
                 <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button>
             </span>
             {{#user}}
@@ -64,8 +64,8 @@
         </div>
         <div>
             <label>pinset</label>
-            <input name="pinset" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinset}}checked{{/user.pinset}} >
-            <span> потребовать от пользователя установить google authenticator на телефоне</span>
+            <input name="pinset" type="checkbox"  title="Google Authenticator установлен" {{#user.pinset}}checked{{/user.pinset}} >
+            <span> Google Authenticator установлен на телефоне пользователя</span>
         </div>
         <div style="display:none">
             <label>pinhash</label>

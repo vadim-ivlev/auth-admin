@@ -432,9 +432,10 @@ function loginGraphQLFormSubmit(event) {
     function onSuccess(res){
         getLoginedUser()
     }   
-
+    
     doGraphQLRequest(query, onSuccess, "loginError")
     clearLoginForm()
+    hideElements("#setAuthenticatorForm")
     return false       
 }
 
@@ -516,13 +517,10 @@ function isPinRequired(username) {
     } `
 
     function onSuccess(res){
-        let r = res.data.is_pin_required
-        console.debug("isPinRequired()->", r)
-        if (r.use_pin && r.pinrequired) {
-            showElements("#pin")
-        } else {
-            hideElements("#pin")
-        }
+        let r = res.data.is_pin_required;
+        console.debug("isPinRequired()->", r);
+        (r.pinset) ? hideElements("#setAuthenticatorForm") : showElements("#setAuthenticatorForm");
+        (r.use_pin && r.pinrequired) ? showElements("#pin") : hideElements("#pin"); 
     }
        
     doGraphQLRequest(query, onSuccess)   
