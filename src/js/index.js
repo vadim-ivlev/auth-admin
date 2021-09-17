@@ -414,7 +414,9 @@ function loginGraphQLFormSubmit(event) {
     let username = document.getElementById("loginUsername").value
     let password = document.getElementById("loginPassword").value
     let captcha =  document.getElementById("loginCaptcha").value
-    
+    let pin =  document.getElementById("loginPin").value
+
+    isPinRequired(username)
     
 
     let query =`
@@ -422,7 +424,8 @@ function loginGraphQLFormSubmit(event) {
         login(
         username: "${username}",
         password: "${password}",
-        captcha: "${captcha}"
+        captcha: "${captcha}",
+        pin: "${pin}"
         )
         }    
     `
@@ -475,9 +478,16 @@ function isSelfRegAllowed(event) {
     return false       
 }
 
-function isCaptchaRequired(event) {
+function checkUserRequirements(event) {
     if (event) event.preventDefault()
     let username = document.getElementById("loginUsername").value   
+    isCaptchaRequired(username)
+    isPinRequired(username)
+    return false 
+}
+
+
+function isCaptchaRequired(username) {
     var query =`  query { is_captcha_required(  username: "${username}" ) 
         {
             is_required 
@@ -493,8 +503,29 @@ function isCaptchaRequired(event) {
         }
     }
        
-    doGraphQLRequest(query, onSuccess)
-    return false       
+    doGraphQLRequest(query, onSuccess)   
+}
+
+function isPinRequired(username) {
+    var query =`  query { is_pin_required(  username: "${username}" ) 
+        {
+            use_pin 
+            pinrequired
+            pinset
+        } 
+    } `
+
+    function onSuccess(res){
+        let r = res.data.is_pin_required
+        console.debug("isPinRequired()->", r)
+        if (r.use_pin && r.pinrequired) {
+            showElements("#pin")
+        } else {
+            hideElements("#pin")
+        }
+    }
+       
+    doGraphQLRequest(query, onSuccess)   
 }
 
 
@@ -587,6 +618,7 @@ function getParams() {
             reset_time
             selfreg
             use_captcha
+            use_pin
           }
         }
     `
@@ -605,6 +637,7 @@ function setParams(event) {
     if (event) event.preventDefault()
     let selfreg =       document.querySelector("#formParams input[name='selfreg']").checked
     let use_captcha =   document.querySelector("#formParams input[name='use_captcha']").checked
+    let use_pin =       document.querySelector("#formParams input[name='use_pin']").checked
     let max_attempts =  document.querySelector("#formParams input[name='max_attempts']").value
     let reset_time =    document.querySelector("#formParams input[name='reset_time']").value
     
@@ -613,6 +646,7 @@ function setParams(event) {
         set_params(
         selfreg:      ${selfreg},
         use_captcha:  ${use_captcha},
+        use_pin:      ${use_pin},
         max_attempts: ${max_attempts},
         reset_time:   ${reset_time}
         ) {
@@ -620,6 +654,7 @@ function setParams(event) {
             reset_time
             selfreg
             use_captcha
+            use_pin
           }
         }
     `

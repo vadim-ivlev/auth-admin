@@ -64,11 +64,16 @@
                         <div>
                             <!-- <label class="param-name">username</label> -->
                             <input type="submit" class="micro" value=".">
-                            <input id="loginUsername" name="username" type="text" placeholder="имя или email" onchange="isCaptchaRequired(event)">
+                            <input id="loginUsername" name="username" type="text" placeholder="имя или email" onchange="checkUserRequirements(event)">
                         </div>
                         <div>
                             <!-- <label class="param-name">password</label> -->
                             <input id="loginPassword" name="password" type="password" placeholder="пароль">
+                        </div>
+
+                        <div id="pin" class="hidden">
+                            <!-- <label class="param-name">password</label> -->
+                            <input id="loginPin" name="pin" type="text" autocomplete="off" placeholder="PIN из Google Authenticator">
                         </div>
 
                         <div id="captcha">

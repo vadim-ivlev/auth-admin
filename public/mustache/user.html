@@ -26,7 +26,7 @@
         <div>
             <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                <input name="password" type="password" placeholder="новый пароль" value="{{user.password}}">
+                <input name="password" type="password" placeholder="новый пароль" autocomplete="off" value="{{user.password}}">
                 <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button>
             </span>
             {{#user}}
