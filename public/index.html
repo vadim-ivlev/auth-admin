@@ -107,7 +107,7 @@
                         <p>Введите пин и нажмите [ установить ]</p>
                         <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
                             <input name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
-                            <button type="button"  class="button button-outline"  onclick="generatePinHash()">Установить</button>
+                            <button type="button"  class="button button-outline"  onclick="">Установить</button>
                         </span>
                         <p> Если установка прошла удачно, эти инструкции исчезнут.</p>
                     </div>
@@ -200,6 +200,23 @@
     </div>
 
     <script src="js/bundle.js"></script>
+    <script>
+
+        function init() {
+            renderTemplateFile('mustache/params.html', model, '#paramsPage')
+            google.charts.load('current', {'packages':['gauge']})
+            google.charts.setOnLoadCallback(getAppstatRest)
+            setAppParams()
+            getLoginedUser()
+            refreshApp()      
+        }
+
+
+        // O N   P A G E   L O A D  ****************************************************************************************
+
+        init()
+
+    </script>
 </body>
 
 </html>

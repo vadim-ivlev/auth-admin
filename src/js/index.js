@@ -1584,18 +1584,3 @@ function setAppParams(){
 }
 
 
-
-function init() {
-    renderTemplateFile('mustache/params.html', model, '#paramsPage')
-    google.charts.load('current', {'packages':['gauge']})
-    google.charts.setOnLoadCallback(getAppstatRest)
-    
-    setAppParams()
-    getLoginedUser()
-    refreshApp()      
-}
-
-
-// O N   P A G E   L O A D  ****************************************************************************************
-
-init()

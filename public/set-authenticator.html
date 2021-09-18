@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Установка аутентификатора</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/milligram.min.css"> 
+    <link rel="stylesheet" type="text/css" href="css/themes/graphql.css" />
+    <style>
+        #content {
+            display: grid;
+        }
+        #setAuthenticatorForm {
+            max-width: 500px;
+            margin-left: auto;
+            margin-right:auto;
+            margin-top: 30px;
+        }
+        #setAuthenticatorImg {
+            width:300px;
+            height:300px;
+        }
+        #message {
+            color: red;
+        }
+    </style>
+
+</head>
+<body>
+<div id="content">
+    <div id="setAuthenticatorForm" class="hidden">
+        <h3 style="text-align: center">Установка Google Authenticator</h3>
+        <p>Убедитесь что за вами никто не стоит. На телефоне откройте приложение Google Authenticator, нажмите значок (+) и отсканируйте баркод»</p>
+        <div style="text-align: center;">
+            <img id="setAuthenticatorImg" src="" 
+            onerror="this.style.display='none'"
+            onload="this.style.display=''"
+            >
+        </div>
+        <p>Введите пин и нажмите [ установить ]</p>
+        <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+            <input id="pincode" name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
+            <button id="setAuthenticatorBtn" type="button"  class="button button-outline" >Установить</button>
+        </div>
+        <div id="message"></div>
+        <br>
+        <a id="authlink" href="https://auth-proxy.rg.ru/admin"> Вернуться к auth-proxy </a>
+    </div>
+
+</div>
+<script>
+    var img = document.getElementById('setAuthenticatorImg')
+    var button = document.getElementById('setAuthenticatorBtn')
+    var pincode = document.getElementById('pincode')
+    var message = document.getElementById('message')
+    var authlink = document.getElementById('authlink')
+
+    button.addEventListener('click', setAuthenticator)
+    window.addEventListener('hashchange', getParams)
+    window.addEventListener('load', getParams)
+    img.addEventListener('error', e => message.innerHTML = 'Аутентификатор уже установлен. Или пользователь не зарегистрирован.')
+    img.addEventListener('load', e => message.innerHTML = '')
+
+    var username = ""
+    var pinhash = ""
+    var url = ""
+
+
+    function getParams(){
+        let hash = location.hash.replace(/^#/,"")
+        let params = new URLSearchParams(hash)
+        username = params.get('username') || "nouser"
+        pinhash = params.get('pinhash') || "nopinhash"
+        url = params.get('url') || "nourl"
+        console.log(`url=${url} username=${username} pinhash=${pinhash}`)
+        img.src = `${url}/authenticator_barcode/${username}`
+        authlink.href=`${url}/admin`
+    }
+
+    function setAuthenticator(event) {
+        if (event) event.preventDefault()
+
+        let u = `${url}/set_authenticator/${username}/${pincode.value}`
+
+        fetch(u).then(x => x.json())
+        .then( onSuccess ) 
+        .catch( err => message.innerHTML=err.message )  
+
+        function onSuccess(r){
+            console.debug(`result=${r.result} error=${r.error}`) 
+            message.innerHTML = r.error || "OK"           
+        } 
+
+        return false       
+    }
+    
+</script>
+</body>
+</html>
