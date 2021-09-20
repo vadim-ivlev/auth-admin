@@ -435,7 +435,6 @@ function loginGraphQLFormSubmit(event) {
     
     doGraphQLRequest(query, onSuccess, "loginError")
     clearLoginForm()
-    hideElements("#setAuthenticatorForm")
     return false       
 }
 
@@ -519,8 +518,7 @@ function isPinRequired(username) {
     function onSuccess(res){
         let r = res.data.is_pin_required;
         console.debug("isPinRequired()->", r);
-        (r.pinset) ? hideElements("#setAuthenticatorForm") : showElements("#setAuthenticatorForm");
-        (r.use_pin && r.pinrequired) ? showElements("#pin") : hideElements("#pin"); 
+        (r.use_pin && r.pinrequired) ? showElements(".pinclass") : hideElements(".pinclass"); 
     }
        
     doGraphQLRequest(query, onSuccess)   
@@ -547,6 +545,32 @@ function resetPassword(event) {
 
     doGraphQLRequest(query, onSuccess)
     return false       
+}
+
+function resetAuthenticator(event) {
+    if (event) event.preventDefault()
+    console.debug(model.priv_origin)
+    let username = document.getElementById("loginUsername").value
+    if (!username) {
+        alert('Заполните поле имя пользователя или email')
+        return false
+    }
+    let url = `${model.priv_origin}/reset_authenticator/${username}`
+    fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
+    
+    function onSuccess(res){
+        console.debug(res)
+        document.getElementById("loginError").innerText = res.err || ""
+        if (!res.err) {
+             alert(res.result)
+        }
+    }
+
+    function onError(err){
+        console.debug("ERR: "+err)
+    }
+
+    return false 
 }
 
 

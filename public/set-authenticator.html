@@ -13,7 +13,7 @@
         #content {
             display: grid;
         }
-        #setAuthenticatorForm {
+        .authenticator {
             max-width: 500px;
             margin-left: auto;
             margin-right:auto;
@@ -25,27 +25,32 @@
         }
         #message {
             color: red;
+            min-height: 30px;
         }
     </style>
 
 </head>
 <body>
 <div id="content">
-    <div id="setAuthenticatorForm" class="hidden">
+    <div class="authenticator">
         <h3 style="text-align: center">Установка Google Authenticator</h3>
-        <p>Убедитесь что за вами никто не стоит. На телефоне откройте приложение Google Authenticator, нажмите значок (+) и отсканируйте баркод»</p>
-        <div style="text-align: center;">
-            <img id="setAuthenticatorImg" src="" 
-            onerror="this.style.display='none'"
-            onload="this.style.display=''"
-            >
-        </div>
-        <p>Введите пин и нажмите [ установить ]</p>
-        <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-            <input id="pincode" name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
-            <button id="setAuthenticatorBtn" type="button"  class="button button-outline" >Установить</button>
-        </div>
-        <div id="message"></div>
+
+        <form id="form" style="display:none;">
+            <p>Убедитесь что за вами никто не стоит. На телефоне откройте приложение Google Authenticator, нажмите значок (+) и отсканируйте баркод»</p>
+            <div style="text-align: center;">
+                <img id="setAuthenticatorImg" src="" 
+                onerror="this.style.display='none'"
+                onload="this.style.display=''"
+                >
+            </div>
+            <p>Введите пин и нажмите [ установить ]</p>
+            <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input id="pincode" name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
+                <button id="setAuthenticatorBtn" type="button"  class="button button-outline" >Установить</button>
+            </div>
+        </form>
+
+        <div id="message"> </div>
         <br>
         <a id="authlink" href="https://auth-proxy.rg.ru/admin"> Вернуться к auth-proxy </a>
     </div>
@@ -53,21 +58,33 @@
 </div>
 <script>
     var img = document.getElementById('setAuthenticatorImg')
+    var form = document.getElementById('form')
     var button = document.getElementById('setAuthenticatorBtn')
     var pincode = document.getElementById('pincode')
     var message = document.getElementById('message')
     var authlink = document.getElementById('authlink')
 
-    button.addEventListener('click', setAuthenticator)
     window.addEventListener('hashchange', getParams)
     window.addEventListener('load', getParams)
-    img.addEventListener('error', e => message.innerHTML = 'Аутентификатор уже установлен. Или пользователь не зарегистрирован.')
-    img.addEventListener('load', e => message.innerHTML = '')
+    img.addEventListener('error', onImgError)
+    img.addEventListener('load', onImgLoad)
+    button.addEventListener('click', setAuthenticator)
+    form.addEventListener('submit', setAuthenticator)
+    
 
     var username = ""
     var pinhash = ""
     var url = ""
 
+    function onImgError(event) {
+        message.innerHTML = `Аутентификатор уже установлен.`
+        form.style.display = 'none'
+    }
+    function onImgLoad(event) {
+        message.innerHTML = ' '
+        form.style.display = 'block'
+        pincode.focus()
+    }
 
     function getParams(){
         let hash = location.hash.replace(/^#/,"")
@@ -76,22 +93,28 @@
         pinhash = params.get('pinhash') || "nopinhash"
         url = params.get('url') || "nourl"
         console.log(`url=${url} username=${username} pinhash=${pinhash}`)
-        img.src = `${url}/authenticator_barcode/${username}`
         authlink.href=`${url}/admin`
+        img.src = `${url}/authenticator_barcode/${username}/${pinhash}#${Math.random()}`
     }
+
 
     function setAuthenticator(event) {
         if (event) event.preventDefault()
-
+        message.innerHTML = '...'
         let u = `${url}/set_authenticator/${username}/${pincode.value}`
-
         fetch(u).then(x => x.json())
         .then( onSuccess ) 
         .catch( err => message.innerHTML=err.message )  
 
         function onSuccess(r){
             console.debug(`result=${r.result} error=${r.error}`) 
-            message.innerHTML = r.error || "OK"           
+            if (r.error) {
+                message.innerHTML = r.error 
+                form.style.display = "block"
+            } else {
+                message.innerHTML = r.error || "Аутентификатор установлен." 
+                form.style.display = "none"
+            }
         } 
 
         return false       
