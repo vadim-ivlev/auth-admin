@@ -2,8 +2,6 @@
 
 var model = {
     //---------------------------
-    // if debug == true logs go to console.
-    debug: false,
     oauth2email: "",
     oauth2name: "",
     oauth2id: "",
@@ -374,12 +372,18 @@ function sortUsersBy(prop, asStings = true) {
     return false
 }
 
-
+function errorMessage(errorElementID, errMsg) {
+    console.debug(errMsg)
+    if (errorElementID) {
+        document.getElementById(errorElementID).innerText = errMsg
+    }
+}
 
 // R E Q U E S T S  *******************************************************
 
-function doGraphQLRequest(query, responseHandler, errorElementID) {
+function doGraphQLRequest(query, responseHandler, errorElementID="loginError") {
     fetch(model.appurl+'/graphql', { 
+        // headers: new Headers({cache: "no-cache"}),
         method: 'POST', 
         credentials: 'include', 
         body: JSON.stringify({ query: query, variables: {} }) 
@@ -391,17 +395,15 @@ function doGraphQLRequest(query, responseHandler, errorElementID) {
             new Error(res)
         })
         .then((res) => {
-            model.debug && console.log(res)
+            console.debug("doGraphQLRequest() result=",res)
             if (res.errors){
-                model.debug && console.log(res.errors[0].message)
-                if (errorElementID) {
-                    document.getElementById(errorElementID).innerText = res.errors[0].message
-                }
+                let errMsg = res.errors[0].message
+                errorMessage(errorElementID, errMsg)
                 return
             }
             responseHandler && responseHandler(res)
         })
-        .catch( e => console.error(e) )    
+        .catch( e =>  errorMessage(errorElementID, "doGraphQLRequest: " +e ))    
     
 }
 
@@ -415,6 +417,10 @@ function loginGraphQLFormSubmit(event) {
     let password = document.getElementById("loginPassword").value
     let captcha =  document.getElementById("loginCaptcha").value
     let pin =  document.getElementById("loginPin").value
+    if (username == "") {
+        errorMessage("loginError", 'Заполните поле имя пользователя или email')
+        return
+    }
 
     isPinRequired(username)
     
@@ -499,7 +505,7 @@ function isCaptchaRequired(username) {
         model.captchaRequired = res.data.is_captcha_required.is_required
         if (model.captchaRequired) {
             getNewCaptcha()
-            model.debug && console.log("Captcha IS required")
+            console.debug("Captcha IS required")
         }
     }
        
@@ -507,6 +513,8 @@ function isCaptchaRequired(username) {
 }
 
 function isPinRequired(username) {
+    errorMessage("loginError", "")
+    
     var query =`  query { is_pin_required(  username: "${username}" ) 
         {
             use_pin 
@@ -528,6 +536,8 @@ function isPinRequired(username) {
 
 function resetPassword(event) {
     if (event) event.preventDefault()
+    
+    errorMessage("resetError", "")
 
     let username = document.getElementById("loginUsername").value
 
@@ -539,35 +549,35 @@ function resetPassword(event) {
         }
     `
     function onSuccess(res){
+        console.debug("resetPassword: ", res)
         alert(res.data.generate_password)
         refreshApp()
     }   
 
-    doGraphQLRequest(query, onSuccess)
+    doGraphQLRequest(query, onSuccess, "resetError")
     return false       
 }
 
 function resetAuthenticator(event) {
     if (event) event.preventDefault()
-    console.debug(model.priv_origin)
+    errorMessage("resetError", "")
     let username = document.getElementById("loginUsername").value
     if (!username) {
-        alert('Заполните поле имя пользователя или email')
+        errorMessage("resetError", 'Заполните поле имя пользователя или email')
         return false
     }
     let url = `${model.priv_origin}/reset_authenticator/${username}`
     fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
     
     function onSuccess(res){
-        console.debug(res)
-        document.getElementById("loginError").innerText = res.err || ""
-        if (!res.err) {
+        errorMessage("resetError", res.error)
+        if (res.result) {
              alert(res.result)
-        }
+        } 
     }
 
     function onError(err){
-        console.debug("ERR: "+err)
+        errorMessage("resetError", "resetAuthenticator "+err)
     }
 
     return false 
@@ -865,7 +875,7 @@ function createUser(event) {
         fullname: "${fullname}",
         description: "${description}",
         disabled: ${disabled},
-        pinhash: "${pinhash}",
+        
         pinrequired: ${pinrequired},
         pinset: ${pinset}
         ) {
@@ -1401,11 +1411,11 @@ function setPinUrl(){
     let hash = input.value
     hash = hash.replaceAll(" ","")
     input.value = hash
-    let url = model.appurl+'/set_authenticator/'+hash
-    let link = document.getElementById('newPinUrl')
-    link.innerText = url
-    link.href = url
-    document.getElementById('pinUrlContainer').style.display= hash? "block": "none"
+    // let url = `/set-authenticator.html#url=${model.appurl}&username=${model.user.username}&pinhash=${model.user.pinhash}`
+    // let link = document.getElementById('newPinUrl')
+    // link.innerText = url
+    // link.href = url
+    document.getElementById('pinUrlContainer').style.display= "none"
 }
 
 function buildSocialIcons(url) {
@@ -1445,7 +1455,7 @@ function renderOauthProvidersJSON(jsn) {
     
     
     if (icons.length > 0){
-        el.innerHTML = '<div class="socialHeader">войти через</div>' + icons.join(' ')
+        el.innerHTML = '<div class="socialHeader">войти через социальную сеть</div>' + icons.join(' ')
         showElements("#selfRegHelpText")
         removeClass('#socialIcons', 'transparent')
     } else {
@@ -1521,6 +1531,7 @@ function clearLoginForm() {
     document.getElementById("loginUsername").value = ""
     document.getElementById("loginPassword").value = ""
     document.getElementById("loginCaptcha").value = ""
+    document.getElementById("loginPin").value = ""
     document.getElementById("loginError").innerText = ""
     document.getElementById("socialLoginError").innerHTML = ""
     document.getElementById("oauth2email").innerHTML = ""
@@ -1580,7 +1591,7 @@ function refreshApp() {
 
 
 window.onhashchange = function(event) {
-    model.debug && console.log("onhashchange", event)
+    console.debug("onhashchange ", event)
     var newpage = event.newURL.split('#')[1]
     if (newpage) 
         showPage(newpage)

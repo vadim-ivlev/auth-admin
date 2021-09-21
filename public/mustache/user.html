@@ -26,7 +26,7 @@
         <div>
             <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                <input name="password" type="password" autocomplete="off" placeholder="новый пароль" value="{{user.password}}">
+                <input name="password" type="password" autocomplete="new-password" placeholder="новый пароль" value="{{user.password}}">
                 <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button>
             </span>
             {{#user}}
@@ -67,21 +67,21 @@
             <input name="pinset" type="checkbox"  title="Google Authenticator установлен" {{#user.pinset}}checked{{/user.pinset}} >
             <span> Google Authenticator установлен на телефоне пользователя</span>
         </div>
-        <div style="display:none">
+        <div>
             <label>pinhash</label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                <input name="pinhash" type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
-                <button type="button"  class="button button-outline"  onclick="generatePinHash()">сгенерировать PIN хэш</button>
+                <input name="pinhash" disabled type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
+                <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать PIN хэш</button>
             </span>
             {{#user}}
             <div>
-                Если поле пусто - пользователь установил google authenticator.<br><br>
+                
             </div>
             {{/user}}
 
             <div id="pinUrlContainer" {{^user.pinhash}}style="display:none;"{{/user.pinhash}}>
-            URL установки аутентификатора: 
-            <a id="newPinUrl" href="{{appurl}}/set_authenticator/{{user.pinhash}}" target="_blank">{{appurl}}/set_authenticator/{{user.pinhash}}</a>
+                <a id="newPinUrl" href="/set-authenticator.html#url={{appurl}}&username={{user.username}}&pinhash={{user.pinhash}}" target="_blank">
+                    URL установки аутентификатора</a>
             </div>
 
         </div>
