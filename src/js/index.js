@@ -1351,6 +1351,10 @@ function filterRows(selector, value ){
     });
 }
 
+function toggleElements(selector) {
+    document.querySelectorAll(selector).forEach(e => e.classList.toggle("hidden"));
+}
+
 function hideElements(selector) {
     document.querySelectorAll(selector).forEach(e => e.classList.add("hidden"));
 }
@@ -1400,13 +1404,12 @@ function generatePassword() {
 }
 
 function generatePinHash() {
-    let hash = newPassword(20,true);
+    let hash = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : newPassword(20,true);
     document.querySelector("#formUser input[name='pinhash']").value = hash;
     setPinUrl();
 }
 
 function setPinUrl(){
-    console.debug("setPinUrl()")
     let input = document.querySelector("#formUser input[name='pinhash']")
     let hash = input.value
     hash = hash.replaceAll(" ","")

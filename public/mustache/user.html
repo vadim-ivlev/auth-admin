@@ -68,22 +68,17 @@
             <span> Google Authenticator установлен на телефоне пользователя</span>
         </div>
         <div>
-            <label>pinhash</label>
-            <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                <input name="pinhash" disabled type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
-                <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать PIN хэш</button>
-            </span>
-            {{#user}}
-            <div>
-                
+            <label><a href="" onclick="toggleElements('#pinhashfields'); return false;">pinhash ▷</a></label>
+            <div id="pinhashfields" class="hidden">
+                <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                    <input name="pinhash" disabled type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
+                    <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать PIN хэш</button>
+                </span>
+                <div id="pinUrlContainer" {{^user.pinhash}}style="display:none;"{{/user.pinhash}}>
+                    <a id="newPinUrl" href="/set-authenticator.html#url={{appurl}}&username={{user.username}}&pinhash={{user.pinhash}}" target="_blank">
+                        URL установки аутентификатора</a>
+                </div>
             </div>
-            {{/user}}
-
-            <div id="pinUrlContainer" {{^user.pinhash}}style="display:none;"{{/user.pinhash}}>
-                <a id="newPinUrl" href="/set-authenticator.html#url={{appurl}}&username={{user.username}}&pinhash={{user.pinhash}}" target="_blank">
-                    URL установки аутентификатора</a>
-            </div>
-
         </div>
         <br>
         <div style="text-align: right;">

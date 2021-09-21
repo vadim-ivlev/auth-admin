@@ -36,17 +36,30 @@
         <h3 style="text-align: center">Установка Google Authenticator</h3>
 
         <form id="form" style="display:none;">
-            <p>Убедитесь что за вами никто не стоит. На телефоне откройте приложение Google Authenticator, нажмите значок (+) и отсканируйте баркод»</p>
+            <p>
+                Убедитесь что за вашей спиной никого нет. 
+                Откройте Google Authenticator на вашем телефоне , 
+                нажмите значок (+) и отсканируйте или скопируйте баркод»
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                <input id="manualcode" type="text" placeholder="код" autocomplete="off">
+                <button id="copyManualCodeBtn" type="button"  class="button button-outline" >Копировать</button>
+            </div>
+
+
+
             <div style="text-align: center;">
                 <img id="setAuthenticatorImg" src="" 
                 onerror="this.style.display='none'"
                 onload="this.style.display=''"
                 >
             </div>
-            <p>Введите пин и нажмите [ установить ]</p>
+ 
+            <p>Для проверки введите появившийся на телефоне пин, и нажмите [ установить ]</p>
             <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
                 <input id="pincode" name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
-                <button id="setAuthenticatorBtn" type="button"  class="button button-outline" >Установить</button>
+                <button id="setAuthenticatorBtn" type="button"  class="button" >Установить</button>
             </div>
         </form>
 
@@ -59,7 +72,9 @@
 <script>
     var img = document.getElementById('setAuthenticatorImg')
     var form = document.getElementById('form')
-    var button = document.getElementById('setAuthenticatorBtn')
+    var manualcode = document.getElementById('manualcode')
+    var setButton = document.getElementById('setAuthenticatorBtn')
+    var copyButton = document.getElementById('copyManualCodeBtn')
     var pincode = document.getElementById('pincode')
     var message = document.getElementById('message')
     var authlink = document.getElementById('authlink')
@@ -68,7 +83,8 @@
     window.addEventListener('load', getParams)
     img.addEventListener('error', onImgError)
     img.addEventListener('load', onImgLoad)
-    button.addEventListener('click', setAuthenticator)
+    setButton.addEventListener('click', setAuthenticator)
+    copyButton.addEventListener('click', copyToClipboard)
     form.addEventListener('submit', setAuthenticator)
     
 
@@ -94,7 +110,47 @@
         url = params.get('url') || "nourl"
         console.log(`url=${url} username=${username} pinhash=${pinhash}`)
         authlink.href=`${url}/admin`
-        img.src = `${url}/authenticator_barcode/${username}/${pinhash}#${Math.random()}`
+        img.src = `${url}/authenticator_barcode/${username}/${pinhash}`
+        getManualCode()
+    }
+
+    function copyToClipboard(event) {
+        if (event) event.preventDefault()
+
+        navigator.permissions.query({name: "clipboard-write"}).then(result => {
+            if (result.state == "granted" || result.state == "prompt") {
+                /* write to the clipboard now */
+                navigator.clipboard.writeText(manualcode.value)
+                .then(()=> console.debug('Copied'), (err) => console.debug('Failed copying '+err) );
+            } else {
+                console.debug('No permitions to Copy to clipboard. result=', result)
+            }
+        })
+
+        return false
+    }
+
+    
+    function getManualCode(event) {
+        if (event) event.preventDefault()
+        message.innerHTML = '...'
+        let u = `${url}/authenticator_manualcode/${username}/${pinhash}`
+        fetch(u).then(x => x.json())
+        .then( onSuccess ) 
+        .catch( err => message.innerHTML=err.message )  
+
+        function onSuccess(r){
+            console.debug(`getManualCode r= `,r) 
+            if (r.error) {
+                message.innerHTML = r.error 
+                // form.style.display = "block"
+            } else {
+                manualcode.value = r.result 
+                form.style.display = "block"
+            }
+        } 
+
+        return false       
     }
 
 
@@ -119,7 +175,9 @@
 
         return false       
     }
-    
+
+
+
 </script>
 </body>
 </html>
