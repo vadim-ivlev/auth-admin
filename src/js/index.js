@@ -558,6 +558,33 @@ function resetPassword(event) {
     return false       
 }
 
+function resetPasswordRest(event) {
+    if (event) event.preventDefault()
+    errorMessage("resetError", "")
+    let username = document.getElementById("loginUsername").value
+    if (!username) {
+        errorMessage("resetError", 'Заполните поле имя пользователя или email')
+        return false
+    }
+    let url = `${model.priv_origin}/reset_password?username=${username}&adminurl=${location.origin}&authurl=${model.priv_origin}`
+    fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
+    
+    function onSuccess(res){
+        errorMessage("resetError", res.error)
+        if (res.result) {
+             alert(res.result)
+        } 
+    }
+
+    function onError(err){
+        errorMessage("resetError", "resetPassword " + err)
+    }
+
+    return false 
+}
+
+
+
 function resetAuthenticator(event) {
     if (event) event.preventDefault()
     errorMessage("resetError", "")

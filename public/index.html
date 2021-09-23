@@ -73,7 +73,7 @@
 
                         <div id="pin" class="pinclass hidden">
                             <!-- <label class="param-name">password</label> -->
-                            <input id="loginPin" name="pin" type="text" autocomplete="off" placeholder="PIN из Google Authenticator">
+                            <input id="loginPin" name="pin" type="text" autocomplete="off" placeholder="PIN из Google аутентификатора">
                         </div>
 
                         <div id="captcha">
@@ -94,8 +94,8 @@
                             <div id="loginError" class="error"></div>
                         </div>
                     </form>
-                    <button class="button button-clear tab"  onclick="resetPassword()">выслать новый пароль</button>
-                    <button class="button button-clear tab pinclass hidden"  onclick="resetAuthenticator()">переустановить аутентификатор</button>
+                    <button class="button button-clear tab"  onclick="resetPasswordRest()">поменять пароль</button>
+                    <button class="button button-clear tab pinclass hidden"  onclick="resetAuthenticator()">(пере)установить аутентификатор</button>
                     <div id="resetError" class="error"></div>
                     <br>
 
