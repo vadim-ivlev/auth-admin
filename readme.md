@@ -1,5 +1,7 @@
 # auth-admin
-Internet URL: <https://auth-admin.vercel.app>
+Internet URL: 
+- <https://auth-admin.vercel.app>
+- <https://vadim-ivlev.gitlab.io/auth-admin/>
 
 ## User interface for `auth-proxy` service
 
