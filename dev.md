@@ -20,6 +20,9 @@ Result: <http://localhost:5000>
 
     sh/push.sh
 
+    
+
+    
 
 ## deploy
 
@@ -27,3 +30,8 @@ Result: <http://localhost:5000>
 
 
 Result: <https://auth-admin.vercel.app>
+
+
+    git push gitlab branch:pages
+
+Result: <https://vadim-ivlev.gitlab.io/auth-admin/>
