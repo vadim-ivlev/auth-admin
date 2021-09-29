@@ -565,7 +565,8 @@ function resetPasswordRest(event) {
         errorMessage("resetError", 'Заполните поле имя пользователя или email')
         return false
     }
-    let url = `${model.priv_origin}/reset_password?username=${username}&adminurl=${location.origin}&authurl=${model.priv_origin}`
+    let adminurl = location.origin + location.pathname
+    let url = `${model.priv_origin}/reset_password?username=${username}&adminurl=${adminurl}&authurl=${model.priv_origin}`
     fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
     
     function onSuccess(res){
@@ -592,7 +593,8 @@ function resetAuthenticator(event) {
         errorMessage("resetError", 'Заполните поле имя пользователя или email')
         return false
     }
-    let url = `${model.priv_origin}/reset_authenticator?username=${username}&adminurl=${location.origin}&authurl=${model.priv_origin}`
+    let adminurl = location.origin + location.pathname
+    let url = `${model.priv_origin}/reset_authenticator?username=${username}&adminurl=${adminurl}&authurl=${model.priv_origin}`
     fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
     
     function onSuccess(res){

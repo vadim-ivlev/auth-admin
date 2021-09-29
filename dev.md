@@ -35,3 +35,5 @@ Result: <https://auth-admin.vercel.app>
     git push gitlab branch:pages
 
 Result: <https://vadim-ivlev.gitlab.io/auth-admin/>
+
+staging-gl : <https://vadim-ivlev.gitlab.io/auth-admin/?url=https://gl-auth-staging.rg.ru#user>
