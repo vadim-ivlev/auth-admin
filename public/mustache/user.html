@@ -65,19 +65,32 @@
                 <span> требовать PIN google authenticator</span>
             </div>
             <div>
-                <label>pinset</label>
-                <input name="pinset" type="checkbox"  title="Google Authenticator установлен" {{#user.pinset}}checked{{/user.pinset}} >
-                <span> Google Authenticator установлен на телефоне пользователя</span>
+                <label>Затребована установка Google Authenticator</label>
+                <input name="pinset" type="checkbox" disabled title="Затребована установка Google Authenticator" {{#user.pinhash_temp}}checked{{/user.pinhash_temp}} >
+                <span>Пользователь потребовал установки Google Authenticator</span>
             </div>
             <div>
-                <label><a href="" onclick="toggleElements('#pinhashfields'); return false;">pinhash ▷</a></label>
+                <label><a href="" onclick="toggleElements('#pinhashfields'); return false;">pinhash поля ▷</a></label>
                 <div id="pinhashfields" class="hidden">
-                    <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                        <input name="pinhash" disabled type="text" placeholder="" value="{{user.pinhash}}" oninput="setPinUrl()">
-                        <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать PIN хэш</button>
-                    </span>
-                    <div id="pinUrlContainer" {{^user.pinhash}}style="display:none;"{{/user.pinhash}}>
-                        <a id="newPinUrl" href="/set-authenticator.html#url={{appurl}}&username={{user.username}}&pinhash={{user.pinhash}}" target="_blank">
+                    <div>
+                        <label>pinhash</label>
+                        <input name="pinhash" type="text" disabled title="pinhash" value="{{user.pinhash}}" >
+                    </div> 
+                    <div>       
+                        <label>pinhash_temp</label>
+                        <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                            <input name="pinhash_temp" disabled type="text" placeholder="" value="{{user.pinhash_temp}}" oninput="setPinUrl()">
+                            <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать временный PIN хэш</button>
+                        </div>
+                        <div>
+                            <b>pinhash_temp</b> служит для установки Google Authenticator. 
+                            Если вы изменили его, после сохранения изменений ниже будет показана
+                            ссылка на страницу установки аутентификатора, которую необходимо переслать пользователю. 
+                            Возможность ручной генерации  pinhash_temp оставлена на случай отказа почтовых серверов.
+                        </div>
+                    </div>
+                    <div id="pinUrlContainer" {{^user.pinhash_temp}}style="display:none;"{{/user.pinhash_temp}}>
+                        <a id="newPinUrl" href="/set-authenticator.html#username={{user.username}}&hash={{user.pinhash_temp}}&authurl={{appurl}}" target="_blank">
                             URL установки аутентификатора</a>
                     </div>
                 </div>

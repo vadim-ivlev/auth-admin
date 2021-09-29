@@ -33,13 +33,13 @@
 <body>
 <div id="content">
     <div class="authenticator">
-        <h3 style="text-align: center">Установка Google Authenticator</h3>
+        <h3 style="text-align: center">Установка Google Authenticator для <span id="usernameSpan"></span></h3>
 
         <form id="form" style="display:none;">
             <p>
-                Убедитесь что за вашей спиной никого нет. 
-                Откройте Google Authenticator на вашем телефоне , 
-                нажмите значок (+) и отсканируйте или скопируйте баркод»
+                Убедитесь что за вашей спиной никого нет.<br> 
+                Откройте Google Authenticator на вашем телефоне,<br> 
+                нажмите ⨁ и отсканируйте или скопируйте баркод
             </p>
 
             <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
@@ -56,7 +56,7 @@
                 >
             </div>
  
-            <p>Для проверки введите появившийся на телефоне пин, и нажмите [ установить ]</p>
+            <p>Введите появившийся на телефоне пин, и нажмите [ установить ]</p>
             <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
                 <input id="pincode" name="setAuthenticatorPin" type="text" placeholder="PIN" autocomplete="off">
                 <button id="setAuthenticatorBtn" type="button"  class="button" >Установить</button>
@@ -70,6 +70,7 @@
 
 </div>
 <script>
+    var usernameSpan = document.getElementById('usernameSpan')
     var img = document.getElementById('setAuthenticatorImg')
     var form = document.getElementById('form')
     var manualcode = document.getElementById('manualcode')
@@ -89,8 +90,8 @@
     
 
     var username = ""
-    var pinhash = ""
-    var url = ""
+    var hash = ""
+    var authurl = ""
 
     function onImgError(event) {
         message.innerHTML = `Аутентификатор уже установлен.`
@@ -103,14 +104,16 @@
     }
 
     function getParams(){
-        let hash = location.hash.replace(/^#/,"")
-        let params = new URLSearchParams(hash)
+        let locationHash = location.hash.replace(/^#/,"")
+        let params = new URLSearchParams(locationHash)
         username = params.get('username') || "nouser"
-        pinhash = params.get('pinhash') || "nopinhash"
-        url = params.get('url') || "nourl"
-        console.log(`url=${url} username=${username} pinhash=${pinhash}`)
-        authlink.href=`${url}/admin`
-        img.src = `${url}/authenticator_barcode/${username}/${pinhash}`
+        hash = params.get('hash') || "nohash"
+        authurl = params.get('authurl') || "nourl"
+        console.debug(`authurl=${authurl} username=${username} hash=${hash}`)
+        usernameSpan.innerText = username
+        authlink.href=`/?url=${authurl}`
+        
+        img.src = `${authurl}/authenticator_barcode?username=${username}&hash=${hash}`
         getManualCode()
     }
 
@@ -134,7 +137,7 @@
     function getManualCode(event) {
         if (event) event.preventDefault()
         message.innerHTML = '...'
-        let u = `${url}/authenticator_manualcode/${username}/${pinhash}`
+        let u = `${authurl}/authenticator_manualcode?username=${username}&hash=${hash}`
         fetch(u).then(x => x.json())
         .then( onSuccess ) 
         .catch( err => message.innerHTML=err.message )  
@@ -157,7 +160,7 @@
     function setAuthenticator(event) {
         if (event) event.preventDefault()
         message.innerHTML = '...'
-        let u = `${url}/set_authenticator/${username}/${pincode.value}`
+        let u = `${authurl}/set_authenticator?username=${username}&pin=${pincode.value}`
         fetch(u).then(x => x.json())
         .then( onSuccess ) 
         .catch( err => message.innerHTML=err.message )  

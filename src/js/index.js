@@ -519,7 +519,6 @@ function isPinRequired(username) {
         {
             use_pin 
             pinrequired
-            pinset
         } 
     } `
 
@@ -593,7 +592,7 @@ function resetAuthenticator(event) {
         errorMessage("resetError", 'Заполните поле имя пользователя или email')
         return false
     }
-    let url = `${model.priv_origin}/reset_authenticator/${username}`
+    let url = `${model.priv_origin}/reset_authenticator?username=${username}&adminurl=${location.origin}&authurl=${model.priv_origin}`
     fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
     
     function onSuccess(res){
@@ -628,7 +627,7 @@ function getLoginedUser() {
             id
             pinhash
             pinrequired
-            pinset      
+            pinhash_temp      
         }
     }
     `
@@ -811,7 +810,7 @@ function formListUserSubmit(event) {
               id
               pinhash
               pinrequired
-              pinset        
+              pinhash_temp        
               }
           }
         }        
@@ -839,7 +838,7 @@ function updateUser(event) {
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
-    let pinset =        document.querySelector("#formUser input[name='pinset']").checked
+    let pinhash_temp =  document.querySelector("#formUser input[name='pinhash_temp']").value
     
     var query =`
     mutation {
@@ -853,7 +852,7 @@ function updateUser(event) {
         disabled: ${disabled},
         pinhash: "${pinhash}",
         pinrequired: ${pinrequired},
-        pinset: ${pinset}
+        pinhash_temp: "${pinhash_temp}"
         ) {
             description
             email
@@ -863,7 +862,7 @@ function updateUser(event) {
             id
             pinhash
             pinrequired
-            pinset        
+            pinhash_temp        
           }
 
         }
@@ -891,7 +890,7 @@ function createUser(event) {
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
     let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
-    let pinset =        document.querySelector("#formUser input[name='pinset']").checked
+    let pinhash_temp =  document.querySelector("#formUser input[name='pinhash_temp']").value
     
     var query =`
     mutation {
@@ -904,7 +903,6 @@ function createUser(event) {
         disabled: ${disabled},
         
         pinrequired: ${pinrequired},
-        pinset: ${pinset}
         ) {
             description
             email
@@ -914,7 +912,7 @@ function createUser(event) {
             id
             pinhash
             pinrequired 
-            pinset       
+            pinhash_temp       
           }
 
         }
@@ -951,7 +949,7 @@ function getUser(username) {
             id
             pinhash
             pinrequired
-            pinset     
+            pinhash_temp     
           }
         
         list_app_user_role(
@@ -1281,7 +1279,7 @@ function getAllUsers(event) {
               id
               pinhash
               pinrequired
-              pinset       
+              pinhash_temp       
               }
           }
         }    `
@@ -1432,16 +1430,16 @@ function generatePassword() {
 
 function generatePinHash() {
     let hash = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : newPassword(20,true);
-    document.querySelector("#formUser input[name='pinhash']").value = hash;
+    document.querySelector("#formUser input[name='pinhash_temp']").value = hash;
     setPinUrl();
 }
 
 function setPinUrl(){
-    let input = document.querySelector("#formUser input[name='pinhash']")
+    let input = document.querySelector("#formUser input[name='pinhash_temp']")
     let hash = input.value
     hash = hash.replaceAll(" ","")
     input.value = hash
-    // let url = `/set-authenticator.html#url=${model.appurl}&username=${model.user.username}&pinhash=${model.user.pinhash}`
+    // let url = `/set-authenticator.html#username=${model.user.username}&hash=${model.user.pinhash_temp}&authurl=${model.appurl}`
     // let link = document.getElementById('newPinUrl')
     // link.innerText = url
     // link.href = url
