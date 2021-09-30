@@ -33,7 +33,7 @@
                     <img src="images/graphql-logo.svg" class="graphql-logo">
                 </a>
                 <div style="display: inline-block; margin-left:10px">
-                        <div id="appTitle" class="title">Авторизация <span id="appVersion">01</span></div>
+                        <div id="appTitle" class="title">Авторизация <span id="appName"></span> <span id="appVersion">&lt;</span></div>
                         <div id="appUrl" class="smallinfo"></div>
                 </div>
             </div>
@@ -192,7 +192,8 @@
             google.charts.setOnLoadCallback(getAppstatRest)
             setAppParams()
             getLoginedUser()
-            refreshApp()      
+            refreshApp()   
+            getParams()   
         }
 
 

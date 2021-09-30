@@ -186,6 +186,7 @@ var model = {
     set params(v) {
         this._params = v
         renderTemplateFile('mustache/params.html', model, '#paramsPage')
+        document.getElementById('appName').innerText = v ? 'в ' + v.app_name : '';
     },
     get params() {
         return this._params
@@ -674,6 +675,7 @@ function getParams() {
     var query =`
     query {
         get_params {
+            app_name
             max_attempts
             reset_time
             selfreg
