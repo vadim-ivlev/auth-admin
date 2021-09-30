@@ -111,7 +111,7 @@
         authurl = params.get('authurl') || "nourl"
         console.debug(`authurl=${authurl} username=${username} hash=${hash}`)
         usernameSpan.innerText = username
-        let authpath = location.pathname.replace("set-password.html","")
+        let authpath = location.pathname.replace("set-authenticator.html","")
         authlink.href=`${authpath}?url=${authurl}`
         
         img.src = `${authurl}/authenticator_barcode?username=${username}&hash=${hash}`
