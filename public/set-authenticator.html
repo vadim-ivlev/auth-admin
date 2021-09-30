@@ -65,7 +65,7 @@
 
         <div id="message"> </div>
         <br>
-        <a id="authlink" href="https://auth-proxy.rg.ru/admin"> Вернуться к auth-proxy </a>
+        <a id="authlink" href="/">Вернуться к странице входа</a>
     </div>
 
 </div>
@@ -111,7 +111,7 @@
         authurl = params.get('authurl') || "nourl"
         console.debug(`authurl=${authurl} username=${username} hash=${hash}`)
         usernameSpan.innerText = username
-        authlink.href=`/?url=${authurl}`
+        authlink.href=`?url=${authurl}`
         
         img.src = `${authurl}/authenticator_barcode?username=${username}&hash=${hash}`
         getManualCode()
