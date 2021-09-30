@@ -24,7 +24,7 @@ Result: <http://localhost:5000>
 
     
 
-## deploy to Vercel
+## deploy to vercel.com
 
 Testing <https://auth-admin-test.vercel.app>
 
