@@ -35,6 +35,4 @@ https://gitlab.com/vadim-ivlev/auth-proxy
 
 
 
-deploy
-
-    sh/deploy.sh
+For more read dev.md
