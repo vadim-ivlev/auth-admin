@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
         "adminurl",
+        "emailconfirmed",
+        "emailhash",
+        "fullname",
         "pashash",
         "pincode",
         "pinhash",

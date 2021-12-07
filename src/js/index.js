@@ -534,29 +534,28 @@ function isPinRequired(username) {
 
 
 
-function resetPassword(event) {
-    if (event) event.preventDefault()
+// function resetPassword(event) {
+//     if (event) event.preventDefault()
     
-    errorMessage("resetError", "")
+//     errorMessage("resetError", "")
 
-    let username = document.getElementById("loginUsername").value
+//     let username = document.getElementById("loginUsername").value
 
-    var query =`
-    mutation {
-        generate_password(
-        username: "${username}"
-        ) 
-        }
-    `
-    function onSuccess(res){
-        console.debug("resetPassword: ", res)
-        alert(res.data.generate_password)
-        refreshApp()
-    }   
+//     var query =`
+//     mutation {
+//         generate_password(
+//         username: "${username}"
+//         ) 
+//         }
+//     `
+//     function onSuccess(res){
+//         alert(res.data.generate_password)
+//         refreshApp()
+//     }   
 
-    doGraphQLRequest(query, onSuccess, "resetError")
-    return false       
-}
+//     doGraphQLRequest(query, onSuccess, "resetError")
+//     return false       
+// }
 
 function resetPasswordRest(event) {
     if (event) event.preventDefault()
@@ -578,7 +577,7 @@ function resetPasswordRest(event) {
     }
 
     function onError(err){
-        errorMessage("resetError", "resetPassword " + err)
+        errorMessage("resetError", "resetPasswordRest " + err)
     }
 
     return false 
@@ -630,7 +629,9 @@ function getLoginedUser() {
             id
             pinhash
             pinrequired
-            pinhash_temp      
+            pinhash_temp  
+            emailhash
+            emailconfirmed    
         }
     }
     `
@@ -814,7 +815,9 @@ function formListUserSubmit(event) {
               id
               pinhash
               pinrequired
-              pinhash_temp        
+              pinhash_temp   
+              emailhash
+              emailconfirmed    
               }
           }
         }        
@@ -833,30 +836,25 @@ function formListUserSubmit(event) {
 
 function updateUser(event) {
     if (event) event.preventDefault()
-    let old_username =  document.querySelector("#formUser input[name='old_username']").value
-    let username =      document.querySelector("#formUser input[name='username']").value
+    let id =  document.querySelector("#formUser #user-id").innerText
+    // let old_username =  document.querySelector("#formUser input[name='old_username']").value
+    // let username =      document.querySelector("#formUser input[name='username']").value
     let password =      document.querySelector("#formUser input[name='password']").value
-    let email    =      document.querySelector("#formUser input[name='email']").value
+    // let email    =      document.querySelector("#formUser input[name='email']").value
     let fullname =      document.querySelector("#formUser input[name='fullname']").value
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
-    let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
-    let pinhash_temp =  document.querySelector("#formUser input[name='pinhash_temp']").value
     
     var query =`
     mutation {
         update_user(
-        old_username: "${old_username}",
-        username: "${username}",
+        id: ${id}
         password: "${password}",
-        email: "${email}",
         fullname: "${fullname}",
         description: "${description}",
         disabled: ${disabled},
-        pinhash: "${pinhash}",
-        pinrequired: ${pinrequired},
-        pinhash_temp: "${pinhash_temp}"
+        pinrequired: ${pinrequired}
         ) {
             description
             email
@@ -866,7 +864,9 @@ function updateUser(event) {
             id
             pinhash
             pinrequired
-            pinhash_temp        
+            pinhash_temp      
+            emailhash
+            emailconfirmed    
           }
 
         }
@@ -886,26 +886,22 @@ function updateUser(event) {
 
 function createUser(event) {
     if (event) event.preventDefault()
-    let username =      document.querySelector("#formUser input[name='username']").value
-    let password =      document.querySelector("#formUser input[name='password']").value
+    // let username =      document.querySelector("#formUser input[name='username']").value
     let email    =      document.querySelector("#formUser input[name='email']").value
+    let password =      document.querySelector("#formUser input[name='password']").value
     let fullname =      document.querySelector("#formUser input[name='fullname']").value
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
-    let pinhash =       document.querySelector("#formUser input[name='pinhash']").value
     let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
-    let pinhash_temp =  document.querySelector("#formUser input[name='pinhash_temp']").value
     
     var query =`
     mutation {
         create_user(
-        username: "${username}",
-        password: "${password}",
         email: "${email}",
+        password: "${password}",
         fullname: "${fullname}",
         description: "${description}",
-        disabled: ${disabled},
-        
+        disabled: ${disabled},        
         pinrequired: ${pinrequired},
         ) {
             description
@@ -917,6 +913,8 @@ function createUser(event) {
             pinhash
             pinrequired 
             pinhash_temp       
+            emailhash
+            emailconfirmed    
           }
 
         }
@@ -954,6 +952,8 @@ function getUser(username) {
             pinhash
             pinrequired
             pinhash_temp     
+            emailhash
+            emailconfirmed    
           }
         
         list_app_user_role(
@@ -1283,7 +1283,9 @@ function getAllUsers(event) {
               id
               pinhash
               pinrequired
-              pinhash_temp       
+              pinhash_temp    
+              emailhash
+              emailconfirmed      
               }
           }
         }    `
