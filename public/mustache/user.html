@@ -9,12 +9,12 @@
     <h3>Новый пользователь <b id="newUserEmail">{{oauth2email}}</b></h3>
     {{/user}}
     {{#user}}
-    <h3>Пользователь: <b id="newUserEmail">{{user.email}}</b></h3>
+    <h3>Пользователь &nbsp;&nbsp;<span id="user-id"  title="id">{{user.id}}</span> &nbsp;&nbsp;<b id="newUserEmail">{{user.email}}</b></h3>
     {{/user}}
 
     <form id="formUser" onsubmit="event.preventDefault();">
-        <label>id: <span id="user-id" title="id">{{user.id}}</span></label>
-        <div>
+        <!-- <label></label> -->
+        <div class="hidden">
             <input name="old_username" type="hidden" disabled value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
             <label>username *</label>
             <input name="username" disabled type="text" autocomplete="off" placeholder="уникальный идентификатор пользователя"
@@ -23,7 +23,7 @@
         </div>
 
 
-        <div {{#user}}class="hidden"{{/user}}>
+        <div>
             <label>Email</label>
             <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
             <input name="email" placeholder="емайл" {{#user}}disabled{{/user}}

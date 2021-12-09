@@ -419,7 +419,7 @@ function loginGraphQLFormSubmit(event) {
     let captcha =  document.getElementById("loginCaptcha").value
     let pin =  document.getElementById("loginPin").value
     if (username == "") {
-        errorMessage("loginError", 'Заполните поле имя пользователя или email')
+        errorMessage("loginError", 'Заполните поле email')
         return
     }
 
@@ -562,7 +562,7 @@ function resetPasswordRest(event) {
     errorMessage("resetError", "")
     let username = document.getElementById("loginUsername").value
     if (!username) {
-        errorMessage("resetError", 'Заполните поле имя пользователя или email')
+        errorMessage("resetError", 'Заполните поле email')
         return false
     }
     let adminurl = location.origin + location.pathname
@@ -590,7 +590,7 @@ function resetAuthenticator(event) {
     errorMessage("resetError", "")
     let username = document.getElementById("loginUsername").value
     if (!username) {
-        errorMessage("resetError", 'Заполните поле имя пользователя или email')
+        errorMessage("resetError", 'Заполните поле email')
         return false
     }
     let adminurl = location.origin + location.pathname
@@ -836,7 +836,7 @@ function formListUserSubmit(event) {
 
 function updateUser(event) {
     if (event) event.preventDefault()
-    let id =  document.querySelector("#formUser #user-id").innerText
+    let id =  document.querySelector("#user-id").innerText
     // let old_username =  document.querySelector("#formUser input[name='old_username']").value
     // let username =      document.querySelector("#formUser input[name='username']").value
     let password =      document.querySelector("#formUser input[name='password']").value
@@ -876,7 +876,7 @@ function updateUser(event) {
         alert("update_user success")
         refreshData()
         model.user = res.data["update_user"]
-        getUser(username)
+        getUser(model.user.username)
     }
 
     doGraphQLRequest(query, onSuccess, "userError")
@@ -925,10 +925,11 @@ function createUser(event) {
         refreshData()
         model.user = res.data["create_user"]
         if (!model.logined) {
-            alert(`"${username}" is created.` )
+            alert(`"${model.user.username}" is created.` )
             showPage('login',true)
+        } else {
+            getUser(model.user.username)
         }
-        getUser(username)
     }
 
     doGraphQLRequest(query, onSuccess, "userError")
