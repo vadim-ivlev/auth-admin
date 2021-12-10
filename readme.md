@@ -1,7 +1,8 @@
 # auth-admin
-Internet URL: 
-- <https://auth-admin.vercel.app>
-- <https://vadim-ivlev.gitlab.io/auth-admin/>
+
+<https://auth-admin.vercel.app>
+
+frozen version: <https://auth-admin-classic.vercel.app>
 
 ## User interface for `auth-proxy` service
 
@@ -13,26 +14,11 @@ Internet URL:
 If no parameters are present in the browser URL <https://auth-admin.vercel.app>
 the app uses a default auth-proxy service <https://auth-proxy.rg.ru>.
 
-You can add optional parameters the URL to change auth-proxy service and other things:
-
 
     https://auth-admin.vercel.app?url=auth_roxy_url&lang=en&theme=theme_url&css=css_url
 
-- `url` - relative or absolute URL of auth-proxy service. Default https://auth-proxy.rg.ru.
+- `auth_roxy_url` - relative or absolute URL of auth-proxy service. Default https://auth-proxy.rg.ru.
 - `lang` - language of user interface. Default en.
 - `theme`- relative or absolute URL of color theme. 
 - `css` - relative or absolute URL of CSS style sheet. 
 
-# For developers
-
-Launch
-
-    npm run dev
-
-then open <http://localhost:5000/> 
-or <http://localhost:5000/?url=http://localhost:4400#apps> if you run  auth-proxy locally:
-https://gitlab.com/vadim-ivlev/auth-proxy
-
-
-
-For more read dev.md
