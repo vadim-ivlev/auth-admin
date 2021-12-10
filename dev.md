@@ -27,6 +27,8 @@ Result: <http://localhost:5000>
 Deploy to <https://auth-admin-classic.vercel.app>
 
     sh/deploy.sh
+or
+    git push gitlab classic:vercel-classic
 
 
 ---------------------------------

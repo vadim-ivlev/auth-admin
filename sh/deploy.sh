@@ -3,4 +3,4 @@
 # vercel
 # vercel --prod
 
-git push gitlab branch:vercel-classic
+git push gitlab classic:vercel-classic
