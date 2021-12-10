@@ -24,6 +24,16 @@ Result: <http://localhost:5000>
 
 ## deploy to vercel.com
 
+Deploy to <https://auth-admin-classic.vercel.app>
+
+    sh/deploy.sh
+
+
+---------------------------------
+
+
+
+
 Deploy to <https://auth-admin.vercel.app>
 
     git push gitlab branch:vercel
