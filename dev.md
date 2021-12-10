@@ -41,10 +41,6 @@ Deploy to <https://auth-admin-classic.vercel.app>
 
 
 
-
-
-Testing <https://auth-admin-test.vercel.app>
-
 staging-gl : <https://auth-admin-test.vercel.app/?url=https://gl-auth-staging.rg.ru>
 
 
