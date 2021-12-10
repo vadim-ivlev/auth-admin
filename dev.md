@@ -1,4 +1,6 @@
 
+# For developer
+
 ## install
 
     npm i
@@ -22,7 +24,7 @@ Result: <http://localhost:5000>
 
     
 
-## deploy to vercel.com
+## Deploy to Vercel
 
 Deploy to <https://auth-admin-classic.vercel.app>
 
@@ -58,7 +60,7 @@ staging-gl : <https://auth-admin-test.vercel.app/?url=https://gl-auth-staging.rg
 
 
 
-## deploy to Gitlab
+## Deploy to Gitlab
 
 Result: <https://vadim-ivlev.gitlab.io/auth-admin/>
 
