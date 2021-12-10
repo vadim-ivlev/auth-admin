@@ -23,7 +23,7 @@ Result: <http://localhost:5000>
 
 ## deploy
 
-    sh/publish.sh
+    sh/deploy.sh
 
 
 Result: <https://auth-admin.vercel.app>
