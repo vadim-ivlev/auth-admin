@@ -1,4 +1,4 @@
 #!/bin/bash
-npm run build
-vercel
-vercel --prod
+# vercel
+# vercel --prod
+git push gitlab branch:vercel

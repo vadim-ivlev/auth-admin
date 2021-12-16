@@ -20,14 +20,15 @@ Result: <http://localhost:5000>
 
     sh/push.sh
 
-    
 
 ## deploy to vercel.com
 
 Deploy to <https://auth-admin.vercel.app>
 
     sh/deploy.sh
-or 
+
+or if changes aree made
+
     git push gitlab branch:vercel
 
 
