@@ -33,7 +33,7 @@
                     <img src="images/graphql-logo.svg" class="graphql-logo">
                 </a>
                 <div style="display: inline-block; margin-left:10px">
-                        <div id="appTitle" class="title">Авторизация</div>
+                        <div id="appTitle" class="title">Авторизация <span id="appName"></span> <span id="appVersion">pushed by hands</span></div>
                         <div id="appUrl" class="smallinfo"></div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                     <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
                     <a href="" id="usersTab" class="button button-clear tab"  onclick="searchUsers(); return showPage('users');">Пользователи</a>
                     <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
-                    <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"  onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
+                    ✎ <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"  onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
                     <a href="" id="logoutButton" class="button button-clear tab"  onclick="return logout()">Выход</a>
                     <a href="" id="settingsButton" class="button button-clear tab settings hidden"  title="настройки" onclick="getParams(); getAppstatRest(); return showPage('params',true)"><!--&#9776;&vellip; -->&#x2699;</a>
                 </span>
@@ -58,17 +58,23 @@
             <div id="appPage"   class="page"></div>
             
             <div id="loginPage" class="page">
+                
                 <div class="flexed max-width-400">
                     <h2>Вход</h2>
                     <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                         <div>
                             <!-- <label class="param-name">username</label> -->
                             <input type="submit" class="micro" value=".">
-                            <input id="loginUsername" name="username" type="text" placeholder="имя или email" onchange="isCaptchaRequired(event)">
+                            <input id="loginUsername" name="username" type="text" placeholder="email" onchange="checkUserRequirements(event)">
                         </div>
                         <div>
                             <!-- <label class="param-name">password</label> -->
                             <input id="loginPassword" name="password" type="password" placeholder="пароль">
+                        </div>
+
+                        <div id="pin" class="pinclass hidden">
+                            <!-- <label class="param-name">password</label> -->
+                            <input id="loginPin" name="pin" type="text" autocomplete="off" placeholder="PIN из Google аутентификатора">
                         </div>
 
                         <div id="captcha">
@@ -80,14 +86,21 @@
                             </div>
                         </div>
                             
-                        
+
+
+
                         <div style="text-align: right;">
                             <!-- <label class="param-name">&nbsp</label> -->
                             <input type="submit" class="button button-outline" value="Вход">
                             <div id="loginError" class="error"></div>
                         </div>
                     </form>
-                    <button class="button button-clear tab"  onclick="generateNewPassword()">выслать новый пароль</button>
+                    <button class="button button-clear tab"  onclick="resetPasswordRest()">поменять пароль</button>
+                    <button class="button button-clear tab pinclass hidden"  onclick="resetAuthenticator()">(пере)установить аутентификатор</button>
+                    <div id="resetError" class="error"></div>
+                    <br>
+
+
                     <div id="socialIcons" class="transparent"></div>
                     <div id="socialLoginError" class="error"></div>
         
@@ -95,7 +108,6 @@
                     <button id="selfRegButton" class="button button-clear tab hidden"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span id="oauth2email"></span></button>
                 </div>
                 <div id="selfRegHelp" class="hidden" style="text-align: center;">
-                    <br>
                     <span id="selfRegHelpText">
                         Чтобы зарегистрировать пользователя
                         иcпользуя учетную запись социальной сети, 
@@ -173,6 +185,24 @@
     </div>
 
     <script src="js/bundle.js"></script>
+    <script>
+
+        function init() {
+            renderTemplateFile('mustache/params.html', model, '#paramsPage')
+            google.charts.load('current', {'packages':['gauge']})
+            google.charts.setOnLoadCallback(getAppstatRest)
+            setAppParams()
+            getLoginedUser()
+            refreshApp()   
+            getParams()   
+        }
+
+
+        // O N   P A G E   L O A D  ****************************************************************************************
+
+        init()
+
+    </script>
 </body>
 
 </html>

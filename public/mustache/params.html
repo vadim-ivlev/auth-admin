@@ -32,6 +32,11 @@
         </div>
 
         <div>
+            <label  style="display:inline">use_pin</label>&nbsp;&nbsp;<span>Использовать PIN google authenticator</span>
+            <br><input name="use_pin" type="checkbox"  {{#params.use_pin}}checked{{/params.use_pin}}>
+        </div>
+
+        <div>
             <label style="display:inline">max_attempts</label>&nbsp;&nbsp;<span>Максимальное число ошибок ввода пароля</span>
             <input name="max_attempts" type="number" title="Максимальное число ошибок ввода пароля"  value="{{params.max_attempts}}">
         </div>

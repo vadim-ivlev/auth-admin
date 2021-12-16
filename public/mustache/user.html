@@ -6,28 +6,40 @@
             Не меняйте email если вы хотите входить в систему через эту социальную сеть.
         </div>
         {{/oauth2id}}
-    <h2>Новый пользователь <b id="newUserName">{{oauth2id}}</b></h2>
+    <h3>Новый пользователь <b id="newUserEmail">{{oauth2email}}</b></h3>
     {{/user}}
     {{#user}}
-    <h2>Пользователь # {{user.id}} : <b id="newUserName">{{user.username}}</b></h2>
+    <h3>Пользователь &nbsp;&nbsp;<span id="user-id"  title="id">{{user.id}}</span> &nbsp;&nbsp;<b id="newUserEmail">{{user.email}}</b></h3>
     {{/user}}
 
     <form id="formUser" onsubmit="event.preventDefault();">
-        <div>
-            <input name="old_username" type="hidden" value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
-            <label >username *</label>
-            <input name="username" type="text" placeholder="уникальный идентификатор пользователя"
+        <!-- <label></label> -->
+        <div class="hidden">
+            <input name="old_username" type="hidden" disabled value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
+            <label>username *</label>
+            <input name="username" disabled type="text" autocomplete="off" placeholder="уникальный идентификатор пользователя"
             oninput="document.getElementById('newUserName').innerText = event.target.value; "
             value="{{#user}}{{user.username}}{{/user}}{{^user}}{{oauth2id}}{{/user}}">
-            <!-- {{#user}} disabled class="grayed" {{/user}} -->
-            <!-- value="{{user.username || oauth2id}}"> -->
+        </div>
 
+
+        <div>
+            <label>Email</label>
+            <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
+            <input name="email" placeholder="емайл" {{#user}}disabled{{/user}}
+            oninput="document.getElementById('newUserEmail').innerText = event.target.value; "
+            value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
         </div>
         <div>
-            <label >password (больше 5 символов) {{^user}}*{{/user}} </label>
+            <input name="emailconfirmed" type="checkbox" disabled title="Email подтвержден" {{#user.emailconfirmed}}checked{{/user.emailconfirmed}} >
+            <span>Email подтвержден</span>
+        </div>
+
+        <div>
+            <label>password (больше 5 символов) {{^user}}*{{/user}} </label>
             <span style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
-                <input name="password" type="password" placeholder="новый пароль" value="{{user.password}}">
-                <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button>
+                <input name="password" type="password" autocomplete="new-password" placeholder="новый пароль" value="{{user.password}}">
+                <!-- <button type="button"  class="button button-outline"  onmousedown="showPassword();generatePassword()" onmouseup="hidePassword()" onmouseout="hidePassword()">сгенерировать</button> -->
             </span>
             {{#user}}
             <div>
@@ -35,28 +47,68 @@
             </div>
             {{/user}}
         </div>
-        <div>
-            <label >email</label>
-            <!-- <input name="email" placeholder="емайл" value="{{user.email}}"> -->
-            <input name="email" placeholder="емайл" value="{{#user}}{{user.email}}{{/user}}{{^user}}{{oauth2email}}{{/user}}">
-        </div>
 
         <div>
-            <label >fullname</label>
+            <label>fullname</label>
             <!-- <input name="fullname"  placeholder="фамилия имя" value="{{user.fullname}}"> -->
             <input name="fullname"  placeholder="фамилия имя" value="{{#user}}{{user.fullname}}{{/user}}{{^user}}{{oauth2name}}{{/user}}">
         </div>
         <div>
-            <label >description </label>
+            <label>description </label>
             <textarea name="description" placeholder="дополнительная информация" >{{user.description}}</textarea>
         </div>
         
         <div class="{{^isAdmin}}hidden{{/isAdmin}}">
-            <label >disabled</label>
+            <label>disabled</label>
             <input name="disabled" type="number" placeholder="Если не равно 0, пользователь отключен" value="{{#user}}{{user.disabled}}{{/user}}{{^user}}0{{/user}}">
             <span>Если не равно 0, пользователь отключен</span>
         </div>
+        <br>
+        <!-- скрываем поля PIN от рядовых пользователей -->
+        <div class="{{^isAdmin}}hidden{{/isAdmin}}">
+            <div>
+                <label>pinrequired</label>
+                <input name="pinrequired" type="checkbox"  title="требовать PIN google authenticator" {{#user.pinrequired}}checked{{/user.pinrequired}} >
+                <span> требовать PIN google authenticator</span>
+            </div>
+            <div>
+                <label>Затребована установка Google Authenticator</label>
+                <input name="pinset" type="checkbox" disabled title="Затребована установка Google Authenticator" {{#user.pinhash_temp}}checked{{/user.pinhash_temp}} >
+                <span>Пользователь потребовал установки Google Authenticator</span>
+            </div>
+<!-- 
+            <div>
+                <label><a href="" onclick="toggleElements('#pinhashfields'); return false;" style="opacity:0.3;">pinhash поля ▷</a></label>
+                <div id="pinhashfields" class="hidden">
+                    <div>
+                        <label>pinhash</label>
+                        <input name="pinhash" type="text" disabled title="pinhash" value="{{user.pinhash}}" >
+                    </div> 
+                    <div>       
+                        <label>pinhash_temp</label>
+                        <div style="display: grid; grid-template-columns: 1fr auto; grid-column-gap: 5px;">
+                            <input name="pinhash_temp" disabled type="text" placeholder="" value="{{user.pinhash_temp}}" oninput="setPinUrl()">
+                            <button type="button" class="button button-outline"  onclick="generatePinHash()">сгенерировать временный PIN хэш</button>
+                        </div>
+                        <div>
+                            <b>pinhash_temp</b> служит для установки Google Authenticator. 
+                            Если вы изменили его, после сохранения изменений ниже будет показана
+                            ссылка на страницу установки аутентификатора, которую необходимо переслать пользователю. 
+                            Возможность ручной генерации  pinhash_temp оставлена на случай отказа почтовых серверов.
+                        </div>
+                    </div>
+                    <div id="pinUrlContainer" {{^user.pinhash_temp}}style="display:none;"{{/user.pinhash_temp}}>
+                        <a id="newPinUrl" href="/set-authenticator.html#username={{user.username}}&hash={{user.pinhash_temp}}&authurl={{appurl}}" target="_blank">
+                            URL установки аутентификатора</a>
+                    </div>
+                </div>
+            </div> 
+-->
+
+
+        </div>
         
+        <br>
         <div style="text-align: right;">
             <label></label>
             {{^user}}

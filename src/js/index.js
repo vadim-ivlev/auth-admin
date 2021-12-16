@@ -2,8 +2,6 @@
 
 var model = {
     //---------------------------
-    // if debug == true logs go to console.
-    debug: false,
     oauth2email: "",
     oauth2name: "",
     oauth2id: "",
@@ -188,6 +186,7 @@ var model = {
     set params(v) {
         this._params = v
         renderTemplateFile('mustache/params.html', model, '#paramsPage')
+        document.getElementById('appName').innerText = v ? 'в ' + v.app_name : '';
     },
     get params() {
         return this._params
@@ -374,12 +373,18 @@ function sortUsersBy(prop, asStings = true) {
     return false
 }
 
-
+function errorMessage(errorElementID, errMsg) {
+    console.debug(errMsg)
+    if (errorElementID) {
+        document.getElementById(errorElementID).innerText = errMsg
+    }
+}
 
 // R E Q U E S T S  *******************************************************
 
-function doGraphQLRequest(query, responseHandler, errorElementID) {
+function doGraphQLRequest(query, responseHandler, errorElementID="loginError") {
     fetch(model.appurl+'/graphql', { 
+        // headers: new Headers({cache: "no-cache"}),
         method: 'POST', 
         credentials: 'include', 
         body: JSON.stringify({ query: query, variables: {} }) 
@@ -391,17 +396,15 @@ function doGraphQLRequest(query, responseHandler, errorElementID) {
             new Error(res)
         })
         .then((res) => {
-            model.debug && console.log(res)
+            console.debug("doGraphQLRequest() result=",res)
             if (res.errors){
-                model.debug && console.log(res.errors[0].message)
-                if (errorElementID) {
-                    document.getElementById(errorElementID).innerText = res.errors[0].message
-                }
+                let errMsg = res.errors[0].message
+                errorMessage(errorElementID, errMsg)
                 return
             }
             responseHandler && responseHandler(res)
         })
-        .catch( e => console.error(e) )    
+        .catch( e =>  errorMessage(errorElementID, "doGraphQLRequest: " +e ))    
     
 }
 
@@ -414,7 +417,13 @@ function loginGraphQLFormSubmit(event) {
     let username = document.getElementById("loginUsername").value
     let password = document.getElementById("loginPassword").value
     let captcha =  document.getElementById("loginCaptcha").value
-    
+    let pin =  document.getElementById("loginPin").value
+    if (username == "") {
+        errorMessage("loginError", 'Заполните поле email')
+        return
+    }
+
+    isPinRequired(username)
     
 
     let query =`
@@ -422,14 +431,15 @@ function loginGraphQLFormSubmit(event) {
         login(
         username: "${username}",
         password: "${password}",
-        captcha: "${captcha}"
+        captcha: "${captcha}",
+        pin: "${pin}"
         )
         }    
     `
     function onSuccess(res){
         getLoginedUser()
     }   
-
+    
     doGraphQLRequest(query, onSuccess, "loginError")
     clearLoginForm()
     return false       
@@ -475,9 +485,16 @@ function isSelfRegAllowed(event) {
     return false       
 }
 
-function isCaptchaRequired(event) {
+function checkUserRequirements(event) {
     if (event) event.preventDefault()
     let username = document.getElementById("loginUsername").value   
+    isCaptchaRequired(username)
+    isPinRequired(username)
+    return false 
+}
+
+
+function isCaptchaRequired(username) {
     var query =`  query { is_captcha_required(  username: "${username}" ) 
         {
             is_required 
@@ -489,35 +506,109 @@ function isCaptchaRequired(event) {
         model.captchaRequired = res.data.is_captcha_required.is_required
         if (model.captchaRequired) {
             getNewCaptcha()
-            model.debug && console.log("Captcha IS required")
+            console.debug("Captcha IS required")
         }
     }
        
-    doGraphQLRequest(query, onSuccess)
-    return false       
+    doGraphQLRequest(query, onSuccess)   
+}
+
+function isPinRequired(username) {
+    errorMessage("loginError", "")
+    
+    var query =`  query { is_pin_required(  username: "${username}" ) 
+        {
+            use_pin 
+            pinrequired
+        } 
+    } `
+
+    function onSuccess(res){
+        let r = res.data.is_pin_required;
+        console.debug("isPinRequired()->", r);
+        (r.use_pin && r.pinrequired) ? showElements(".pinclass") : hideElements(".pinclass"); 
+    }
+       
+    doGraphQLRequest(query, onSuccess)   
 }
 
 
 
-function generateNewPassword(event) {
+// function resetPassword(event) {
+//     if (event) event.preventDefault()
+    
+//     errorMessage("resetError", "")
+
+//     let username = document.getElementById("loginUsername").value
+
+//     var query =`
+//     mutation {
+//         generate_password(
+//         username: "${username}"
+//         ) 
+//         }
+//     `
+//     function onSuccess(res){
+//         alert(res.data.generate_password)
+//         refreshApp()
+//     }   
+
+//     doGraphQLRequest(query, onSuccess, "resetError")
+//     return false       
+// }
+
+function resetPasswordRest(event) {
     if (event) event.preventDefault()
-
+    errorMessage("resetError", "")
     let username = document.getElementById("loginUsername").value
-
-    var query =`
-    mutation {
-        generate_password(
-        username: "${username}"
-        ) 
-        }
-    `
+    if (!username) {
+        errorMessage("resetError", 'Заполните поле email')
+        return false
+    }
+    let adminurl = location.origin + location.pathname
+    let url = `${model.priv_origin}/reset_password?username=${username}&adminurl=${adminurl}&authurl=${model.priv_origin}`
+    fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
+    
     function onSuccess(res){
-        alert(res.data.generate_password)
-        refreshApp()
-    }   
+        errorMessage("resetError", res.error)
+        if (res.result) {
+             alert(res.result)
+        } 
+    }
 
-    doGraphQLRequest(query, onSuccess)
-    return false       
+    function onError(err){
+        errorMessage("resetError", "resetPasswordRest " + err)
+    }
+
+    return false 
+}
+
+
+
+function resetAuthenticator(event) {
+    if (event) event.preventDefault()
+    errorMessage("resetError", "")
+    let username = document.getElementById("loginUsername").value
+    if (!username) {
+        errorMessage("resetError", 'Заполните поле email')
+        return false
+    }
+    let adminurl = location.origin + location.pathname
+    let url = `${model.priv_origin}/reset_authenticator?username=${username}&adminurl=${adminurl}&authurl=${model.priv_origin}`
+    fetch(url).then( r => r.json()).then(onSuccess).catch(onError)
+    
+    function onSuccess(res){
+        errorMessage("resetError", res.error)
+        if (res.result) {
+             alert(res.result)
+        } 
+    }
+
+    function onError(err){
+        errorMessage("resetError", "resetAuthenticator "+err)
+    }
+
+    return false 
 }
 
 
@@ -536,6 +627,11 @@ function getLoginedUser() {
             username
             disabled
             id
+            pinhash
+            pinrequired
+            pinhash_temp  
+            emailhash
+            emailconfirmed    
         }
     }
     `
@@ -580,10 +676,12 @@ function getParams() {
     var query =`
     query {
         get_params {
+            app_name
             max_attempts
             reset_time
             selfreg
             use_captcha
+            use_pin
           }
         }
     `
@@ -602,6 +700,7 @@ function setParams(event) {
     if (event) event.preventDefault()
     let selfreg =       document.querySelector("#formParams input[name='selfreg']").checked
     let use_captcha =   document.querySelector("#formParams input[name='use_captcha']").checked
+    let use_pin =       document.querySelector("#formParams input[name='use_pin']").checked
     let max_attempts =  document.querySelector("#formParams input[name='max_attempts']").value
     let reset_time =    document.querySelector("#formParams input[name='reset_time']").value
     
@@ -610,6 +709,7 @@ function setParams(event) {
         set_params(
         selfreg:      ${selfreg},
         use_captcha:  ${use_captcha},
+        use_pin:      ${use_pin},
         max_attempts: ${max_attempts},
         reset_time:   ${reset_time}
         ) {
@@ -617,6 +717,7 @@ function setParams(event) {
             reset_time
             selfreg
             use_captcha
+            use_pin
           }
         }
     `
@@ -712,7 +813,12 @@ function formListUserSubmit(event) {
               username
               disabled
               id
-            }
+              pinhash
+              pinrequired
+              pinhash_temp   
+              emailhash
+              emailconfirmed    
+              }
           }
         }        
     `
@@ -730,24 +836,25 @@ function formListUserSubmit(event) {
 
 function updateUser(event) {
     if (event) event.preventDefault()
-    let old_username =  document.querySelector("#formUser input[name='old_username']").value
-    let username =      document.querySelector("#formUser input[name='username']").value
+    let id =  document.querySelector("#user-id").innerText
+    // let old_username =  document.querySelector("#formUser input[name='old_username']").value
+    // let username =      document.querySelector("#formUser input[name='username']").value
     let password =      document.querySelector("#formUser input[name='password']").value
-    let email    =      document.querySelector("#formUser input[name='email']").value
+    // let email    =      document.querySelector("#formUser input[name='email']").value
     let fullname =      document.querySelector("#formUser input[name='fullname']").value
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
     
     var query =`
     mutation {
         update_user(
-        old_username: "${old_username}",
-        username: "${username}",
+        id: ${id}
         password: "${password}",
-        email: "${email}",
         fullname: "${fullname}",
         description: "${description}",
-        disabled: ${disabled}
+        disabled: ${disabled},
+        pinrequired: ${pinrequired}
         ) {
             description
             email
@@ -755,6 +862,11 @@ function updateUser(event) {
             username
             disabled
             id
+            pinhash
+            pinrequired
+            pinhash_temp      
+            emailhash
+            emailconfirmed    
           }
 
         }
@@ -764,7 +876,7 @@ function updateUser(event) {
         alert("update_user success")
         refreshData()
         model.user = res.data["update_user"]
-        getUser(username)
+        getUser(model.user.username)
     }
 
     doGraphQLRequest(query, onSuccess, "userError")
@@ -774,22 +886,23 @@ function updateUser(event) {
 
 function createUser(event) {
     if (event) event.preventDefault()
-    let username =      document.querySelector("#formUser input[name='username']").value
-    let password =      document.querySelector("#formUser input[name='password']").value
+    // let username =      document.querySelector("#formUser input[name='username']").value
     let email    =      document.querySelector("#formUser input[name='email']").value
+    let password =      document.querySelector("#formUser input[name='password']").value
     let fullname =      document.querySelector("#formUser input[name='fullname']").value
     let description =   document.querySelector("#formUser *[name='description']").value
     let disabled =      document.querySelector("#formUser input[name='disabled']").value
+    let pinrequired =   document.querySelector("#formUser input[name='pinrequired']").checked
     
     var query =`
     mutation {
         create_user(
-        username: "${username}",
-        password: "${password}",
         email: "${email}",
+        password: "${password}",
         fullname: "${fullname}",
         description: "${description}",
-        disabled: ${disabled}
+        disabled: ${disabled},        
+        pinrequired: ${pinrequired},
         ) {
             description
             email
@@ -797,6 +910,11 @@ function createUser(event) {
             username
             disabled
             id
+            pinhash
+            pinrequired 
+            pinhash_temp       
+            emailhash
+            emailconfirmed    
           }
 
         }
@@ -807,10 +925,11 @@ function createUser(event) {
         refreshData()
         model.user = res.data["create_user"]
         if (!model.logined) {
-            alert(`"${username}" is created.` )
+            alert(`"${model.user.username}" is created.` )
             showPage('login',true)
+        } else {
+            getUser(model.user.username)
         }
-        getUser(username)
     }
 
     doGraphQLRequest(query, onSuccess, "userError")
@@ -831,6 +950,11 @@ function getUser(username) {
             username
             disabled
             id
+            pinhash
+            pinrequired
+            pinhash_temp     
+            emailhash
+            emailconfirmed    
           }
         
         list_app_user_role(
@@ -1158,7 +1282,12 @@ function getAllUsers(event) {
               description
               disabled
               id
-            }
+              pinhash
+              pinrequired
+              pinhash_temp    
+              emailhash
+              emailconfirmed      
+              }
           }
         }    `
 
@@ -1254,6 +1383,10 @@ function filterRows(selector, value ){
     });
 }
 
+function toggleElements(selector) {
+    document.querySelectorAll(selector).forEach(e => e.classList.toggle("hidden"));
+}
+
 function hideElements(selector) {
     document.querySelectorAll(selector).forEach(e => e.classList.add("hidden"));
 }
@@ -1287,19 +1420,37 @@ function removeQueryStringFromBrowserURL() {
     history.replaceState(null,null,url2)   
 }
 
+function newPassword (n, numbers=false) {
+    let pickSymbol =(s) => s[Math.floor(Math.random()*s.length)]
+    var symbolSets =numbers? ["0123456789"]:["bcdfghjklmnpqrstvwxz","aeiou"] 
+    var password = ''
+    for (let i=0; i<n; i++){
+        password += pickSymbol(symbolSets[i%symbolSets.length])
+    }
+    return password
+}
+
 
 function generatePassword() {
-    function newPassword (n) {
-        let pickSymbol =(s) => s[Math.floor(Math.random()*s.length)]
-        var symbolSets =["bcdfghjklmnpqrstvwxz","aeiou"] 
-        var password = ''
-        for (let i=0; i<n; i++){
-            password += pickSymbol(symbolSets[i%symbolSets.length])
-        }
-        return password
-    }
-
     document.querySelector("#formUser input[name='password']").value = newPassword(9)
+}
+
+function generatePinHash() {
+    let hash = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : newPassword(20,true);
+    document.querySelector("#formUser input[name='pinhash_temp']").value = hash;
+    setPinUrl();
+}
+
+function setPinUrl(){
+    let input = document.querySelector("#formUser input[name='pinhash_temp']")
+    let hash = input.value
+    hash = hash.replaceAll(" ","")
+    input.value = hash
+    // let url = `/set-authenticator.html#username=${model.user.username}&hash=${model.user.pinhash_temp}&authurl=${model.appurl}`
+    // let link = document.getElementById('newPinUrl')
+    // link.innerText = url
+    // link.href = url
+    document.getElementById('pinUrlContainer').style.display= "none"
 }
 
 function buildSocialIcons(url) {
@@ -1339,7 +1490,7 @@ function renderOauthProvidersJSON(jsn) {
     
     
     if (icons.length > 0){
-        el.innerHTML = '<div class="socialHeader">войти через</div>' + icons.join(' ')
+        el.innerHTML = '<div class="socialHeader">войти через социальную сеть</div>' + icons.join(' ')
         showElements("#selfRegHelpText")
         removeClass('#socialIcons', 'transparent')
     } else {
@@ -1415,6 +1566,7 @@ function clearLoginForm() {
     document.getElementById("loginUsername").value = ""
     document.getElementById("loginPassword").value = ""
     document.getElementById("loginCaptcha").value = ""
+    document.getElementById("loginPin").value = ""
     document.getElementById("loginError").innerText = ""
     document.getElementById("socialLoginError").innerHTML = ""
     document.getElementById("oauth2email").innerHTML = ""
@@ -1474,7 +1626,7 @@ function refreshApp() {
 
 
 window.onhashchange = function(event) {
-    model.debug && console.log("onhashchange", event)
+    console.debug("onhashchange ", event)
     var newpage = event.newURL.split('#')[1]
     if (newpage) 
         showPage(newpage)
@@ -1493,7 +1645,8 @@ function setAppParams(){
     var alrt = model.urlParams.get('alert')
     if (alrt) alert(alrt)
     document.getElementById('socialLoginError').innerHTML = oauth2error
-    if (css) document.getElementById('theme').href = css
+    if (css) 
+        document.getElementById('theme').href = css
     model.appurl = url ? url : 'https://auth-proxy.rg.ru'
     removeQueryStringFromBrowserURL()
     //?
@@ -1501,18 +1654,3 @@ function setAppParams(){
 }
 
 
-
-function init() {
-    renderTemplateFile('mustache/params.html', model, '#paramsPage')
-    google.charts.load('current', {'packages':['gauge']})
-    google.charts.setOnLoadCallback(getAppstatRest)
-    
-    setAppParams()
-    getLoginedUser()
-    refreshApp()      
-}
-
-
-// O N   P A G E   L O A D  ****************************************************************************************
-
-init()
