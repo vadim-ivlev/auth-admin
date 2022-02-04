@@ -453,7 +453,7 @@ function logoutGraphQLFormSubmit(event) {
     query {
         logout {
             message
-            username
+            email
           }
         }
     `
