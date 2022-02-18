@@ -9,7 +9,7 @@
     <h3>Новый пользователь <b id="newUserEmail">{{oauth2email}}</b></h3>
     {{/user}}
     {{#user}}
-    <h3>Пользователь &nbsp;&nbsp;<span id="user-id"  title="id">{{user.id}}</span> &nbsp;&nbsp;<b id="newUserEmail">{{user.email}}</b></h3>
+    <h2>Пользователь &nbsp;&nbsp;<span id="user-id"  title="id">{{user.id}}</span> &nbsp;&nbsp;<b id="newUserEmail">{{user.email}}</b></h2>
     {{/user}}
 
     <form id="formUser" onsubmit="event.preventDefault();">
@@ -132,9 +132,7 @@
 <div class="flexed">
 
     <div class="max-max-auto">
-        <h2>Приложения пользователя # {{user.id}} :</h2> 
-        <h2><b>{{user.username}}</b></h2>
-        <span></span>
+        <h2>Приложения и роли пользователя <b>{{user.email}}</b>:</h2> 
         <input placeholder="Фильтр" oninput="filterRows('#UserApps .filtered-row', this.value )">
     </div>
         
@@ -200,10 +198,6 @@
             </td>
         </tr>
         {{/isAdmin}}
-
-
-
-
 
     </table>
 </div>

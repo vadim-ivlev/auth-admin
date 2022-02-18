@@ -27,7 +27,7 @@ Deploy to <https://auth-admin.vercel.app>
 
     sh/deploy.sh
 
-or if changes aree made
+or if changes were in a brunch
 
     git push gitlab branch:vercel
 

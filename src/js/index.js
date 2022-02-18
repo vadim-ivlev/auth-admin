@@ -5,7 +5,6 @@ var model = {
     oauth2email: "",
     oauth2name: "",
     oauth2id: "",
-
     //---------------------------
     // url of GraphQL endpoint = appurl + '/graphql'
     priv_origin: null, 
@@ -302,7 +301,6 @@ function renderTemplateFile(templateFile, data, targetSelector) {
 }
 
 
-
 var delayTimeout
 function delayFunc(f, delay=500) {
    clearTimeout(delayTimeout) 
@@ -340,6 +338,14 @@ function sortAppsBy(prop) {
     return false
 }
 
+
+function searchGroups() {
+    // if (document.querySelector('#chkLocalSearch').checked) {
+    //     return delayFunc(searchUsersInModel, 100)
+    // } else {
+    //     return delayFunc(formListUserSubmit)
+    // }
+}
 
 function searchUsers() {
     if (document.querySelector('#chkLocalSearch').checked) {
@@ -1654,3 +1660,18 @@ function setAppParams(){
 }
 
 
+
+function init() {
+    renderTemplateFile('mustache/params.html', model, '#paramsPage')
+    google.charts.load('current', {'packages':['gauge']})
+    google.charts.setOnLoadCallback(getAppstatRest)
+    setAppParams()
+    getLoginedUser()
+    refreshApp()   
+    getParams()   
+}
+
+
+// O N   P A G E   L O A D  ****************************************************************************************
+
+init()

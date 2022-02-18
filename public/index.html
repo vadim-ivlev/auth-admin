@@ -10,14 +10,14 @@
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="css/milligram.min.css"> 
+    <link rel="stylesheet" type="text/css" href="css/milligram.min.css">
 
     <link rel="stylesheet" type="text/css" href="css/themes/graphql.css" />
     <!-- <link rel="stylesheet" type="text/css" href="css/themes/dark2.css" /> -->
     <!-- <link rel="stylesheet" type="text/css" href="css/themes/silver.css" /> -->
     <link id="theme" rel="stylesheet" type="text/css" href="" />
     <link rel="stylesheet" type="text/css" href="css/index.css" />
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -33,39 +33,51 @@
                     <img src="images/graphql-logo.svg" class="graphql-logo">
                 </a>
                 <div style="display: inline-block; margin-left:10px">
-                        <div id="appTitle" class="title">Авторизация <span id="appName"></span> <span id="appVersion">001</span></div>
-                        <div id="appUrl" class="smallinfo"></div>
+                    <div id="appTitle" class="title">Авторизация <span id="appName"></span> <span
+                            id="appVersion">001</span></div>
+                    <div id="appUrl" class="smallinfo"></div>
                 </div>
             </div>
             <span class="right0" style="vertical-align: top0;">
                 <span id="menu" class="menu">
-                    <a href="" id="appsTab"  class="button button-clear tab"  onclick="searchApps();  return showPage('apps') ;">Приложения</a>
-                    <a href="" id="usersTab" class="button button-clear tab"  onclick="searchUsers(); return showPage('users');">Пользователи</a>
-                    <a href="" id="rolesTab" class="button button-clear tab"  onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
-                    ✎ <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"  onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
-                    <a href="" id="logoutButton" class="button button-clear tab"  onclick="return logout()">Выход</a>
-                    <a href="" id="settingsButton" class="button button-clear tab settings hidden"  title="настройки" onclick="getParams(); getAppstatRest(); return showPage('params',true)"><!--&#9776;&vellip; -->&#x2699;</a>
+                    <a href="" id="appsTab" class="button button-clear tab"
+                        onclick="searchApps();  return showPage('apps') ;">Приложения</a>
+                    <a href="" id="usersTab" class="button button-clear tab"
+                        onclick="searchUsers(); return showPage('users');">Пользователи</a>
+                    <a href="" id="groupsTab" class="button button-clear tab"
+                        onclick="searchGroups(); return showPage('groups');">Группы</a>
+                    <a href="" id="rolesTab" class="button button-clear tab"
+                        onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
+                    ✎ <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
+                        onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
+                    <a href="" id="logoutButton" class="button button-clear tab" onclick="return logout()">Выход</a>
+                    <a href="" id="settingsButton" class="button button-clear tab settings hidden" title="настройки"
+                        onclick="getParams(); getAppstatRest(); return showPage('params',true)">
+                        <!--&#9776;&vellip; -->&#x2699;
+                    </a>
                 </span>
                 <span id="menuUnlogined" class="menu">
-                    <a href="" id="loginButton" class="button button-clear tab"  onclick="return showPage('login',true)">Вход</a>
+                    <a href="" id="loginButton" class="button button-clear tab"
+                        onclick="return showPage('login',true)">Вход</a>
                 </span>
             </span>
         </div>
         <div id="content">
 
-            <div id="paramsPage"  class="page">p</div>
-            <div id="userPage"  class="page"></div>
-            <div id="appPage"   class="page"></div>
-            
+            <div id="paramsPage" class="page">p</div>
+            <div id="userPage" class="page"></div>
+            <div id="appPage" class="page"></div>
+
             <div id="loginPage" class="page">
-                
+
                 <div class="flexed max-width-400">
                     <h2>Вход</h2>
                     <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
                         <div>
                             <!-- <label class="param-name">username</label> -->
                             <input type="submit" class="micro" value=".">
-                            <input id="loginUsername" name="username" type="text" placeholder="email" onchange="checkUserRequirements(event)">
+                            <input id="loginUsername" name="username" type="text" placeholder="email"
+                                onchange="checkUserRequirements(event)">
                         </div>
                         <div>
                             <!-- <label class="param-name">password</label> -->
@@ -74,18 +86,20 @@
 
                         <div id="pin" class="pinclass hidden">
                             <!-- <label class="param-name">password</label> -->
-                            <input id="loginPin" name="pin" type="text" autocomplete="off" placeholder="PIN из Google аутентификатора">
+                            <input id="loginPin" name="pin" type="text" autocomplete="off"
+                                placeholder="PIN из Google аутентификатора">
                         </div>
 
                         <div id="captcha">
                             <!-- <label class="param-name">captcha</label> -->
                             <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
                                 <img id="captchaImg" src="" class="captcha-image">
-                                <button class="button-outline" tabindex="-1" onclick="return getNewCaptcha()" style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
+                                <button class="button-outline" tabindex="-1" onclick="return getNewCaptcha()"
+                                    style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
                                 <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
                             </div>
                         </div>
-                            
+
 
 
 
@@ -95,39 +109,43 @@
                             <div id="loginError" class="error"></div>
                         </div>
                     </form>
-                    <button class="button button-clear tab"  onclick="resetPasswordRest()">поменять пароль</button>
-                    <button class="button button-clear tab pinclass hidden"  onclick="resetAuthenticator()">(пере)установить аутентификатор</button>
+                    <button class="button button-clear tab" onclick="resetPasswordRest()">поменять пароль</button>
+                    <button class="button button-clear tab pinclass hidden"
+                        onclick="resetAuthenticator()">(пере)установить аутентификатор</button>
                     <div id="resetError" class="error"></div>
                     <br>
 
 
                     <div id="socialIcons" class="transparent"></div>
                     <div id="socialLoginError" class="error"></div>
-        
+
                     <br>
-                    <button id="selfRegButton" class="button button-clear tab hidden"  onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span id="oauth2email"></span></button>
+                    <button id="selfRegButton" class="button button-clear tab hidden"
+                        onclick="model.user = null; showPage('user', true) ;">зарегистрировать нового пользователя <span
+                            id="oauth2email"></span></button>
                 </div>
                 <div id="selfRegHelp" class="hidden" style="text-align: center;">
                     <span id="selfRegHelpText">
                         Чтобы зарегистрировать пользователя
-                        иcпользуя учетную запись социальной сети, 
+                        иcпользуя учетную запись социальной сети,
                         сначала войдите в эту сеть.
                     </span>
                 </div>
-        </div>
-                
+            </div>
+
             <div class="page" id="appsPage">
-                <div class="flexed max-width-600">           
+                <div class="flexed max-width-600">
                     <h2 class="centered">
                         Приложения
                     </h2>
                     <form id="formListApp" class="grided0" onsubmit="return searchApps()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="Поиск" oninput="return searchApps()"  value="">
+                            <input name="search" type="text" placeholder="Поиск" oninput="return searchApps()" value="">
                         </div>
                     </form>
-                    <button id="btnNewApp" class="button button-clear tab"  onclick="model.app  = null; showPage('app',true)  ;">Проксировать новое приложение</button>
+                    <button id="btnNewApp" class="button button-clear tab"
+                        onclick="model.app  = null; showPage('app',true)  ;">Проксировать новое приложение</button>
                     <br>
                 </div>
                 <div class="app-search-results"></div>
@@ -140,32 +158,54 @@
                     <form id="formListUser" class="grided0" onsubmit="return searchUsers()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()" value="">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()"
+                                value="">
                         </div>
                     </form>
-                    <button class="button button-clear tab"  onclick="model.user = null; showPage('user',true) ;">зарегистрировать нового пользователя</button>
+                    <button class="button button-clear tab"
+                        onclick="model.user = null; showPage('user',true) ;">зарегистрировать нового
+                        пользователя</button>
                     <br>
                 </div>
                 <div class="user-search-results"></div>
+            </div>
+
+            <div class="page" id="groupsPage">
+                <div class="flexed max-width-600">
+                    <h2 class="centered">Группы</h2>
+                    <form id="formListGroup" class="grided0" onsubmit="return searchGroups()">
+                        <div>
+                            <label  for="search"></label>
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchGroups()"
+                                value="">
+                        </div>
+                    </form>
+                    <button class="button button-clear tab"
+                        onclick="model.group = null; showPage('group',true) ;">зарегистрировать новую
+                        группу</button>
+                    <br>
+                </div>
+                <div class="group-search-results"></div>
             </div>
 
 
             <div class="page" id="rolesPage">
                 <div class="flexed">
                     <h2 class="centered">Роли пользователя в приложении</h2>
-                    <form id="formListRole" class="grided threeColumns"  style="align-items: start;">
+                    <form id="formListRole" class="grided threeColumns" style="align-items: start;">
                         <div>
-                            <label >пользователь</label>
-                            <input id="allUsers" list="allUsersDataList" placeholder="Выберите пользователя" name="username"  
-                                onkeypress="if (event.keyCode == 13) refreshRoles();" onchange="refreshRoles()">
+                            <label>пользователь</label>
+                            <input id="allUsers" list="allUsersDataList" placeholder="Выберите пользователя"
+                                name="username" onkeypress="if (event.keyCode == 13) refreshRoles();"
+                                onchange="refreshRoles()">
                             <datalist id="allUsersDataList"></datalist>
                             <div id="userInfo"></div>
-                            
+
                         </div>
-                        <div> 
+                        <div>
                             <label>приложение</label>
-                            <input id="allApps" list="allAppsDataList" placeholder="Выберите приложение" name="appname" 
-                            onkeypress="if (event.keyCode == 13) refreshRoles();" onchange="refreshRoles()">
+                            <input id="allApps" list="allAppsDataList" placeholder="Выберите приложение" name="appname"
+                                onkeypress="if (event.keyCode == 13) refreshRoles();" onchange="refreshRoles()">
                             <datalist id="allAppsDataList"></datalist>
                             <div id="appInfo"></div>
                         </div>
@@ -175,34 +215,17 @@
             </div>
 
 
-        </div>  
+        </div>
         <div id="footer" class="footer">
             <input id="chkLocalSearch" type="checkbox" checked>
-            <span >local search</span>
+            <span>local search</span>
             &nbsp;&nbsp;
-            <a id="graphqlTestLink" target="_blank" href="https://graphql-test.vercel.app/">&nbsp;&nbsp;&nbsp;GraphQL API &#x25B6;</a>
+            <a id="graphqlTestLink" target="_blank" href="https://graphql-test.vercel.app/">&nbsp;&nbsp;&nbsp;GraphQL
+                API &#x25B6;</a>
         </div>
     </div>
 
     <script src="js/bundle.js"></script>
-    <script>
-
-        function init() {
-            renderTemplateFile('mustache/params.html', model, '#paramsPage')
-            google.charts.load('current', {'packages':['gauge']})
-            google.charts.setOnLoadCallback(getAppstatRest)
-            setAppParams()
-            getLoginedUser()
-            refreshApp()   
-            getParams()   
-        }
-
-
-        // O N   P A G E   L O A D  ****************************************************************************************
-
-        init()
-
-    </script>
 </body>
 
 </html>
