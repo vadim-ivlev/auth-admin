@@ -2,7 +2,7 @@
 ## install
 
     npm i
-    npm i -g now@latest
+    # npm i -g vercel
 
 
 ## develop
