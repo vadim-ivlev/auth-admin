@@ -9,5 +9,6 @@
         "pinhash",
         "pinrequired",
         "pinset"
-    ]
+    ],
+    "workbench.colorTheme": "One Dark Pro"
 }
