@@ -21,7 +21,7 @@ module.exports = {
     plugins: [
         resolve()
         ,commonjs()
-        // ,!production && livereload('public')
+        ,!production && livereload('public')
         ,production && terser()
     ]
 };

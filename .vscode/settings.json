@@ -10,5 +10,12 @@
         "pinrequired",
         "pinset"
     ],
+    "remote.SSH.defaultForwardedPorts": [
+        {
+            "localPort": 35729,
+            "name": "LiveReload",
+            "remotePort": 35729
+        }
+    ],    
     "workbench.colorTheme": "One Dark Pro"
 }
