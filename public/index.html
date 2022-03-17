@@ -26,17 +26,17 @@
 <body>
 
     <div id="page-container">
-        <div id="header" class="header">
-            <!-- <img src="images/rgru-logo.png" class="logo"> -->
-            <div>
-                <a href="" onclick="return showPage('login',true)">
+        <div id="header" class="header" >
+            <div class="title">
+                <a href="" onclick="return showPage('login',true)" >
                     <img src="images/graphql-logo.svg" class="graphql-logo">
+                    Авторизация
                 </a>
-                <div style="display: inline-block; margin-left:10px">
-                    <div id="appTitle" class="title">Авторизация Гр <span id="appName"></span> <span
-                            id="appVersion">001</span></div>
-                    <div id="appUrl" class="smallinfo"></div>
-                </div>
+            </div>
+            <div style="position: absolute; top:-5px; right:3px; white-space: nowrap;">
+                <span id="appName"></span>
+                <span id="appVersion">001</span>
+                <span id="appUrl" class="smallinfo"></span>
             </div>
             <span class="right0" style="vertical-align: top0;">
                 <span id="menu" class="menu">
@@ -48,7 +48,8 @@
                         onclick="searchGroups(); return showPage('groups');">Группы</a>
                     <a href="" id="rolesTab" class="button button-clear tab"
                         onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
-                    ✎ <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
+                    <!-- ✎  -->
+                    <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
                         onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
                     <a href="" id="logoutButton" class="button button-clear tab" onclick="return logout()">Выход</a>
                     <a href="" id="settingsButton" class="button button-clear tab settings hidden" title="настройки"

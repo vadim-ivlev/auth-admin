@@ -10,7 +10,7 @@ var model = {
     priv_origin: null, 
     set appurl(v){
         this.priv_origin = v
-        document.getElementById('appUrl').innerHTML = '&#x21E2;&nbsp;'+v
+        document.getElementById('appUrl').innerHTML = v //'&#x21E2;&nbsp;'+
         buildSocialIcons(v+"/oauthproviders")
         document.getElementById('graphqlTestLink').href = 'https://graphql-test.vercel.app/?end_point='+v+'/schema&tab_name=auth-proxy'
     },
@@ -239,7 +239,7 @@ var model = {
     set params(v) {
         this._params = v
         renderTemplateFile('mustache/params.html', model, '#paramsPage')
-        document.getElementById('appName').innerText = v ? 'в ' + v.app_name : '';
+        document.getElementById('appName').innerText = v ? v.app_name : '';
     },
     get params() {
         return this._params
