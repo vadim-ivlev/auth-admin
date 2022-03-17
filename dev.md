@@ -62,3 +62,9 @@ staging-gl : <https://vadim-ivlev.gitlab.io/auth-admin/?url=https://gl-auth-stag
 
     git push gitlab branch:pages
 
+
+
+## Develop at GitPod
+
+https://5000-vadimivlev-authadmin-m97l1o9klsv.ws-eu38.gitpod.io/?url=https://4400-vadimivlev-authproxy-zmqzf12bixc.ws-eu38.gitpod.io
+

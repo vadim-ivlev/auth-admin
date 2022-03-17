@@ -126,6 +126,16 @@ var model = {
     },
     
     //---------------------------
+    _group: null,
+    set group(v) {
+        this._group = v
+        renderTemplateFile('mustache/group.html', model, '#groupPage')
+    },
+    get group() {
+        return this._group
+    },
+    
+    //---------------------------
     _users: null,
     set users(v) {
         this._users = v
@@ -146,8 +156,20 @@ var model = {
     },
 
     //---------------------------
+    _groups: null,
+    set groups(v) {
+        this._groups = v
+        renderTemplateFile('mustache/groups.html', model, '.group-search-results')
+    },
+    get groups() {
+        return this._groups
+    },
+
+    //---------------------------
     all_app_options: null,
     all_user_options:null,
+    all_group_options:null,
+    
     //---------------------------
     _allApps: null,
     set allApps(v) {
@@ -169,15 +191,47 @@ var model = {
     get allUsers() {
         return this._allUsers
     },
+
+    //---------------------------
+    _allGroups: null,
+    set allGroups(v) {
+        this._allGroups = v
+        this.all_groups_options = createOptions(v, "groupsname", "description", "url")
+        document.querySelector("#allGroupsDataList").innerHTML = this.all_groups_options
+    },
+    get allGroups() {
+        return this._allGroups
+    },
+
     
     //---------------------------
     _app_user_roles: null,
     set app_user_roles(v) {
         this._app_user_roles = v
-        renderTemplateFile('mustache/roles.html', model, '.app-user-roles-results')
+        renderTemplateFile('mustache/app-user-roles.html', model, '.app-user-roles-results')
     },
     get app_user_roles() {
         return this._app_user_roles
+    },
+
+    //---------------------------
+    _app_group_roles: null,
+    set app_group_roles(v) {
+        this._app_group_roles = v
+        renderTemplateFile('mustache/app-group-roles.html', model, '.app-group-roles-results')
+    },
+    get app_group_roles() {
+        return this._app_group_roles
+    },
+
+    //---------------------------
+    _user_group_roles: null,
+    set user_group_roles(v) {
+        this._user_group_roles = v
+        renderTemplateFile('mustache/user-group-roles.html', model, '.user-group-roles-results')
+    },
+    get user_group_roles() {
+        return this._user_group_roles
     },
 
     //---------------------------
@@ -1304,6 +1358,8 @@ function getAllUsers(event) {
     doGraphQLRequest(query, onSuccess)
     return false       
 }
+
+
 
 function formListRoleSubmit(event) {
     if (event && event.preventDefault ) event.preventDefault()
