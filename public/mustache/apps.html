@@ -5,9 +5,7 @@
                         <th><a href="" class="sortable" title="sort by appname" onclick="return sortAppsBy('appname')">appname <span style="font-weight: normal;">&#x21E2;</span> url</a></th>
                         <th><a href="" class="sortable" title="sort by description" onclick="return sortAppsBy('description')">description</a></th>
                         {{#isAdmin}}
-                        <!-- <th><a href="" class="sortable" title="sort by url" onclick="return sortAppsBy('url')">url</a></th> -->
                         <th><a href="" class="sortable" title="sort by public" onclick="return sortAppsBy('public')">public</a></th>
-                        <!-- <th><a href="" class="sortable" title="sort by rebase" onclick="return sortAppsBy('rebase')">rebase</a></th> -->
                         <th><a href="" class="sortable" title="sort by sign" onclick="return sortAppsBy('sign')">sign</a></th>
                         <th></th>
                         {{/isAdmin}}
@@ -21,27 +19,19 @@
                                 <b>{{appname}}</b>
                                 <br>
                                 &#x21E2;
-                                <!-- &rightarrow; -->
                                 &nbsp;&nbsp;{{url}}
                             </a>
                         </td>
                         <td>
-                            <!-- <a href="{{appurl}}/apps/{{appname}}/" target="_blank">{{description}}</a> -->
                             {{description}}
                         </td>
                         {{#isAdmin}}
-                        <!-- <td>
-                            <a href="{{appurl}}/apps/{{appname}}/" target="_blank">{{url}}</a>
-                        </td> -->
                         <td>
                                 {{public}}
                         </td>
                         <td>
                                 {{sign}}
                         </td>
-                        <!-- <td>
-                            <a href="{{appurl}}/apps/{{appname}}/" title="rebased" target="_blank">{{rebase}}</a>
-                        </td> -->
                         <td>
                             <button class="button button-clear" onclick="showPage('app/{{appname}}');">edit</button>
                             <button class="button button-clear delete" onclick="deleteApp('{{appname}}');">✕</button>

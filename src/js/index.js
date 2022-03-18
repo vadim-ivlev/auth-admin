@@ -196,8 +196,9 @@ var model = {
     _allGroups: null,
     set allGroups(v) {
         this._allGroups = v
-        this.all_groups_options = createOptions(v, "groupsname", "description", "url")
-        document.querySelector("#allGroupsDataList").innerHTML = this.all_groups_options
+        console.debug('allGroups',v)
+        // this.all_groups_options = createOptions(v, "groupsname", "description", "url")
+        // document.querySelector("#allGroupsDataList").innerHTML = this.all_groups_options
     },
     get allGroups() {
         return this._allGroups
@@ -393,14 +394,6 @@ function sortAppsBy(prop) {
 }
 
 
-function searchGroups() {
-    // if (document.querySelector('#chkLocalSearch').checked) {
-    //     return delayFunc(searchUsersInModel, 100)
-    // } else {
-    //     return delayFunc(formListUserSubmit)
-    // }
-}
-
 function searchUsers() {
     if (document.querySelector('#chkLocalSearch').checked) {
         return delayFunc(searchUsersInModel, 100)
@@ -432,6 +425,43 @@ function sortUsersBy(prop, asStings = true) {
     model.users = model._users
     return false
 }
+
+function searchGroups() {
+    if (document.querySelector('#chkLocalSearch').checked) {
+        return delayFunc(searchGroupsInModel, 100)
+    } else {
+        return delayFunc(formListGroupSubmit)
+    }
+}
+
+
+
+function searchGroupsInModel() {
+    if (!model.allGroups) return
+    var text = document.querySelector("#formListGroup input[name='search']").value.trim().replace(' ','.*')
+    var r = new RegExp(text, 'i')
+    let found = model.allGroups.filter( (v) => r.test (Object.values(v).join(' ')) )
+    model.groups = found
+    return false   
+}
+
+
+function sortGroupsBy(prop, asStings = true) {
+    if (!model._allGroups) return false
+    if (asStings){
+        model._allGroups.sort( (a,b) => (a[prop]+a.groupname)>(b[prop]+b.groupname)? 1: -1)
+        model._groups.sort( (a,b) => (a[prop]+a.groupname)>(b[prop]+b.groupname)? 1: -1 )
+    } else {
+        model._allGroups.sort( (a,b) => (a[prop])>(b[prop])? 1: -1)
+        model._groups.sort( (a,b) => (a[prop])>(b[prop])? 1: -1 )
+    }
+    model.groups = model._groups
+    return false
+}
+
+
+
+
 
 function errorMessage(errorElementID, errMsg) {
     console.debug(errMsg)
@@ -1360,6 +1390,32 @@ function getAllUsers(event) {
 }
 
 
+function getAllGroups(event) {
+    if (event) event.preventDefault()
+    model.allGroups = null
+    var query =`
+    query {
+        list_group(
+        order: "groupname ASC"
+        ) {
+            length
+            list {
+              groupname
+              description
+              id
+            }
+          }
+        }    `
+
+    function onSuccess(res){
+        model.allGroups = res.data.list_group.list
+    } 
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+
 
 function formListRoleSubmit(event) {
     if (event && event.preventDefault ) event.preventDefault()
@@ -1651,6 +1707,7 @@ function refreshData() {
     if (model.logined) {
         getAllApps()
         getAllUsers()
+        getAllGroups()
         formListAppSubmit()
         formListUserSubmit()  
     } else {
