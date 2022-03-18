@@ -1,91 +1,37 @@
 <div class="flexed max-width-600">
-    {{^app}}
+    <div>
+        <a href="" class="button button-clear" style="padding: 0;"  onclick="searchGroups(); return showPage('groups');">&lt; Группы</a>
+    </div>
+
+    {{^group}}
     <h2>Новая группа <b id="newGroupName"></b></h2>
-    {{/app}}
-    {{#app}}
-    <h2>Группа <b id="newGroupName">{{app.appname}}</b></h2>
-    {{/app}}
+    {{/group}}
+    {{#group}}
+    <h2>Группа ( {{group.id}} ) &nbsp; <b id="newGroupName">{{group.groupname}}</b></h2>
+    {{/group}}
 
     <form id="formGroup" onsubmit="event.preventDefault();">
         <div>
-            <input name="old_appname" type="hidden" value="{{app.appname}}">   
-            <label >appname *</label>
-            <input name="appname" type="text" placeholder="уникальный маршрут, латинскими буквами. Например: video"  
-            oninput="
-            document.getElementById('newGroupName').innerText = event.target.value;
-            document.getElementById('newGroupUrl').innerText = (model.appurl+'/apps/'+event.target.value);
-            document.getElementById('newGroupUrl').href = ('href',model.appurl+'/apps/'+event.target.value);
-            "
-            value="{{app.appname}}">
+            <input name="id" type="hidden" value="{{group.id}}">
+            <label >groupname *</label>
+            <input name="groupname" type="text" placeholder="Имя группы"  value="{{group.groupname}}">
         </div>
         <div>
             <label >description</label>
-            <input name="description" placeholder="описание. Например: Админка видео сервиса" value="{{app.description}}">
+            <input name="description" placeholder="описание. Например: Админка видео сервиса" value="{{group.description}}">
         </div>
-        <div>
-            <label >url</label>
-            <input name="url" placeholder="URL/IP приложения доступного с auth-proxy. Например: http://admin.video.ru"  value="{{app.url}}">
-            Проксированное группа: <a id="newGroupUrl" href="{{appurl}}/apps/{{app.appname}}/" target="_blank">{{appurl}}/apps/{{app.appname}}</a>
-        </div>
-
-
-        <div>
-            <label >public</label>
-            <input name="public" placeholder="Y чтобы сделать группа доступным для пользователей без роли."  value="{{app.public}}">
-            <p>
-                "Y" чтобы сделать группа доступным для пользователей без роли.
-            </p>
-         </div>
-    
-    
-
-        <div>
-            <label >rebase</label>
-            <input name="rebase" placeholder="Y чтобы изменить ссылки на страницах на относительные."  value="{{app.rebase}}">
-            <p>
-                Поле имеет смысл только для проксирования HTML web приложений.
-                <br><br>
-                Если значение поля равно "Y" группа пытается "подправить" ссылки, изображения, фреймы в HTML и CSS так, 
-                чтобы URI начинающиеся с /, начинались с /apps/appname/. 
-                
-                Это делается для того, чтобы браузер не запрашивал ресурсы там, где их нет, то есть в корне auth-proxy.
-                <br><br>
-                Эта операция влечет за собой увеличение потребления памяти и загрузки процессора сервера. 
-                
-                Поэтому в приложениях предназначенных для проксирования рекомендуется использовать относительные ссылки и оставлять это поле пустым.
-                
-            </p>
-        </div>
-
-        <div>
-            <label >sign</label>
-            <input name="sign" placeholder="Y - для цифровой подписи запросов к приложению"  value="{{app.sign}}">
-            <p>
-                "Y" для подписей запросов к приложению в соответствии со спецификацией RFC
-                <a target="_blank" href="https://tools.ietf.org/html/draft-cavage-http-signatures-06">RFC Signing HTTP Messages</a>.               
-                <br><br>
-                Это один из способов контроля источников запросов наряду с ограничениями по IP адресу.
-                Позволяет конечному приложению удостовериться, что запрос поступил от auth-proxy.
-                Имеет значение для публично доступных в Интернет приложений, которые хотели бы принимать запросы через
-                auth-proxy. 
-                <br><br>
-                Операция подписи ресурсоемкая. Пользуйтесь разумно. Например не имеет смысла подписывать 
-                публично доступные приложения или HTML приложения.
-            </p>
-        </div>
-
 
         <div style="text-align: right;">
             <label></label>
-            {{^app}}
+            {{^group}}
             <button type="button" class="button button-outline" onclick="createGroup(event)" >создать</button>
-            {{/app}}
-            {{#app}}
-            <button type="button" class="button button-outline" onclick="deleteGroup('{{app.appname}}'); showPage('apps');">удалить</button>
+            {{/group}}
+            {{#group}}
+            <button type="button" class="button button-outline" onclick="deleteGroup('{{group.id}}');">удалить</button>
             <button type="button" class="button button-outline" onclick="updateGroup(event)">сохранить</button>
-            {{/app}}
+            {{/group}}
         </div>
-        <div id="appError" class="error"></div>
+        <div id="groupError" class="error"></div>
     </form>
 
 </div>

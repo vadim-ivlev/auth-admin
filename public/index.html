@@ -68,6 +68,7 @@
             <div id="paramsPage" class="page">p</div>
             <div id="userPage" class="page"></div>
             <div id="appPage" class="page"></div>
+            <div id="groupPage" class="page"></div>
 
 
             <div id="loginPage" class="page">
@@ -161,13 +162,11 @@
                     <form id="formListUser" class="grided0" onsubmit="return searchUsers()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()"
-                                value="">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()"  value="">
                         </div>
                     </form>
                     <button class="button button-clear tab"
-                        onclick="model.user = null; showPage('user',true) ;">зарегистрировать нового
-                        пользователя</button>
+                        onclick="model.user = null; showPage('user',true) ;">зарегистрировать нового пользователя</button>
                     <br>
                 </div>
                 <div class="user-search-results"></div>
@@ -180,13 +179,11 @@
                     <form id="formListGroup" class="grided0" onsubmit="return searchGroups()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchGroups()"
-                                value="">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchGroups()"  value="">
                         </div>
                     </form>
                     <button class="button button-clear tab"
-                        onclick="model.group = null; showPage('group',true) ;">зарегистрировать новую
-                        группу</button>
+                        onclick="model.group = null; showPage('group',true) ;">создать  группу</button>
                     <br>
                 </div>
                 <div class="group-search-results"></div>

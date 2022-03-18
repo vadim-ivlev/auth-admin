@@ -325,6 +325,9 @@ function showPage(pageid, dontpush){
         if (pageid0 == "user"){
             getUser(id)
         }
+        if (pageid0 == "group"){
+            getGroup(id)
+        }
     }
 
     if (pageid0 == 'params')
@@ -878,7 +881,7 @@ function startGettingAppstat(){
 
 function stopGettingAppstat(){
     clearInterval(model.statInterval)
-    console.log('stopGettingAppstat')
+    // console.log('stopGettingAppstat')
 }
 
 // U S E R S  ***********************************************************************************************************************
@@ -1151,7 +1154,6 @@ function formListAppSubmit(event) {
 
 
 
-
 function createApp(event) {
     if (event) event.preventDefault()
     let appname =     document.querySelector("#formApp input[name='appname']"    ).value
@@ -1237,8 +1239,6 @@ function updateApp(event, appOperationName = 'create_app') {
 
 
 
-
-
 function getApp(appname) {
     model.app = null
 
@@ -1319,6 +1319,186 @@ function deleteApp(appname) {
     } 
 
     doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+// G R O U P S   *******************************************************************
+
+function formListGroupSubmit(event) {
+    if (event) event.preventDefault()
+    model.groups = null
+    let search = document.querySelector("#formListGroup input[name='search']").value
+    var query =`
+    query {
+        list_group(
+        search: "${search}",
+        order: "description ASC"
+        ) {
+            length
+            list {
+              description
+              groupname
+              id
+           }
+          }
+        }    `
+
+    function onSuccess(res){
+        model.groups = res.data.list_group.list
+    } 
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+
+
+function createGroup(event) {
+    if (event) event.preventDefault()
+    let groupname =     document.querySelector("#formGroup input[name='groupname']").value
+    let description = document.querySelector("#formGroup input[name='description']").value
+    
+    var query =`
+    mutation {
+        create_group(
+        groupname: "${groupname}",
+        description: "${description}"
+        ) {
+            description
+            groupname
+            id
+          }
+
+        }
+    `
+    function onSuccess(res){
+        alert("create_group success")
+        refreshData()
+        model.group = res.data["create_group"]
+        getGroup(model.group.id)
+    } 
+
+    doGraphQLRequest(query, onSuccess, "groupError")
+    return false       
+}
+
+
+function updateGroup(event) {
+    if (event) event.preventDefault()
+    let groupname =     document.querySelector("#formGroup input[name='groupname']"    ).value
+    let description = document.querySelector("#formGroup input[name='description']").value
+    let id =      document.querySelector("#formGroup input[name='id']"     ).value
+   
+    var query =`
+    mutation {
+        update_group(
+        id: ${id},
+        groupname: "${groupname}",
+        description: "${description}"
+        ) {
+            description
+            groupname
+            id
+          }
+
+        }
+    `
+    function onSuccess(res){
+        alert("update_group success")
+        refreshData()
+        model.group = res.data["update_group"]
+        getGroup(id)
+    } 
+
+    doGraphQLRequest(query, onSuccess, "groupError")
+    return false       
+}
+
+
+
+function getGroup(group_id) {
+    model.group = null
+
+    var query =`
+    query {
+        get_group(
+        id: ${group_id}
+        ) {
+            description
+            groupname
+            id
+          }
+        
+        list_group_user_role(
+        group_id: ${group_id}
+        ) {
+            group_description
+            group_groupname
+            group_id
+            rolename
+            user_description
+            user_disabled
+            user_email
+            user_fullname
+            user_id
+          }
+        
+        }
+
+    `
+
+    function onSuccess(res){
+        var a = res.data.get_group
+        // a.users = groupUsers(res.data.list_group_user_role)
+        // render
+        model.group = a
+    } 
+
+    doGraphQLRequest(query, onSuccess, "groupError")
+    return false       
+}
+
+
+// function groupUsers(list_app_user_role) {
+//     let gr = {}
+//     for (let aur of list_app_user_role ){
+//         if (!gr[aur.username]) gr[aur.username] =[]
+//         gr[aur.username].push(aur)
+//     }
+
+//     let arr = []
+
+//     for (let [key, value] of Object.entries(gr)) {
+//         let rec = {}
+//         rec.username =key
+//         rec.user_fullname = value[0].user_fullname
+//         rec.items = value
+//         arr.push(rec)
+//     }
+//     return arr
+// }
+
+
+
+function deleteGroup(id) {
+    var query =`
+    mutation {
+        delete_group(
+        id: ${id}
+        ) {
+            description
+          }
+        }
+    `
+    function onSuccess(res){
+        alert("delete_group success")
+        model.group = null
+        refreshData()
+        searchGroups(); 
+        showPage('groups') ;
+    } 
+
+    doGraphQLRequest(query, onSuccess, "groupError")
     return false       
 }
 
@@ -1710,6 +1890,7 @@ function refreshData() {
         getAllGroups()
         formListAppSubmit()
         formListUserSubmit()  
+        formListGroupSubmit()  
     } else {
         // nullify model's inner props
         for (const k of Object.keys(model)) {
@@ -1728,6 +1909,7 @@ function getCurrentPageID(){
 
 // refreshApp обновляет данные модели и GUI
 function refreshApp() {
+    
     refreshData()
     
     if (model.logined) {
@@ -1740,6 +1922,10 @@ function refreshApp() {
         hideElements('#menu')
         showElements('#menuUnlogined')
     }  
+    // предзагружаем шаблоны страниц
+    renderTemplateFile('mustache/group.html', model, '#groupPage')
+    renderTemplateFile('mustache/app.html', model, '#appPage')
+    renderTemplateFile('mustache/user.html', model, '#userPage')
 }
 
 
