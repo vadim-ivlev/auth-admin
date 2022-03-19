@@ -50,7 +50,9 @@ pre {
     background-color: transparent;
 }
 
-
+.dashed {
+    border: 1px dashed silver;
+}
 
 .flexed {
     display: grid;
@@ -85,7 +87,7 @@ pre {
 .tab {
     border-radius: 0;
     border-width: 0px;
-    border-bottom-width: 1px;
+    border-bottom-width: 2px;
     padding: 0 10px;
 }
 
