@@ -9,7 +9,7 @@
     <h3>Новый пользователь <b id="newUserEmail">{{oauth2email}}</b></h3>
     {{/user}}
     {{#user}}
-    <h2>Пользователь &nbsp;&nbsp;<span id="user-id"  title="id">{{user.id}}</span> &nbsp;&nbsp;<b id="newUserEmail">{{user.email}}</b></h2>
+    <h2>Пользователь &nbsp;(&nbsp;<span id="user-id"  title="id">{{user.id}}</span>&nbsp;) &nbsp;<b id="newUserEmail">{{user.email}}</b></h2>
     {{/user}}
 
     <form id="formUser" onsubmit="event.preventDefault();">
@@ -159,7 +159,7 @@
 
                 {{#isAdmin}}
                 <span class="button button-outline role-nocross">
-                    <input id="newRoleName-{{appname}}" class="role-input">
+                    <input id="newRoleName-{{appname}}" class="role-input" placeholder="новая роль">
                     <button class="button button-outline role-add" 
                         onclick="modifyRole('create', '{{appname}}', '{{user.username}}', document.getElementById('newRoleName-{{appname}}').value, ()=>{ getUser('{{user.username}}') }  )"
                         >

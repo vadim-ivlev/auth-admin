@@ -1,5 +1,4 @@
 // M O D E L  ******************************************************************************************
-var aaa
 var model = {
     //---------------------------
     oauth2email: "",
@@ -463,9 +462,6 @@ function sortGroupsBy(prop, asStings = true) {
 }
 
 
-
-
-
 function errorMessage(errorElementID, errMsg) {
     console.debug(errMsg)
     if (errorElementID) {
@@ -578,6 +574,7 @@ function isSelfRegAllowed(event) {
     return false       
 }
 
+
 function checkUserRequirements(event) {
     if (event) event.preventDefault()
     let username = document.getElementById("loginUsername").value   
@@ -605,6 +602,7 @@ function isCaptchaRequired(username) {
        
     doGraphQLRequest(query, onSuccess)   
 }
+
 
 function isPinRequired(username) {
     errorMessage("loginError", "")
@@ -738,6 +736,7 @@ function getLoginedUser() {
     doGraphQLRequest(query, onSuccess)
     return false       
 }
+
 
 function getAuthRoles(username) {
     model.authRoles = null
@@ -1428,24 +1427,38 @@ function getGroup(group_id) {
             groupname
             id
           }
-        
-        list_group_user_role(
-        group_id: ${group_id}
+
+        list_group_app_role(
+        group_id:${group_id}
         ) {
+            app_description
+            app_id
+            app_url
             group_description
             group_groupname
             group_id
             rolename
-            user_description
-            user_disabled
-            user_email
-            user_fullname
-            user_id
-          }
-        
+           }          
+                
         }
 
     `
+
+    // list_group_user_role(
+    //     group_id: ${group_id}
+    //     ) {
+    //         group_description
+    //         group_groupname
+    //         group_id
+    //         rolename
+    //         user_description
+    //         user_disabled
+    //         user_email
+    //         user_fullname
+    //         user_id
+    //       }
+
+
 
     function onSuccess(res){
         var a = res.data.get_group

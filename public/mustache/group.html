@@ -36,7 +36,87 @@
 
 </div>
 
+{{#group}}
+<div class="flexed">
 
+    <div class="max-max-auto">
+        <h2>Приложения группы <b>{{group.groupname}}</b></h2> 
+        <span></span>
+        <span></span>
+        <input placeholder="Фильтр"  oninput="filterRows('#GroupApps .filtered-row', this.value )">
+    </div>
+        
+    <table id="GroupApps">
+        <tr>
+            <th>приложение</th>
+            <th>описание</th>
+            <th>роли</th>
+        </tr>
+        {{#group.apps}}
+        <tr class="filtered-row">
+            <td><a href="" title="Редактировать" onclick="return showPage('app/{{appname}}');">{{appname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="return showPage('app/{{appname}}');">{{app_description}}</a></td>
+            <td>
+
+
+                {{#items}}
+                <button class="button button-outline role" 
+                    onclick="modifyRole('delete', '{{appname}}', '{{group.groupname}}','{{rolename}}',()=>{ getGroup('{{group.groupname}}') } )"
+                    >
+                    {{rolename}}
+                </button>
+                {{/items}} 
+
+                {{#isAdmin}}
+                <span class="button button-outline role-nocross">
+                    <input id="newRoleName-{{appname}}" class="role-input" placeholder="новая роль">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyRole('create', '{{appname}}', '{{group.groupname}}', document.getElementById('newRoleName-{{appname}}').value, ()=>{ getGroup('{{group.groupname}}') }  )"
+                        >
+                    +
+                    </button>
+                </span>
+                {{/isAdmin}}
+            </td>
+        </tr>
+        {{/group.apps}}
+
+        {{#isAdmin}}
+        <tr>
+            <td>
+                <input id="newGroupAppname" 
+                    list="appsDataList" 
+                    placeholder="Добавить приложение. Поиск." 
+                    onchange="document.getElementById('newGroupAppDescription').innerText = document.querySelector(`#appsDataList>option[value='${this.value}'`).innerText;"
+                >
+                <datalist id="appsDataList">
+                    {{{all_app_options}}}
+                </datalist>
+
+            </td>
+            <td id="newGroupAppDescription">
+           </td>
+            <td>
+                <span class="button button-outline role-nocross">
+                        <input id="newGroupRolename" class="role-input" placeholder="новая роль">
+                        <button class="button button-outline role-add" 
+                            onclick="modifyRole('create', document.getElementById('newGroupAppname').value, '{{group.groupname}}',  document.getElementById('newGroupRolename').value, ()=>{ getGroup('{{group.groupname}}') }  )"
+                            >
+                        +
+                        </button>
+                </span>
+            </td>
+        </tr>
+        {{/isAdmin}}
+
+    </table>
+</div>
+{{/group}}
+
+
+
+
+<!--
 {{#app}}
     <div class="flexed">
 
@@ -114,5 +194,8 @@
     </table>
 </div>
 {{/app}}
+
+-->
+
 
 
