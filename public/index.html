@@ -22,9 +22,6 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>
-        google.charts.load('current', {packages: ['corechart']});
-    </script>
 
 </head>
 
@@ -51,12 +48,11 @@
                         onclick="pd(event); searchUsers(); showPage('users');">Пользователи</a>
                     <a href="" id="groupsTab" class="button button-clear tab"
                         onclick="pd(event); searchGroups(); showPage('groups');">Группы</a>
-                    <a href="" id="rolesTab" class="button button-clear tab"
-                        onclick="pd(event); formListRoleSubmit(); showPage('roles');">Роли</a>
-                    <!-- ✎  -->
+                    <!-- <a href="" id="rolesTab" class="button button-clear tab"
+                        onclick="pd(event); formListRoleSubmit(); showPage('roles');">Роли</a> -->
                     <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
                         onclick="pd(event); getUser(model.loginedUser.username); showPage('user');">профиль</a>
-                    <a href="" id="logoutButton" class="button button-clear tab" onclick="pd(event); logout()">Выход</a>
+                    <a href="" id="logoutButton" class="button button-clear tab" onclick="pd(event); logout()">Выход </a>
                     <a href="" id="settingsButton" class="button button-clear tab settings hidden" title="настройки"
                         onclick="pd(event); getParams(); getAppstatRest(); showPage('params',true)">
                         <!--&#9776;&vellip; -->&#x2699;
@@ -82,24 +78,20 @@
                     <h2>Вход</h2>
                     <form id="formLoginGraphQL" onsubmit="pd(event); loginGraphQLFormSubmit(event)">
                         <div>
-                            <!-- <label class="param-name">username</label> -->
                             <input type="submit" class="micro" value=".">
                             <input id="loginUsername" name="username" type="text" placeholder="email"
                                 onchange="checkUserRequirements(event)">
                         </div>
                         <div>
-                            <!-- <label class="param-name">password</label> -->
                             <input id="loginPassword" name="password" type="password" placeholder="пароль">
                         </div>
 
                         <div id="pin" class="pinclass hidden">
-                            <!-- <label class="param-name">password</label> -->
                             <input id="loginPin" name="pin" type="text" autocomplete="off"
                                 placeholder="PIN из Google аутентификатора">
                         </div>
 
                         <div id="captcha">
-                            <!-- <label class="param-name">captcha</label> -->
                             <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
                                 <img id="captchaImg" src="" class="captcha-image">
                                 <button class="button-outline" tabindex="-1" onclick="pd(event); getNewCaptcha()"
@@ -112,7 +104,6 @@
 
 
                         <div style="text-align: right;">
-                            <!-- <label class="param-name">&nbsp</label> -->
                             <input type="submit" class="button button-outline" value="Вход">
                             <div id="loginError" class="error"></div>
                         </div>

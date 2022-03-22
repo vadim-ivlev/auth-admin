@@ -33,7 +33,7 @@ var model = {
     set loginedUser(v) {
         this._loginedUser = v
         if (v) {
-            document.getElementById("userTab").innerText = v.username
+            document.getElementById("userTab").innerText = '✎ '+v.username
             // getAuthRoles(model.loginedUser.username)
         } else {
             document.getElementById("userTab").innerText = ""
@@ -196,7 +196,7 @@ var model = {
     set allGroups(v) {
         this._allGroups = v
         console.debug('allGroups',v)
-        // this.all_groups_options = createOptions(v, "groupsname", "description", "url")
+        this.all_groups_options = createOptions(v, "groupsname", "description", "id")
         // document.querySelector("#allGroupsDataList").innerHTML = this.all_groups_options
     },
     get allGroups() {
@@ -1882,6 +1882,10 @@ function getNewCaptcha() {
 
 
 // G O O G L E   C H A R T S  ***************************************************************
+
+google.charts.load('current', {packages: ['gauge']})
+google.charts.setOnLoadCallback(drawGauge)
+
 
 var gauges = {}
 
