@@ -135,11 +135,98 @@
 
 {{#user}}
 
+
+<!-- группы связанные с записью -->
+<div class="flexed">
+
+    <div class="max-max-auto">
+        <h3><b>Группы</b> пользователя <b>{{user.email}}</b></h3> 
+        <span></span>
+        <span></span>
+        <input placeholder="Фильтр"  oninput="filterRows('#UserGroups .filtered-row', this.value )">
+    </div>
+    <!-- таблица групп-->    
+    <table id="UserGroups">
+        <tr>
+            <th>группа</th>
+            <th>описание</th>
+            <th>роли пользователя в группах (для полноты)</th>
+        </tr>
+        {{#user.groups}}
+        <tr class="filtered-row">
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_id}}');">({{group_id}}) {{group_groupname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_id}}');">{{group_description}}</a></td>
+            <td>
+
+                <!-- кнопки добавления удаления ролей -->
+                {{#isAdmin}}
+
+                {{#items}}
+                <button class="button button-outline role" 
+                    onclick="modifyUserGroupRole('delete','{{user_id}}', '{{group_id}}', '{{rolename}}',()=>{ getUser('{{user.username}}') } )"
+                >
+                    {{rolename}}
+                </button>
+                {{/items}} 
+
+                <span class="button button-outline role-nocross">
+                    <input id="newUserGroupRoleName-{{user_id}}-{{group_id}}" class="role-input" placeholder="новая роль">
+                    <button class="button button-outline role-add" 
+                        onclick="modifyUserGroupRole('create', '{{user_id}}','{{group_id}}', document.getElementById('newUserGroupRoleName-{{user_id}}-{{group_id}}').value, ()=>{ getUser('{{user.username}}') }  )"
+                        >
+                    +
+                    </button>
+                </span>
+                {{/isAdmin}}
+            </td>
+        </tr>
+        {{/user.groups}}
+
+        <!-- добавление удаление групп -->
+        {{#isAdmin}}
+        <tr>
+            <td>
+                <input id="userGroupsSelector" 
+                    list="userGroupsDataList" 
+                    placeholder="Добавить группу" 
+                    onchange="
+                        document.getElementById('newUserGroupDescription').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).innerText;
+                        document.getElementById('newUserGroupID').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).id;
+                    ">
+                <datalist id="userGroupsDataList">
+                    {{{all_groups_options}}}
+                </datalist>
+
+            </td>
+            <td >
+                <span id="newUserGroupID"></span>
+                <span id="newUserGroupDescription"></span>
+            </td>
+            <td>
+                <span class="button button-outline role-nocross">
+                        <input id="newUserGroupRoleName" class="role-input" placeholder="новая роль 1">
+                        <button class="button button-outline role-add" 
+                            onclick="modifyUserGroupRole('create', '{{id}}',  
+                                document.getElementById('newUserGroupID').innerText, 
+                                document.getElementById('newUserGroupRoleName').value, 
+                                ()=>{ getUser('{{user.username}}') }); "
+                        >+</button>
+                </span>
+            </td>
+        </tr>
+        {{/isAdmin}}
+
+    </table>
+</div>
+
+<br><br>
+
+
 <!-- приложения связанные с записью -->
 <div class="flexed">
 
     <div class="max-max-auto">
-        <h2>Приложения пользователя <b>{{user.email}}</b>:</h2> 
+        <h3><b>Приложения</b> пользователя <b>{{user.email}}</b>:</h3> 
         <span></span>
         <span></span>
         <input placeholder="Фильтр" oninput="filterRows('#UserApps .filtered-row', this.value )">
@@ -149,7 +236,7 @@
         <tr>
             <th>приложение</th>
             <th>описание</th>
-            <th>роли пользователя</th>
+            <th>роли пользователя в приложениях</th>
         </tr>
         {{#user.apps}}
         <tr class="filtered-row">
@@ -210,92 +297,6 @@
 
     </table>
 </div>
-
-
-
-<!-- группы связанные с записью -->
-<div class="flexed">
-
-    <div class="max-max-auto">
-        <h2>Группы пользователя <b>{{user.email}}</b></h2> 
-        <span></span>
-        <span></span>
-        <input placeholder="Фильтр"  oninput="filterRows('#UserGroups .filtered-row', this.value )">
-    </div>
-    <!-- таблица групп-->    
-    <table id="UserGroups">
-        <tr>
-            <th>группа</th>
-            <th>описание</th>
-            <th>роли пользователя</th>
-        </tr>
-        {{#user.groups}}
-        <tr class="filtered-row">
-            <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_groupname}}');">({{group_id}}) {{group_groupname}}</a></td>
-            <td><a href="" title="Редактировать" onclick="pd(event); showPage('group/{{group_groupname}}');">{{group_description}}</a></td>
-            <td>
-
-                <!-- кнопки добавления удаления ролей -->
-                {{#isAdmin}}
-
-                {{#items}}
-                <button class="button button-outline role" 
-                    onclick="modifyUserGroupRole('delete','{{user_id}}', '{{group_id}}', '{{rolename}}',()=>{ getGroup('{{user_id}}') } )"
-                >
-                    {{rolename}}
-                </button>
-                {{/items}} 
-
-                <span class="button button-outline role-nocross">
-                    <input id="newUserGroupRoleName-{{user_id}}-{{group_id}}" class="role-input" placeholder="новая роль">
-                    <button class="button button-outline role-add" 
-                        onclick="modifyUserGroupRole('create', '{{user_id}}','{{group_id}}', document.getElementById('newUserGroupRoleName-{{user_id}}-{{group_id}}').value, ()=>{ getGroup('{{user_id}}') }  )"
-                        >
-                    +
-                    </button>
-                </span>
-                {{/isAdmin}}
-            </td>
-        </tr>
-        {{/user.groups}}
-
-        <!-- добавление удаление приложений -->
-        {{#isAdmin}}
-        <tr>
-            <td>
-                <input id="userGroupsSelector" 
-                    list="userGroupsDataList" 
-                    placeholder="Добавить группу" 
-                    onchange="
-                        document.getElementById('newUserGroupDescription').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).innerText;
-                        document.getElementById('newUserGroupID').innerText = document.querySelector(`#userGroupsDataList>option[value='${this.value}'`).id;
-                    ">
-                <datalist id="userGroupsDataList">
-                    {{{all_group_options}}}
-                </datalist>
-
-            </td>
-            <td >
-                <span id="newUserGroupID"></span>
-                <span id="newUserGroupDescription"></span>
-            </td>
-            <td>
-                <span class="button button-outline role-nocross">
-                        <input id="newUserGroupRoleName" class="role-input" placeholder="новая роль 1">
-                        <button class="button button-outline role-add" 
-                            onclick="modifyUserGroupRole('create', '{{id}}',  
-                                document.getElementById('newUserGroupID').innerText, 
-                                document.getElementById('newUserGroupRoleName').value, 
-                                ()=>{ getGroup('{{id}}') }); "
-                        >+</button>
-                </span>
-            </td>
-        </tr>
-        {{/isAdmin}}
-
-    </table>
-</div>
-
 
 
 

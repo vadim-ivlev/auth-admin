@@ -196,7 +196,7 @@ var model = {
     set allGroups(v) {
         this._allGroups = v
         console.debug('allGroups',v)
-        this.all_groups_options = createOptions(v, "groupsname", "description", "id")
+        this.all_groups_options = createOptions(v, "groupname", "description")
         // document.querySelector("#allGroupsDataList").innerHTML = this.all_groups_options
     },
     get allGroups() {
@@ -291,11 +291,11 @@ function pd(event) {
 }
 
 
-function createOptions(selectValues, keyProp, textProp1, textProp2) {
+function createOptions(selectValues, valueProp, textProp1, textProp2) {
     var output = []
     selectValues && selectValues.forEach(function(value)
     {
-      output.push(`<option id="${value.id}" value="${value[keyProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
+      output.push(`<option id="${value.id}" value="${value[valueProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
     })
     let optionText = output.join('')
     return optionText
@@ -314,17 +314,17 @@ function showPage(pageid, dontpush){
 
     //распарсить pageidExtended
     var a = pageid.split("/")
-    var pageid0 = a[0]
+    var pageName = a[0]
     var id = a[1]
 
     highlightTab(pageid)
     
     hideElements('.page')
-    showElements('#'+pageid0+'Page')
+    showElements('#'+pageName+'Page')
 
 
     // setting focus
-    var text = document.querySelector('#'+pageid0+'Page input[type="text"]')
+    var text = document.querySelector('#'+pageName+'Page input[type="text"]')
     if(text) 
         text.focus()
 
@@ -336,18 +336,18 @@ function showPage(pageid, dontpush){
     }
 
     if (id) {
-        if (pageid0 == "app"){
+        if (pageName == "app"){
             getApp(id)
         } 
-        if (pageid0 == "user"){
+        if (pageName == "user"){
             getUser(id)
         }
-        if (pageid0 == "group"){
+        if (pageName == "group"){
             getGroup(id)
         }
     }
 
-    if (pageid0 == 'params')
+    if (pageName == 'params')
         startGettingAppstat()
 
     return false
@@ -1075,9 +1075,7 @@ function getUser(username) {
             rolename
             username
           }
-        
-        }
-
+    }
     `
 
     function onSuccess(res){
@@ -1085,6 +1083,7 @@ function getUser(username) {
         u.apps = groupApps(res.data.list_app_user_role)
         // render 
         model.user = u
+        getUserGroups(u.id)
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -1135,6 +1134,57 @@ function deleteUser(username) {
     doGraphQLRequest(query, onSuccess)
     return false       
 }
+
+function getUserGroups(user_id) {
+    var query =`
+    query {
+        list_group_user_role(
+        user_id: ${user_id}
+        ) {
+            group_description
+            group_groupname
+            group_id
+            rolename
+            user_description
+            user_disabled
+            user_email
+            user_fullname
+            user_id
+            }        
+        }
+    `
+
+    function onSuccess(res){
+        var u = model.user
+        u.groups = groupsOfTheUser(res.data.list_group_user_role)
+        // render 
+        model.user = u
+    } 
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+
+function groupsOfTheUser(list_group_user_role) {
+    let groups = groupByField(list_group_user_role, 'group_id')
+
+    // преобразуем хэш в массив для отображения в mustache
+    let arr = []
+
+    for (let [key, value] of Object.entries(groups)) {
+        let rec = {}
+        rec.group_id =key
+        rec.user_id = value[0].user_id
+        rec.user_email = value[0].user_email
+        rec.group_groupname = value[0].group_groupname
+        rec.group_description = value[0].group_description
+        rec.items = value
+        arr.push(rec)
+    }
+    return arr
+}
+
 
 
 // A P P S  *******************************************************************
@@ -1725,6 +1775,36 @@ function modifyGroupAppRole(action,group_id,app_id,rolename, onsuccess ) {
     return false       
 }
 
+function modifyUserGroupRole(action,user_id,group_id,rolename, onsuccess ) {
+    if (!user_id || !group_id || !rolename) 
+        return
+    var query =`
+    mutation {
+        ${action}_group_user_role(
+        user_id: ${user_id},
+        group_id: ${group_id},
+        rolename: "${rolename}"
+        ) {
+            group_description
+            group_groupname
+            group_id
+            rolename
+            user_description
+            user_disabled
+            user_email
+            user_fullname
+            user_id
+           }
+    }
+    `
+    function onSuccess(res){
+        if (onsuccess) onsuccess()
+    }
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
 // works when input values on roles page change
 function refreshRoles() {
     let allUsersValue = document.getElementById("allUsers").value
@@ -1883,8 +1963,8 @@ function getNewCaptcha() {
 
 // G O O G L E   C H A R T S  ***************************************************************
 
-google.charts.load('current', {packages: ['gauge']})
-google.charts.setOnLoadCallback(drawGauge)
+// google.charts.load('current', {packages: ['gauge']})
+// google.charts.setOnLoadCallback(drawGauge)
 
 
 var gauges = {}
@@ -1892,6 +1972,10 @@ var gauges = {}
 function drawGauge(title, val, maxV, containerID) {
 
     if (!google) return
+    if (!google.visualization) return
+    if (!google.visualization.arrayToDataTable) return
+    if (!google.visualization.Gauge) return
+    
     var container = document.getElementById(containerID)
     if (! container) return
 
