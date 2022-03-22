@@ -471,3 +471,8 @@ input.role-input {
     font-size:10px;
     color:#E10098 !important;
 }
+
+#newGroupAppID {
+    color:#E10098 !important;
+    display: none;
+}

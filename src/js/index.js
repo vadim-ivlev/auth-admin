@@ -273,11 +273,24 @@ var model = {
 
 // F U N C T I O N S  *********************************************************************************
 
+// function getListOptionProperty(inputId,propertyName) {
+//     var input = document.getElementById(inputId)
+//     if (!input) return
+//     var value = input.value
+//     var selector = `#${inputId}>option[value='${value}']`
+//     if (!selector) return
+//     var option = document.querySelector(selector)
+//     if (!option) return
+//     var value = option[propertyName]
+//     return value
+// }
+
+
 function createOptions(selectValues, keyProp, textProp1, textProp2) {
     var output = []
     selectValues && selectValues.forEach(function(value)
     {
-      output.push(`<option value="${value[keyProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
+      output.push(`<option id="${value.id}" value="${value[keyProp]}">${value[textProp1]} &nbsp;&nbsp;&nbsp; ${value[textProp2]?value[textProp2]:''}</option>`);
     })
     let optionText = output.join('')
     return optionText
@@ -1431,6 +1444,7 @@ function getGroup(group_id) {
         list_group_app_role(
         group_id:${group_id}
         ) {
+            app_appname
             app_description
             app_id
             app_url
@@ -1461,35 +1475,49 @@ function getGroup(group_id) {
 
 
     function onSuccess(res){
-        var a = res.data.get_group
-        // a.users = groupUsers(res.data.list_group_user_role)
+        var group = res.data.get_group
+        group.apps = appsOfTheGroup(res.data.list_group_app_role)
         // render
-        model.group = a
+        model.group = group
     } 
 
     doGraphQLRequest(query, onSuccess, "groupError")
     return false       
 }
 
+// Group array of records by fieldName.
+// Returns a map fieldName->array of records
+function groupByField(records, fieldName){
+    let values = {}
+    for (let rec of records ){
+        let val = rec[fieldName]
+        if (!values[val]) {
+            values[val] =[]
+        }
+        values[val].push(rec)
+    }
+    return values
+}
 
-// function groupUsers(list_app_user_role) {
-//     let gr = {}
-//     for (let aur of list_app_user_role ){
-//         if (!gr[aur.username]) gr[aur.username] =[]
-//         gr[aur.username].push(aur)
-//     }
 
-//     let arr = []
+function appsOfTheGroup(list_group_app_role) {
+    let apps = groupByField(list_group_app_role, 'app_id')
 
-//     for (let [key, value] of Object.entries(gr)) {
-//         let rec = {}
-//         rec.username =key
-//         rec.user_fullname = value[0].user_fullname
-//         rec.items = value
-//         arr.push(rec)
-//     }
-//     return arr
-// }
+    // преобразуем хэш в массив для отображения в mustache
+    let arr = []
+
+    for (let [key, value] of Object.entries(apps)) {
+        let rec = {}
+        rec.app_id =key
+        rec.group_id = value[0].group_id
+        rec.app_appname = value[0].app_appname
+        rec.app_description = value[0].app_description
+        rec.app_url = value[0].app_url
+        rec.items = value
+        arr.push(rec)
+    }
+    return arr
+}
 
 
 
@@ -1530,6 +1558,7 @@ function getAllApps(event) {
         ) {
             length
             list {
+              id
               appname
               description
               url
@@ -1651,6 +1680,35 @@ function modifyRole(action,appname,username,rolename, onsuccess ) {
             rolename
             appname
             username
+          }
+        }
+    `
+    function onSuccess(res){
+        if (onsuccess) onsuccess()
+    }
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+function modifyGroupAppRole(action,group_id,app_id,rolename, onsuccess ) {
+    if (!group_id || !app_id || !rolename) 
+        return
+    var query =`
+    mutation {
+        ${action}_group_app_role(
+        group_id: ${group_id},
+        app_id: ${app_id},
+        rolename: "${rolename}"
+        ) {
+            app_appname
+            app_description
+            app_id
+            app_url
+            group_description
+            group_groupname
+            group_id
+            rolename
           }
         }
     `

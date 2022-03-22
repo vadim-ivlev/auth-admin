@@ -45,33 +45,34 @@
         <span></span>
         <input placeholder="Фильтр"  oninput="filterRows('#GroupApps .filtered-row', this.value )">
     </div>
-        
+    <!-- таблица приложений-->    
     <table id="GroupApps">
         <tr>
-            <th>приложение</th>
+            <th>приложениe</th>
             <th>описание</th>
-            <th>роли</th>
+            <th>роли группы</th>
         </tr>
         {{#group.apps}}
         <tr class="filtered-row">
-            <td><a href="" title="Редактировать" onclick="return showPage('app/{{appname}}');">{{appname}}</a></td>
-            <td><a href="" title="Редактировать" onclick="return showPage('app/{{appname}}');">{{app_description}}</a></td>
+            <td><a href="" title="Редактировать" onclick="return showPage('app/{{app_appname}}');">({{app_id}}) {{app_appname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="return showPage('app/{{app_appname}}');">{{app_description}}</a></td>
             <td>
 
+                <!-- кнопки добавления удаления ролей -->
+                {{#isAdmin}}
 
                 {{#items}}
                 <button class="button button-outline role" 
-                    onclick="modifyRole('delete', '{{appname}}', '{{group.groupname}}','{{rolename}}',()=>{ getGroup('{{group.groupname}}') } )"
-                    >
+                    onclick="modifyGroupAppRole('delete','{{group_id}}', '{{app_id}}', '{{rolename}}',()=>{ getGroup('{{group_id}}') } )"
+                >
                     {{rolename}}
                 </button>
                 {{/items}} 
 
-                {{#isAdmin}}
                 <span class="button button-outline role-nocross">
-                    <input id="newRoleName-{{appname}}" class="role-input" placeholder="новая роль">
+                    <input id="newGroupRoleName-{{group_id}}-{{app_id}}" class="role-input" placeholder="новая роль">
                     <button class="button button-outline role-add" 
-                        onclick="modifyRole('create', '{{appname}}', '{{group.groupname}}', document.getElementById('newRoleName-{{appname}}').value, ()=>{ getGroup('{{group.groupname}}') }  )"
+                        onclick="modifyGroupAppRole('create', '{{group_id}}','{{app_id}}', document.getElementById('newGroupRoleName-{{group_id}}-{{app_id}}').value, ()=>{ getGroup('{{group_id}}') }  )"
                         >
                     +
                     </button>
@@ -81,27 +82,36 @@
         </tr>
         {{/group.apps}}
 
+        <!-- добавление удаление приложений -->
         {{#isAdmin}}
         <tr>
             <td>
-                <input id="newGroupAppname" 
-                    list="appsDataList" 
+                <input id="groupAppsSelector" 
+                    list="groupAppsDataList" 
                     placeholder="Добавить приложение. Поиск." 
-                    onchange="document.getElementById('newGroupAppDescription').innerText = document.querySelector(`#appsDataList>option[value='${this.value}'`).innerText;"
-                >
-                <datalist id="appsDataList">
+                    onchange="
+                        document.getElementById('newGroupAppDescription').innerText = document.querySelector(`#groupAppsDataList>option[value='${this.value}'`).innerText;
+                        document.getElementById('newGroupAppID').innerText = document.querySelector(`#groupAppsDataList>option[value='${this.value}'`).id;
+                    ">
+                <datalist id="groupAppsDataList">
                     {{{all_app_options}}}
                 </datalist>
 
             </td>
-            <td id="newGroupAppDescription">
-           </td>
+            <td >
+                <span id="newGroupAppID"></span>
+                <span id="newGroupAppDescription"></span>
+            </td>
             <td>
                 <span class="button button-outline role-nocross">
-                        <input id="newGroupRolename" class="role-input" placeholder="новая роль">
+                        <input id="newGroupAppRoleName" class="role-input" placeholder="новая роль 1">
                         <button class="button button-outline role-add" 
-                            onclick="modifyRole('create', document.getElementById('newGroupAppname').value, '{{group.groupname}}',  document.getElementById('newGroupRolename').value, ()=>{ getGroup('{{group.groupname}}') }  )"
-                            >
+                            onclick="modifyGroupAppRole('create', '{{id}}',  
+                                document.getElementById('newGroupAppID').innerText, 
+                                document.getElementById('newGroupAppRoleName').value, 
+                                ()=>{ getGroup('{{id}}') });
+                                "
+                        >
                         +
                         </button>
                 </span>
@@ -116,86 +126,6 @@
 
 
 
-<!--
-{{#app}}
-    <div class="flexed">
-
-    <div class="max-max-auto">
-        <h2>Пользователи приложения</h2> 
-        <h2><b>{{app.appname}}</b></h2>
-        <span></span>
-        <input placeholder="Фильтр" oninput="filterRows('#GroupUsers .filtered-row', this.value )">
-    </div>
-
-
-    <table id="GroupUsers">
-        <tr>
-            <th>пользователь</th>
-            <th>полное имя</th>
-            <th>роли</th>
-        </tr>
-            {{#app.users}}
-            <tr class="filtered-row">
-                <td><a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">{{username}}</a></td>
-                <td><a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">{{user_fullname}}</a></td>
-                <td>
-
-
-                    {{#items}}
-                    <button class="button button-outline role" 
-                        onclick="modifyRole('delete', '{{app.appname}}', '{{username}}','{{rolename}}',()=>{ getGroup('{{app.appname}}') } )"
-                        >
-                        {{rolename}}
-                    </button>
-                    {{/items}} 
-                    <span class="button button-outline role-nocross">
-                        <input id="newRoleName-{{username}}" class="role-input">
-                        <button class="button button-outline role-add" 
-                            onclick="modifyRole('create', '{{app.appname}}', '{{username}}', document.getElementById('newRoleName-{{username}}').value, ()=>{ getGroup('{{app.appname}}') }  )"
-                            >
-                        +
-                        </button>
-                    </span>
-
-
-
-
-                </td>
-            </tr>
-            {{/app.users}}
-
-        <tr>
-            <td>                
-                <input id="newGroupUsername" 
-                    list="usersDataList" 
-                    placeholder="Добавить пользователя. Поиск." 
-                    onchange="document.getElementById('newGroupUserFullName').innerText = document.querySelector(`#usersDataList>option[value='${this.value}'`).innerText;"
-                >
-                <datalist id="usersDataList">
-                    {{{all_user_options}}}
-                </datalist>
-            </td>
-            <td id="newGroupUserFullName">
-            </td>
-            <td>
-                <span class="button button-outline role-nocross">
-                        <input id="newGroupRolename" class="role-input"  placeholder="новая роль">
-                        <button class="button button-outline role-add" 
-                            onclick="modifyRole('create', '{{app.appname}}', document.getElementById('newGroupUsername').value, document.getElementById('newGroupRolename').value, ()=>{ getGroup('{{app.appname}}') }  )"
-                            >
-                        +
-                        </button>
-                </span>
-            </td>
-        </tr>
-
-        
-
-    </table>
-</div>
-{{/app}}
-
--->
 
 
 
