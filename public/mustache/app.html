@@ -1,6 +1,6 @@
 <div class="flexed max-width-600">
     <div>
-        <a href="" class="button button-clear" style="padding: 0;"  onclick="searchApps(); return showPage('apps');">&lt; приложения</a>
+        <a href="" class="button button-clear" style="padding: 0;"  onclick="pd(event); searchApps(); showPage('apps');">&lt; приложения</a>
     </div>
 
 
@@ -117,8 +117,8 @@
         </tr>
             {{#app.users}}
             <tr class="filtered-row">
-                <td><a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">{{username}}</a></td>
-                <td><a href="" title="Редактировать" onclick="return showPage('user/{{username}}');">{{user_fullname}}</a></td>
+                <td><a href="" title="Редактировать" onclick="pd(event); showPage('user/{{username}}');">{{username}}</a></td>
+                <td><a href="" title="Редактировать" onclick="pd(event); showPage('user/{{username}}');">{{user_fullname}}</a></td>
                 <td>
 
 

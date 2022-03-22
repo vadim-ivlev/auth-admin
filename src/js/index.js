@@ -285,6 +285,11 @@ var model = {
 //     return value
 // }
 
+// prevent default
+function pd(event) {
+    if (event) event.preventDefault()
+}
+
 
 function createOptions(selectValues, keyProp, textProp1, textProp2) {
     var output = []

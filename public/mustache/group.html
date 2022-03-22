@@ -1,6 +1,6 @@
 <div class="flexed max-width-600">
     <div>
-        <a href="" class="button button-clear" style="padding: 0;"  onclick="searchGroups(); return showPage('groups');">&lt; Группы</a>
+        <a href="" class="button button-clear" style="padding: 0;"  onclick="pd(event); searchGroups(); showPage('groups');">&lt; Группы</a>
     </div>
 
     {{^group}}
@@ -55,8 +55,8 @@
         </tr>
         {{#group.apps}}
         <tr class="filtered-row">
-            <td><a href="" title="Редактировать" onclick="return showPage('app/{{app_appname}}');">({{app_id}}) {{app_appname}}</a></td>
-            <td><a href="" title="Редактировать" onclick="return showPage('app/{{app_appname}}');">{{app_description}}</a></td>
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('app/{{app_appname}}');">({{app_id}}) {{app_appname}}</a></td>
+            <td><a href="" title="Редактировать" onclick="pd(event); showPage('app/{{app_appname}}');">{{app_description}}</a></td>
             <td>
 
                 <!-- кнопки добавления удаления ролей -->

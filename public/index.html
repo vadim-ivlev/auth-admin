@@ -28,7 +28,7 @@
     <div id="page-container">
         <div id="header" class="header" >
             <div class="title">
-                <a href="" onclick="return showPage('login',true)" >
+                <a href="" onclick="pd(event); showPage('login',true)" >
                     <img src="images/graphql-logo.svg" class="graphql-logo">
                     Авторизация
                 </a>
@@ -41,25 +41,25 @@
             <span class="right0" style="vertical-align: top0;">
                 <span id="menu" class="menu">
                     <a href="" id="appsTab" class="button button-clear tab"
-                        onclick="searchApps();  return showPage('apps') ;">Приложения</a>
+                        onclick="pd(event); searchApps();  showPage('apps') ;">Приложения</a>
                     <a href="" id="usersTab" class="button button-clear tab"
-                        onclick="searchUsers(); return showPage('users');">Пользователи</a>
+                        onclick="pd(event); searchUsers(); showPage('users');">Пользователи</a>
                     <a href="" id="groupsTab" class="button button-clear tab"
-                        onclick="searchGroups(); return showPage('groups');">Группы</a>
+                        onclick="pd(event); searchGroups(); showPage('groups');">Группы</a>
                     <a href="" id="rolesTab" class="button button-clear tab"
-                        onclick="formListRoleSubmit(); return showPage('roles');">Роли</a>
+                        onclick="pd(event); formListRoleSubmit(); showPage('roles');">Роли</a>
                     <!-- ✎  -->
                     <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
-                        onclick="getUser(model.loginedUser.username); return showPage('user');">профиль</a>
-                    <a href="" id="logoutButton" class="button button-clear tab" onclick="return logout()">Выход</a>
+                        onclick="pd(event); getUser(model.loginedUser.username); showPage('user');">профиль</a>
+                    <a href="" id="logoutButton" class="button button-clear tab" onclick="pd(event); logout()">Выход</a>
                     <a href="" id="settingsButton" class="button button-clear tab settings hidden" title="настройки"
-                        onclick="getParams(); getAppstatRest(); return showPage('params',true)">
+                        onclick="pd(event); getParams(); getAppstatRest(); showPage('params',true)">
                         <!--&#9776;&vellip; -->&#x2699;
                     </a>
                 </span>
                 <span id="menuUnlogined" class="menu">
                     <a href="" id="loginButton" class="button button-clear tab"
-                        onclick="return showPage('login',true)">Вход</a>
+                        onclick="pd(event); showPage('login',true)">Вход</a>
                 </span>
             </span>
         </div>
@@ -75,7 +75,7 @@
 
                 <div class="flexed max-width-400">
                     <h2>Вход</h2>
-                    <form id="formLoginGraphQL" onsubmit="return loginGraphQLFormSubmit(event)">
+                    <form id="formLoginGraphQL" onsubmit="pd(event); loginGraphQLFormSubmit(event)">
                         <div>
                             <!-- <label class="param-name">username</label> -->
                             <input type="submit" class="micro" value=".">
@@ -97,8 +97,8 @@
                             <!-- <label class="param-name">captcha</label> -->
                             <div style="display: grid; grid-template-columns: auto auto 1fr ; grid-column-gap: 10px;">
                                 <img id="captchaImg" src="" class="captcha-image">
-                                <button class="button-outline" tabindex="-1" onclick="return getNewCaptcha()"
-                                    style="font-size: 26px; font-wehght:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
+                                <button class="button-outline" tabindex="-1" onclick="pd(event); getNewCaptcha()"
+                                    style="font-size: 26px; font-weight:normal; padding-left:8px; padding-right:8px;">&#x27F3;</button>
                                 <input id="loginCaptcha" name="captcha" type="text" placeholder="введите изображение">
                             </div>
                         </div>
@@ -142,10 +142,10 @@
                     <h2 class="centered">
                         Приложения
                     </h2>
-                    <form id="formListApp" class="grided0" onsubmit="return searchApps()">
+                    <form id="formListApp" class="grided0" onsubmit="pd(event); searchApps()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="Поиск" oninput="return searchApps()" value="">
+                            <input name="search" type="text" placeholder="Поиск" oninput="pd(event); searchApps()" value="">
                         </div>
                     </form>
                     <button id="btnNewApp" class="button button-clear tab"
@@ -159,10 +159,10 @@
             <div class="page" id="usersPage">
                 <div class="flexed max-width-600">
                     <h2 class="centered">Пользователи</h2>
-                    <form id="formListUser" class="grided0" onsubmit="return searchUsers()">
+                    <form id="formListUser" class="grided0" onsubmit="pd(event); searchUsers()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchUsers()"  value="">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="pd(event); searchUsers()"  value="">
                         </div>
                     </form>
                     <button class="button button-clear tab"
@@ -176,10 +176,10 @@
             <div class="page" id="groupsPage">
                 <div class="flexed max-width-600">
                     <h2 class="centered">Группы</h2>
-                    <form id="formListGroup" class="grided0" onsubmit="return searchGroups()">
+                    <form id="formListGroup" class="grided0" onsubmit="pd(event); searchGroups()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="return searchGroups()"  value="">
+                            <input name="search" type="text" placeholder="строка поиска" oninput="pd(event); searchGroups()"  value="">
                         </div>
                     </form>
                     <button class="button button-clear tab"

@@ -2,11 +2,11 @@
 <table>
     <thead>
         <tr>
-            <th><a href="" class="sortable" title="sort by appname" onclick="return sortAppsBy('appname')">appname <span style="font-weight: normal;">&#x21E2;</span> url</a></th>
-            <th><a href="" class="sortable" title="sort by description" onclick="return sortAppsBy('description')">description</a></th>
+            <th><a href="" class="sortable" title="sort by appname" onclick="pd(event); sortAppsBy('appname')">appname <span style="font-weight: normal;">&#x21E2;</span> url</a></th>
+            <th><a href="" class="sortable" title="sort by description" onclick="pd(event); sortAppsBy('description')">description</a></th>
             {{#isAdmin}}
-            <th><a href="" class="sortable" title="sort by public" onclick="return sortAppsBy('public')">public</a></th>
-            <th><a href="" class="sortable" title="sort by sign" onclick="return sortAppsBy('sign')">sign</a></th>
+            <th><a href="" class="sortable" title="sort by public" onclick="pd(event); sortAppsBy('public')">public</a></th>
+            <th><a href="" class="sortable" title="sort by sign" onclick="pd(event); sortAppsBy('sign')">sign</a></th>
             <th></th>
             {{/isAdmin}}
         <tr>
@@ -15,12 +15,12 @@
         {{#apps}}
         <tr>
             <td>
-                <a href="{{appurl}}/apps/{{appname}}/" target="_blank" >
+                
                     <b>{{appname}}</b>
                     <br>
                     &#x21E2;
-                    &nbsp;&nbsp;{{url}}
-                </a>
+                    &nbsp;&nbsp;
+                    <a href="{{appurl}}/apps/{{appname}}/" target="_blank" title="показать приложение" >{{url}}</a>
             </td>
             <td>
                 {{description}}
