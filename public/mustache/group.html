@@ -71,9 +71,9 @@
                 {{/items}} 
 
                 <span class="button button-outline role-nocross">
-                    <input id="newGroupRoleName-{{group_id}}-{{app_id}}" class="role-input" placeholder="новая роль">
+                    <input id="newGroupAppRoleName-{{group_id}}-{{app_id}}" class="role-input" placeholder="новая роль">
                     <button class="button button-outline role-add" 
-                        onclick="modifyGroupAppRole('create', '{{group_id}}','{{app_id}}', document.getElementById('newGroupRoleName-{{group_id}}-{{app_id}}').value, ()=>{ getGroup('{{group_id}}') }  )"
+                        onclick="modifyGroupAppRole('create', '{{group_id}}','{{app_id}}', document.getElementById('newGroupAppRoleName-{{group_id}}-{{app_id}}').value, ()=>{ getGroup('{{group_id}}') }  )"
                         >
                     +
                     </button>
