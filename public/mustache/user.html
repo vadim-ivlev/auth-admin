@@ -1,4 +1,9 @@
 <div class="flexed max-width-600">
+    <div>
+        <a href="" class="button button-clear" style="padding: 0;"  onclick="searchUsers(); return showPage('users');">&lt; пользователи</a>
+    </div>
+
+
     {{^user}}
         {{#oauth2id}}
         <div>
@@ -203,6 +208,13 @@
 
     </table>
 </div>
+
+
+
+
+
+
+
 {{/user}}
 
 

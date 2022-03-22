@@ -37,6 +37,7 @@
 </div>
 
 {{#group}}
+<!-- связанные с записью приложения  -->
 <div class="flexed">
 
     <div class="max-max-auto">
@@ -109,11 +110,8 @@
                             onclick="modifyGroupAppRole('create', '{{id}}',  
                                 document.getElementById('newGroupAppID').innerText, 
                                 document.getElementById('newGroupAppRoleName').value, 
-                                ()=>{ getGroup('{{id}}') });
-                                "
-                        >
-                        +
-                        </button>
+                                ()=>{ getGroup('{{id}}') }); "
+                        >+</button>
                 </span>
             </td>
         </tr>
