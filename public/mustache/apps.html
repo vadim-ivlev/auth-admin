@@ -15,12 +15,10 @@
         {{#apps}}
         <tr>
             <td>
-                
-                    <b>{{appname}}</b>
-                    <br>
-                    &#x21E2;
-                    &nbsp;&nbsp;
-                    <a href="{{appurl}}/apps/{{appname}}/" target="_blank" title="показать приложение" >{{url}}</a>
+                <a href="" title="редактировать" onclick="pd(event); showPage('app/{{appname}}');"><b>{{appname}}</b></a>
+                <br>
+                &#x21E2;&nbsp;&nbsp;
+                <a href="{{appurl}}/apps/{{appname}}/" target="_blank" title="показать приложение" >{{url}}</a>
             </td>
             <td>
                 {{description}}
