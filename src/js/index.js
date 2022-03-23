@@ -18,7 +18,7 @@ var model = {
     },
     //---------------------------
     // templatesCache keeps loaded templates, not to load them repeatedly
-    templatesCache :[],
+    templatesCache :{},
 
     //---------------------------
     get logined(){
@@ -355,18 +355,23 @@ function showPage(pageid, dontpush){
 
 
 function renderTemplateFile(templateFile, data, targetSelector) {
+    // извлекаем шаблон из кэша
     var cachedTemlpate = model.templatesCache[templateFile]
     
     if (cachedTemlpate) {
         renderTemplate(cachedTemlpate) 
-        // console.info("from cache:",templateFile)
+        console.debug("from cache:",templateFile)
         return
     }
     
-    fetch(templateFile).then(x => x.text()).then( t => {
-        model.templatesCache[templateFile]=t 
-        renderTemplate(t)
+    fetch(templateFile).then(x => x.text()).then( template => {
+        // запоминаем шаблон в кэше
+        model.templatesCache[templateFile]=template 
+        renderTemplate(template)
+        console.debug("loaded template:",templateFile)
     })
+
+    return
 
     function renderTemplate(template) {
         var rendered = Mustache.render(template, data)
@@ -1080,10 +1085,10 @@ function getUser(username) {
 
     function onSuccess(res){
         var u = res.data.get_user
-        u.apps = groupApps(res.data.list_app_user_role)
+        u.apps = appsOfTheUser(res.data.list_app_user_role)
         // render 
         model.user = u
-        getUserGroups(u.id)
+        fetchGroupsOfTheUser(u.id)
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -1092,7 +1097,7 @@ function getUser(username) {
 
 
 
-function groupApps(list_app_user_role) {
+function appsOfTheUser(list_app_user_role) {
     if (!list_app_user_role) return []
     
     let gr = {}
@@ -1135,7 +1140,7 @@ function deleteUser(username) {
     return false       
 }
 
-function getUserGroups(user_id) {
+function fetchGroupsOfTheUser(user_id) {
     var query =`
     query {
         list_group_user_role(
@@ -1314,12 +1319,13 @@ function getApp(appname) {
         get_app(
         appname: "${appname}"
         ) {
-            description
             appname
-            url
-            rebase
+            description
+            id
             public
+            rebase
             sign
+            url
           }
         
         list_app_user_role(
@@ -1338,9 +1344,10 @@ function getApp(appname) {
 
     function onSuccess(res){
         var a = res.data.get_app
-        a.users = groupUsers(res.data.list_app_user_role)
+        a.users = usersOfTheApp(res.data.list_app_user_role)
         // render
         model.app = a
+        fetchGroupsOfTheApp(a.id)
     } 
 
     doGraphQLRequest(query, onSuccess)
@@ -1348,7 +1355,7 @@ function getApp(appname) {
 }
 
 
-function groupUsers(list_app_user_role) {
+function usersOfTheApp(list_app_user_role) {
     let gr = {}
     for (let aur of list_app_user_role ){
         if (!gr[aur.username]) gr[aur.username] =[]
@@ -1366,7 +1373,6 @@ function groupUsers(list_app_user_role) {
     }
     return arr
 }
-
 
 
 function deleteApp(appname) {
@@ -1388,6 +1394,59 @@ function deleteApp(appname) {
     doGraphQLRequest(query, onSuccess)
     return false       
 }
+
+
+function fetchGroupsOfTheApp(app_id) {
+    var query =`
+    query {
+        list_group_app_role(
+        app_id: ${app_id}
+        ) {
+            app_appname
+            app_description
+            app_id
+            app_url
+            group_description
+            group_groupname
+            group_id
+            rolename
+            }        
+        }
+    `
+
+    function onSuccess(res){
+        var a = model.app
+        a.groups = groupsOfTheApp(res.data.list_group_app_role)
+        // render 
+        model.app = a
+    } 
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+
+function groupsOfTheApp(list_group_app_role) {
+    let groups = groupByField(list_group_app_role, 'group_id')
+
+    // преобразуем хэш в массив для отображения в mustache
+    let arr = []
+
+    for (let [key, value] of Object.entries(groups)) {
+        let rec = {}
+        rec.group_id =key
+        rec.app_id = value[0].app_id
+        rec.app_name = value[0].app_appname
+        rec.group_groupname = value[0].group_groupname
+        rec.group_description = value[0].group_description
+        rec.items = value
+        arr.push(rec)
+    }
+    return arr
+}
+
+
+
 
 // G R O U P S   *******************************************************************
 
@@ -1795,6 +1854,35 @@ function modifyUserGroupRole(action,user_id,group_id,rolename, onsuccess ) {
             user_fullname
             user_id
            }
+    }
+    `
+    function onSuccess(res){
+        if (onsuccess) onsuccess()
+    }
+
+    doGraphQLRequest(query, onSuccess)
+    return false       
+}
+
+function modifyAppGroupRole(action,app_id,group_id,rolename, onsuccess ) {
+    if (!app_id || !group_id || !rolename) 
+        return
+    var query =`
+    mutation {
+        ${action}_group_app_role(
+        app_id: ${app_id},
+        group_id: ${group_id},
+        rolename: "${rolename}"
+        ) {
+            app_appname
+            app_description
+            app_id
+            app_url
+            group_description
+            group_groupname
+            group_id
+            rolename
+          }
     }
     `
     function onSuccess(res){
