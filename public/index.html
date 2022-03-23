@@ -46,8 +46,6 @@
                         onclick="pd(event); searchUsers(); showPage('users');">Пользователи</a>
                     <a href="" id="groupsTab" class="button button-clear tab"
                         onclick="pd(event); searchGroups(); showPage('groups');">Группы</a>
-                    <!-- <a href="" id="rolesTab" class="button button-clear tab"
-                        onclick="pd(event); formListRoleSubmit(); showPage('roles');">Роли</a> -->
                     <a href="" id="userTab" class="button button-clear tab" title="редактировать личные данные"
                         onclick="pd(event); getUser(model.loginedUser.username); showPage('user');">профиль</a>
                     <a href="" id="logoutButton" class="button button-clear tab" onclick="pd(event); logout()">Выход </a>
@@ -181,32 +179,6 @@
                     <br>
                 </div>
                 <div class="group-search-results"></div>
-            </div>
-
-
-            <div class="page" id="rolesPage">
-                <div class="flexed">
-                    <h2 class="centered">Роли пользователя в приложении</h2>
-                    <form id="formListRole" class="grided threeColumns" style="align-items: start;">
-                        <div>
-                            <label>пользователь</label>
-                            <input id="allUsers" list="allUsersDataList" placeholder="Выберите пользователя"
-                                name="username" onkeypress="if (event.keyCode == 13) refreshRoles();"
-                                onchange="refreshRoles()">
-                            <datalist id="allUsersDataList"></datalist>
-                            <div id="userInfo"></div>
-
-                        </div>
-                        <div>
-                            <label>приложение</label>
-                            <input id="allApps" list="allAppsDataList" placeholder="Выберите приложение" name="appname"
-                                onkeypress="if (event.keyCode == 13) refreshRoles();" onchange="refreshRoles()">
-                            <datalist id="allAppsDataList"></datalist>
-                            <div id="appInfo"></div>
-                        </div>
-                    </form>
-                    <div class="app-user-roles-results"></div>
-                </div>
             </div>
 
 

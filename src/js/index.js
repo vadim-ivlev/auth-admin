@@ -174,7 +174,6 @@ var model = {
     set allApps(v) {
         this._allApps = v
         this.all_app_options = createOptions(v, "appname", "description", "url")
-        document.querySelector("#allAppsDataList").innerHTML = this.all_app_options
     },
     get allApps() {
         return this._allApps
@@ -185,7 +184,6 @@ var model = {
     set allUsers(v) {
         this._allUsers = v
         this.all_user_options = createOptions(v, "username", "fullname", "email")
-        document.querySelector("#allUsersDataList").innerHTML = this.all_user_options
     },
     get allUsers() {
         return this._allUsers
@@ -197,7 +195,6 @@ var model = {
         this._allGroups = v
         console.debug('allGroups',v)
         this.all_groups_options = createOptions(v, "groupname", "description")
-        // document.querySelector("#allGroupsDataList").innerHTML = this.all_groups_options
     },
     get allGroups() {
         return this._allGroups
@@ -208,7 +205,6 @@ var model = {
     _app_user_roles: null,
     set app_user_roles(v) {
         this._app_user_roles = v
-        renderTemplateFile('mustache/app-user-roles.html', model, '.app-user-roles-results')
     },
     get app_user_roles() {
         return this._app_user_roles
@@ -647,29 +643,6 @@ function isPinRequired(username) {
 }
 
 
-
-// function resetPassword(event) {
-//     if (event) event.preventDefault()
-    
-//     errorMessage("resetError", "")
-
-//     let username = document.getElementById("loginUsername").value
-
-//     var query =`
-//     mutation {
-//         generate_password(
-//         username: "${username}"
-//         ) 
-//         }
-//     `
-//     function onSuccess(res){
-//         alert(res.data.generate_password)
-//         refreshApp()
-//     }   
-
-//     doGraphQLRequest(query, onSuccess, "resetError")
-//     return false       
-// }
 
 function resetPasswordRest(event) {
     if (event) event.preventDefault()
@@ -1752,35 +1725,6 @@ function getAllGroups(event) {
 }
 
 
-
-function formListRoleSubmit(event) {
-    if (event && event.preventDefault ) event.preventDefault()
-    model.app_user_roles = null
-    let appname =  document.getElementById("allApps").value
-    let username = document.getElementById("allUsers").value
-    if (!appname || !username) 
-        return
-
-    var query =`
-    query {
-        list_app_user_role(
-        appname: "${appname}",
-        username: "${username}"
-        ) {
-            rolename
-          }
-        }        
-        `
-
-    function onSuccess(res){
-        model.app_user_roles = res.data.list_app_user_role
-    } 
-
-    doGraphQLRequest(query, onSuccess)
-    return false       
-}
-
-
 function modifyRole(action,appname,username,rolename, onsuccess ) {
     if (!appname || !username || !rolename) return
 
@@ -1891,24 +1835,6 @@ function modifyAppGroupRole(action,app_id,group_id,rolename, onsuccess ) {
 
     doGraphQLRequest(query, onSuccess)
     return false       
-}
-
-// works when input values on roles page change
-function refreshRoles() {
-    let allUsersValue = document.getElementById("allUsers").value
-    if (allUsersValue) {
-        let ui = document.querySelector(`#allUsersDataList>option[value='${allUsersValue}']`).innerText
-        document.getElementById('userInfo').innerText = ui   
-    }
-
-    let allAppsValue = document.getElementById("allApps").value
-    if (allAppsValue) {
-        let ai = document.querySelector(`#allAppsDataList>option[value='${allAppsValue}']`).innerText
-        document.getElementById('appInfo').innerText = ai
-    }
-
-    if (allUsersValue && allAppsValue) 
-        formListRoleSubmit() 
 }
 
 
