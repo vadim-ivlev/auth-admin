@@ -485,3 +485,9 @@ input.role-input {
     margin-left: auto;
     margin-right: auto;
 }
+
+td,th {
+/* milligram */    
+/* padding: 1.2rem 1.5rem; */
+padding: 0.6rem 0.5rem !important;
+}
