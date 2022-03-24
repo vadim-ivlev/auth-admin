@@ -51,7 +51,7 @@
         <tr>
             <th>приложениe</th>
             <th>описание</th>
-            <th>роли группы</th>
+            <th>роли группы в приложении</th>
         </tr>
         {{#group.apps}}
         <tr class="filtered-row">
@@ -89,7 +89,7 @@
             <td>
                 <input id="groupAppsSelector" 
                     list="groupAppsDataList" 
-                    placeholder="Добавить приложение. Поиск." 
+                    placeholder="Добавить приложение" 
                     onchange="
                         document.getElementById('newGroupAppDescription').innerText = document.querySelector(`#groupAppsDataList>option[value='${this.value}'`).innerText;
                         document.getElementById('newGroupAppID').innerText = document.querySelector(`#groupAppsDataList>option[value='${this.value}'`).id;
@@ -105,7 +105,7 @@
             </td>
             <td>
                 <span class="button button-outline role-nocross">
-                        <input id="newGroupAppRoleName" class="role-input" placeholder="новая роль 1">
+                        <input id="newGroupAppRoleName" class="role-input" placeholder="роль в приложении">
                         <button class="button button-outline role-add" 
                             onclick="modifyGroupAppRole('create', '{{id}}',  
                                 document.getElementById('newGroupAppID').innerText, 
@@ -122,7 +122,11 @@
 {{/group}}
 
 
+<p style="max-width: 1000px; margin:auto;">
+Добавьте приложение, и роли группы в этом приложении. 
+Эти роли будут назначены пользователям группы, когда они будут обращаться данному приложению.
 
+</p>
 
 
 

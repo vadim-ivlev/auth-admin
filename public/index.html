@@ -137,7 +137,7 @@
                     <form id="formListApp" class="grided0" onsubmit="pd(event); searchApps()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="Поиск" oninput="pd(event); searchApps()" value="">
+                            <input name="search" type="text" placeholder="поиск" oninput="pd(event); searchApps()" value="">
                         </div>
                     </form>
                     <button id="btnNewApp" class="button button-clear tab"
@@ -154,7 +154,7 @@
                     <form id="formListUser" class="grided0" onsubmit="pd(event); searchUsers()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="pd(event); searchUsers()"  value="">
+                            <input name="search" type="text" placeholder="поиск" oninput="pd(event); searchUsers()"  value="">
                         </div>
                     </form>
                     <button class="button button-clear tab"
@@ -167,11 +167,15 @@
 
             <div class="page" id="groupsPage">
                 <div class="flexed max-width-600">
-                    <h2 class="centered">Группы</h2>
+                    <h2 class="centered">Группы пользователй</h2>
+                    <p>
+                        Группа объединяет некоторое количество пользователей и для конкретного приложения 
+                        и определяет набор ролей, которые будут иметь пользователи группы.
+                    </p>
                     <form id="formListGroup" class="grided0" onsubmit="pd(event); searchGroups()">
                         <div>
                             <label  for="search"></label>
-                            <input name="search" type="text" placeholder="строка поиска" oninput="pd(event); searchGroups()"  value="">
+                            <input name="search" type="text" placeholder="поиск" oninput="pd(event); searchGroups()"  value="">
                         </div>
                     </form>
                     <button class="button button-clear tab"
