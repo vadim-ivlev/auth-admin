@@ -3,6 +3,12 @@
         <a href="" class="button button-clear" style="padding: 0;"  onclick="pd(event); searchGroups(); showPage('groups');">&lt; Группы</a>
     </div>
 
+    <!-- <div>
+        Группа определяет набор ролей, 
+        которые будут назначаться пользователи группы, при обращении к конкретному приложению. 
+    </div> -->
+
+
     {{^group}}
     <h2>Новая группа <b id="newGroupName"></b></h2>
     {{/group}}
@@ -41,7 +47,7 @@
 <div class="flexed">
 
     <div class="max-max-auto">
-        <h2>Приложения группы <b>{{group.groupname}}</b></h2> 
+        <h3><b>Приложения</b> группы <b>{{group.groupname}}</b></h3> 
         <span></span>
         <span></span>
         <input placeholder="Фильтр"  oninput="filterRows('#GroupApps .filtered-row', this.value )">
@@ -118,15 +124,16 @@
         {{/isAdmin}}
 
     </table>
+    <div >
+        Добавьте приложение, и роли группы {{group.groupname}} в этом приложении. 
+        Эти роли будут назначены пользователям группы, когда они будут обращаться данному приложению.
+    </div>
+
 </div>
 {{/group}}
 
 
-<p style="max-width: 1000px; margin:auto;">
-Добавьте приложение, и роли группы в этом приложении. 
-Эти роли будут назначены пользователям группы, когда они будут обращаться данному приложению.
 
-</p>
 
 
 

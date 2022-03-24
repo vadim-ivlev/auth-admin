@@ -101,12 +101,16 @@
 {{#app}}
 
 
-
 <!-- группы связанные с записью -->
 <div class="flexed">
+    <div>
+        Пользователи приложения объединены в группы. <br>
+        Каждая группа имеет набор ролей, которые назначаются пользователям группы,
+        когда они обращаются к {{app.appname}}.  
+    </div>
 
     <div class="max-max-auto">
-        <h3><b>Группы</b> приложения <b>{{app.appname}}</b></h3> 
+        <h3><b>Группы пользователей</b> приложения <b>{{app.appname}}</b></h3> 
         <span></span>
         <span></span>
         <input placeholder="Фильтр"  oninput="filterRows('#AppGroups .filtered-row', this.value )">
@@ -193,10 +197,13 @@
 <!-- пользователи связанные с записью -->
 
     <div class="flexed">
-
+    <div>
+        Отдельные пользователи также могут иметь имеет набор ролей в приложении {{app.appname}}.<br> 
+        Если пользователь входит в группу то роли группы добавляются к его ролям определенным ниже.
+    </div>
+    
     <div class="max-max-auto">
-        <h2>Пользователи приложения</h2> 
-        <h2><b>{{app.appname}}</b></h2>
+        <h3><b>Пользователи</b> приложения  <b>{{app.appname}}</b></h3>
         <span></span>
         <input placeholder="Фильтр" oninput="filterRows('#AppUsers .filtered-row', this.value )">
     </div>

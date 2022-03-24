@@ -303,7 +303,7 @@ input.role-input {
     grid-gap: 10px;   
     border-top: 1px solid #555; 
     padding-top:20px;
-    margin-top:20px;
+    margin-top:10px;
 }
 .max-max-auto > input {
     margin-top: 4px;
