@@ -1,0 +1,16 @@
+# https://hub.docker.com/_/caddy?tab=description&page=1&name=2.4
+version: "3.7"
+
+services:
+  auth-admin:
+    # image: caddy:2.4.6-alpine
+    build: .
+    container_name: auth-admin
+    restart: unless-stopped
+    ports:
+      - 4300:80
+      # - "443:443"
+    # volumes:
+      # - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      # - $PWD/public:/srv
+    # command: caddy file-server 
